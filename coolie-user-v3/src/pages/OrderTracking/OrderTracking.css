@@ -1,0 +1,102 @@
+/* OrderTracking.css */
+
+
+
+.order-tracking {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px
+}
+
+.maps-container {
+    width: 100%;
+    height: 400px;
+}
+
+.info-container {
+    width: 100%;
+    background-color: white;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    margin-top: -20px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.timer {
+    font-size: 1.2em;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.worker-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.worker-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.worker-details {
+    flex-grow: 1;
+}
+
+.worker-name {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.worker-distance,
+.worker-rating {
+    font-size: 0.9em;
+    color: gray;
+}
+
+.worker-actions {
+    display: flex;
+    align-items: center;
+}
+
+.call-button,
+.cancel-button {
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-left: 10px;
+}
+
+.call-button {
+    background-color: #28a745;
+    color: white;
+}
+
+.cancel-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+.otp-container {
+    text-align: center;
+}
+
+.otp-digits {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.otp-digit {
+    font-size: 2em;
+    margin: 0 5px;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    border-radius: 5px;
+}

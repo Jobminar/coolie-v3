@@ -1,0 +1,118 @@
+.our-leadership{
+    /* border: 1px solid black; */
+}
+.our-leadership h2{
+    font-family: Poppins;
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 52.5px;
+    text-align: center;
+}
+.leadership-team{
+    display: grid;
+    grid-template-columns: 25% 25% 25%;
+    justify-content: space-evenly;
+    align-items: center;
+   /* border: 1px solid black; */
+   margin: 0rem 3rem;
+
+}
+.team{
+    /* border: 1px solid black; */
+    padding: 1.5rem;
+    border: 1px solid gray;
+    border-radius: 10px;
+    min-height: 20rem;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.team img{
+    width: 5rem;
+    height: 5rem;
+}
+.team h3{
+    font-family: Poppins;
+font-size: 16px;
+font-weight: 500;
+line-height: 24px;
+text-align: left;
+margin: 0px;
+
+}
+.team p{
+    font-family: Poppins;
+font-size: 10px;
+font-weight: 300;
+line-height: 24px;
+text-align: left;
+margin: 0px;
+
+}
+.team-contact{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 2rem;
+    margin: 1rem;
+}
+.team-contact img{
+    width: 2rem;
+    height: 2rem;
+  
+}
+.team-content{
+    font-family: Poppins;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 28px;
+    text-align: justify;
+
+} 
+/* about company */
+.about-company{
+    display: grid;
+    grid-template-columns: 50% 50%;
+    margin:3rem 2rem;
+    /* border: 1px solid black; */
+}
+.company-logo{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* border: 1px solid black; */
+}
+.company-logo img{
+    width: 30rem;
+    height: 30rem;
+}
+.company-content{
+    padding: 1rem;
+}
+.company-content h2{
+    font-family: Poppins;
+    font-size: 35px;
+    font-weight: 600;
+    line-height: 52.5px;
+    text-align: left;    
+}
+.company-content p{
+    font-family: Poppins;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 24.24px;
+    text-align: left;
+    color: #666C89;
+}
+.about-bottom{
+    width: 100%;
+    height: auto;
+
+}
+.about-bottom img{
+    width: 100%;
+    height: 100%;
+}

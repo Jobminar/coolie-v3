@@ -1,0 +1,22 @@
+{
+    "cartItems": [
+        {
+            "id": 1,
+            "serviceId": "svc-001",
+            "userId": "usr-001",
+            "name": "1 Bathroom Cleaning",
+            "price": 1499,
+            "duration": 60,
+            "quantity": 1
+        },
+        {
+            "id": 2,
+            "serviceId": "svc-002",
+            "userId": "usr-001",
+            "name": "2 Bathrooms Cleaning",
+            "price": 1899,
+            "duration": 60,
+            "quantity": 1
+        }
+    ]
+}

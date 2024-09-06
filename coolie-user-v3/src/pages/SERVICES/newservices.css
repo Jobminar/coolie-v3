@@ -1,0 +1,253 @@
+.services {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.services-cart-display {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    min-height: 20rem;
+    display: grid;
+    grid-template-columns: 60% 30%;
+    justify-content: center;
+    margin: 2rem 1rem;
+    gap: 0.7rem;
+}
+
+.services-main-dispaly {
+    display: grid;
+    grid-template-columns: 45% 55%;
+    justify-content: space-between;
+    border: 1px solid red;
+    border-radius: 10px;
+}
+
+.sub-category-display {
+    display: flex;
+    flex-direction: column;
+}
+
+.sub-category-item {
+    display: grid;
+    grid-template-columns: 20% 80%;
+    align-items: center;
+    border-bottom: 1px dashed rgb(192, 192, 192);
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 15px;
+    min-height: 4rem;
+    position: relative;
+    color: black;
+    max-width: 20rem;
+}
+
+.sub-category-item:hover {
+    cursor: pointer;
+}
+
+.sub-category-item.active::before {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 48px;
+    background-color: #c0e8b6;
+    border-radius: 0 5px 5px 0;
+}
+
+.sub-category-item p {
+    font-family: Roboto;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 18.75px;
+    text-align: left;
+    margin: 0px;
+    padding: 10px;
+}
+
+.sub-category-item p.active {
+    color: #039f54;
+}
+
+.subcat-services-dispaly {
+    display: grid;
+    grid-template-columns: 45% 55%;
+}
+
+.services-display {
+    background-color: #E3E4EA;
+    /* border-radius: 0px 10px 10px 10px; */
+    border-radius: 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: top;
+    align-items: center;
+}
+
+.loading,
+.error {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 1.2em;
+}
+
+.loading {
+    color: #007bff;
+}
+
+.error {
+    color: red;
+}
+
+.cart-display {
+    width: 100%;
+}
+
+/* sameer changed this 02-08-2024 */
+.subcat-icon-container {
+    width: 1.5rem;
+    height: 2rem;
+    background: transparent;
+    border-radius: 0.5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.3s ease, transform 0.3s ease, width 0.3s ease, height 0.3s ease;
+}
+
+/* sameer changed this 02-08-2024*/
+.subcat-icon-container.active {
+    background: linear-gradient(180deg, #e6f7d4 0%, #c0e8b6 100%);
+    transform: scale(1.4) translateY(-2%)
+}
+
+/* sameer changed this 02-08-2024*/
+.subcat-icon-container img {
+    width: 1.75rem;
+    height: 1.75rem;
+    transition: transform 0.3s ease;
+}
+
+/* sameer changed this 02-08-2024*/
+.subcat-icon-container.active img {
+    transform: scale(1.05)translateY(-20%);
+    border-radius: 0;
+}
+
+.sub-category-service-item {
+    width: 90%;
+    min-height: 4rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+    padding: 0.1rem;
+    text-align: center;
+}
+
+/* sameer changed this 02-08-2024*/
+.service-icon-container {
+    width: auto;
+    /* change made by sameer 2-8-2024 */
+    height: 3.76rem;
+}
+
+
+
+.service-main-head {
+    padding: 0.2rem 0.5rem;
+    display: grid;
+    height: 4rem;
+    grid-template-columns: 20% 65% 15%;
+    align-items: center;
+}
+
+
+
+.service-content h5 {
+    font-family: Roboto;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 17.58px;
+    text-align: left;
+    margin: 10px 0px;
+}
+
+.service-variant p {
+    margin: 0px;
+    padding: 0px;
+    font-family: Roboto;
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 15.23px;
+    text-align: left;
+}
+
+.dropdown {
+    margin-right: 1rem;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.dropdown img {
+    width: 100%;
+    height: 100%;
+}
+
+.price {
+    font-family: Roboto;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 18.75px;
+    text-align: right;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-left: 2.5rem;
+}
+
+.price div {
+    margin-right: 2rem;
+}
+
+.price button {
+    width: 5rem;
+    height: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    position: relative;
+    margin-left: 4.5rem;
+}
+
+.price button:hover {
+    cursor: pointer;
+}
+
+.description {
+    font-family: Roboto;
+    font-size: 13.33px;
+    font-weight: 200;
+    line-height: 17px;
+    text-align: left;
+    padding-left: 3rem;
+    padding-top: 1rem;
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 1000;
+}

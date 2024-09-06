@@ -1,0 +1,265 @@
+.ie-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    overflow: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+.ie-popup-container {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    width: 85%;
+    max-width: 600px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    max-height: 90vh;
+}
+
+.ie-popup-close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.ie-popup-content {
+    margin-top: 20px;
+    overflow-y: auto;
+    max-height: 70vh;
+    scrollbar-width: thin;
+    scrollbar-color: #ccc #f1f1f1;
+}
+
+.ie-popup-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.ie-popup-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.ie-popup-content::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 10px;
+    border: 2px solid #f1f1f1;
+}
+
+.service-banner-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.banner-image-container {
+    position: relative;
+    margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ie-popup-banner-image {
+    width: 120px;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.add-banner-button {
+    position: absolute;
+    bottom: 2px;
+    /* Adjust positioning */
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    /* Adjust padding for the button size */
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 12px;
+    /* Adjust font size */
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.add-banner-button:hover {
+    background-color: #218838;
+}
+
+.service-info {
+    flex: 1;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.service-info h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+    text-align: left;
+}
+
+.service-info h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.feature-title-container {
+    background-color: #fff;
+    border-radius: 50px;
+    padding: 5px 15px;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.feature-title-container h4 {
+    font-weight: bold;
+    font-size: 1rem;
+    color: #666;
+    margin: 0;
+    text-align: center;
+}
+
+.service-items {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-top: 20px;
+}
+
+.item {
+    text-align: center;
+    width: 48%;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.ie-popup-item-image {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 5px;
+    margin-right: 10px;
+}
+
+.service-exclusions-card {
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    /* Ensure everything inside aligns to the left */
+}
+
+.service-exclusions h3.exclusions-heading {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: black;
+    text-align: left;
+    /* Make sure this remains aligned to the left */
+    align-self: flex-start;
+    /* Align self to the start of the flex container */
+}
+
+
+.service-exclusions ul.exclusions-list {
+    padding-left: 20px;
+    list-style-type: disc !important;
+    margin-top: 10px;
+    color: black;
+    font-size: 1rem;
+    list-style-position: outside;
+}
+
+.service-exclusions li {
+    margin-bottom: 8px;
+    color: black;
+    line-height: 1.5;
+    font-size: 1rem;
+    list-style-type: inherit;
+}
+
+.service-detail-block {
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    background-color: rgba(240, 240, 240, 0.8);
+}
+
+.service-description {
+    margin-bottom: 20px;
+    font-size: 0.8rem;
+    color: #6b6b6b;
+    text-align: left;
+    font-style: italic;
+    line-height: 1.6;
+    /* Adjust this value to control the spacing */
+}
+
+
+@media (max-width: 600px) {
+    .ie-popup-container {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .service-banner-section {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .ie-popup-banner-image {
+        width: 100px;
+        height: auto;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .add-button {
+        width: 50%;
+        margin-left: 25%;
+        margin-top: -10px;
+    }
+
+    .service-items {
+        justify-content: space-between;
+    }
+
+    .item {
+        width: 48%;
+    }
+
+    .ie-popup-item-image {
+        width: 35px;
+        height: 35px;
+    }
+
+    .ie-popup-content {
+        max-height: 60vh;
+    }
+}

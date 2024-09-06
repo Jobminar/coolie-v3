@@ -1,0 +1,161 @@
+/* Container for core services */
+.core-services-container {
+  margin: 2rem 0;
+  padding: 0.5rem 2rem;
+  /* Similar padding to most booked services */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Heading styles */
+.core-services-container h2 {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 40px;
+  /* Match font size */
+  font-weight: 300;
+  line-height: 42.88px;
+  letter-spacing: -0.05em;
+  text-align: left;
+  margin: 20px 0px;
+}
+
+.core-services-container h2 span {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 40px;
+  /* Match font size */
+  font-weight: 700;
+  line-height: 46.88px;
+  letter-spacing: -0.05em;
+  text-align: left;
+}
+
+/* Slick slider custom styles */
+.core-services-slider {
+  position: relative;
+}
+
+.core-services-slider .slick-slide {
+  padding: 0 1px;
+  /* Adjust padding for spacing between slides */
+}
+
+/* Each service item */
+.service-item {
+  min-width: 14rem;
+  /* Match width */
+  height: 14rem;
+  /* Match height */
+  scroll-snap-align: start;
+  margin: 0 1px;
+  /* Add margin to create space between slides */
+}
+
+/* Image container for service item */
+.service-image-container {
+  width: 12rem;
+  /* Match width */
+  height: 10rem;
+  /* Match height */
+}
+
+.service-image-container:hover {
+  cursor: pointer;
+}
+
+.service-image-container img {
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+}
+
+/* Service name */
+.service-name {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 18px;
+  /* Match font size */
+  font-weight: 700;
+  line-height: 21.09px;
+  text-align: left;
+  margin: 0px;
+  margin-top: 10px;
+  margin-left: 2px;
+  width: 10rem;
+  /* Set a consistent width */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background-color: white;
+}
+
+.service-name:hover {
+  overflow: visible;
+  white-space: nowrap;
+  text-overflow: clip;
+}
+
+/* Service price */
+.service-price {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  /* Match font size */
+  font-weight: 400;
+  line-height: 22px;
+  text-align: left;
+  margin: 0.5px;
+  margin-left: 2px;
+}
+
+/* Custom next and previous arrows */
+.custom-next-arrow,
+.custom-prev-arrow {
+  width: 2rem;
+  height: 2rem;
+  background: rgb(255, 255, 255);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.custom-prev-arrow {
+  left: -65px;
+  color: rgb(205, 205, 205);
+  background-color: transparent;
+}
+
+.custom-next-arrow {
+  right: -25px;
+  color: rgb(205, 205, 205);
+  background-color: transparent;
+}
+
+/* Adjust slick dots styling */
+.core-services-slider .slick-dots {
+  bottom: -40px;
+  display: block !important;
+}
+
+.core-services-slider .slick-dots li {
+  margin: 0 5px;
+}
+
+.core-services-slider .slick-dots li button:before {
+  font-size: 12px;
+  color: rgb(179, 179, 179);
+}
+
+.core-services-slider .slick-dots li.slick-active button:before {
+  color: rgb(139, 139, 139);
+}
+
+
+
+
+ 
+

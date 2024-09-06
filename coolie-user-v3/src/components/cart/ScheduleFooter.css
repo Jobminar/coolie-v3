@@ -1,0 +1,51 @@
+.schedule-total {
+    width: 95%;
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    /* Adjusted column widths for closer spacing */
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    grid-gap: 2rem;
+    /* Adjust the gap between columns */
+}
+
+.schedule-total-info {
+    display: flex;
+    flex-direction: column;
+    margin: 0.5rem;
+}
+
+.schedule-total-info h5 {
+    margin-bottom: 0;
+    color: #666;
+}
+
+.schedule-total-info p {
+    margin-top: 0.3rem;
+    color: #000000;
+    font-weight: 600;
+    font-size: 1.3rem;
+}
+
+
+.schedule-total-button {
+    display: flex;
+    justify-content: start;
+}
+
+.proceed-to-checkout-btn {
+    background-color: #FFA226;
+    color: rgb(0, 0, 0);
+    padding: 12px 30px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: 700;
+    /* Button takes 100% of the column width */
+}
+
+.proceed-to-checkout-btn:hover {
+    background-color: #ffb24e;
+}

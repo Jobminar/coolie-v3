@@ -1,0 +1,23 @@
+.font-change {
+    font-size: 20px;
+  }
+  
+  .inter {
+    margin: 10rem;
+    font-family: Inter, sans-serif;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 29.05px;
+    text-align: center;
+   
+  }
+  
+  .roboto {
+    margin: 10rem;
+    font-family: Roboto, sans-serif;
+    font-size: 40px;
+    font-weight: 200;
+    line-height: 17px;
+   text-align: center;
+  }
+  

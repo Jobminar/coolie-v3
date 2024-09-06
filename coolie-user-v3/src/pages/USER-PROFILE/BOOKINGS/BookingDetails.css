@@ -1,0 +1,68 @@
+.booking-details-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    font-family: 'Roboto', sans-serif;
+}
+
+.booking-details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.booking-details-header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.booking-details-header p {
+    margin: 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.help-button {
+    background-color: #ccc;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.customer-details {
+    margin-bottom: 20px;
+}
+
+.location-box {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.location-box p {
+    margin: 5px 0;
+}
+
+.job-details {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.summary {
+    margin-top: 20px;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.summary-item.total {
+    font-weight: bold;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+}

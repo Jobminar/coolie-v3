@@ -1,0 +1,80 @@
+/* WorkerInfo.css */
+
+.worker-info-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 10px;
+}
+
+.worker-info {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.worker-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.worker-details {
+    flex-grow: 1;
+}
+
+.worker-name {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.worker-distance,
+.worker-rating {
+    font-size: 0.9em;
+    color: gray;
+}
+
+.otp-container {
+    margin-right: 14rem
+}
+
+.worker-actions {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+.icon-button {
+    border: 2px solid #ffcc00;
+    border-radius: 50%;
+    background-color: white;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.icon-button img {
+    width: 25px;
+    height: 25px;
+}
+
+.cancel-button {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #dc3545;
+    color: white;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.cancel-button:hover {
+    background-color: #c82333;
+}

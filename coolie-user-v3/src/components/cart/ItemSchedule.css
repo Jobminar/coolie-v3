@@ -1,0 +1,58 @@
+.price-span {
+    color: rgb(107, 107, 107)
+}
+
+.cart-item-card {
+    display: flex;
+    flex-direction: column;
+    border: none;
+    border-radius: 8px;
+    background-color: #fff;
+    padding: 0;
+}
+
+.calendar-btn {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border: none;
+    background-color: transparent;
+    margin-top: 1rem;
+    width: 7rem;
+
+}
+
+
+.schedule-span {
+    color: rgb(0, 0, 0);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+
+.calendar-btn img {
+    width: 1.15rem;
+}
+
+.item-schedule {
+    padding: 0;
+}
+
+.cart-items-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+}
+
+.item-schedule-selector {
+    margin-top: -0.1rem;
+    padding: 0.1rem;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    z-index: 10;
+    overflow: auto;
+    max-height: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

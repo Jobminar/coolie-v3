@@ -1,0 +1,99 @@
+/* City Search Card */
+.city-search-card {
+    background-color: #ffffff;
+    border-color: #000000;
+    border-radius: 0.25rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-height: 200px;
+    width: 100%;
+    min-width: 250px;
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+.city-search-card .card-header {
+    background-color: #e9ecef;
+    border-bottom: 1px solid #dee2e6;
+    padding: 0.75rem 1rem;
+    border-radius: 0.25rem 0.25rem 0 0;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.city-search-card .header-text {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #7c7c7c;
+}
+
+/* Close Button Positioning */
+.city-search-card .close-button {
+    font-size: 1.25rem;
+    color: #6c757d;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s ease;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.city-search-card .close-button:hover {
+    color: #495057;
+}
+
+/* Scrollable Card Body */
+.city-search-card .card-body {
+    padding: 0.5rem 1rem;
+    overflow-y: auto;
+    flex-grow: 1;
+    /* Allows the body to take up remaining space and make it scrollable */
+}
+
+.city-search-card .list-group {
+    margin: 0;
+    padding: 0;
+}
+
+.city-search-card .list-group-item {
+    padding: 0.75rem 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    background-color: #ffffff;
+    transition: background-color 0.3s ease;
+    color: #858585;
+}
+
+.city-search-card .list-group-item:hover {
+    background-color: #e9ecef;
+}
+
+.city-search-card .no-results {
+    padding: 0.75rem;
+    color: #adb5bd;
+}
+
+/* Custom scrollbar styling inside card body */
+.city-search-card .card-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.city-search-card .card-body::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 4px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.city-search-card .card-body::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+}

@@ -1,0 +1,10 @@
+.user-profile-form{
+    border: 1PX solid black;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem;
+
+}

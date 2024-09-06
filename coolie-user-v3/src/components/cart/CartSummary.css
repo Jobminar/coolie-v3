@@ -1,0 +1,138 @@
+.cart-summary {
+    border-radius: 10px;
+    min-width: 360px;
+    margin: 0 auto;
+    box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em, rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
+    border: 0.065rem solid #d5d5d57b;
+    overflow: hidden;
+}
+
+/* sameer made changes */
+.cart-steps-container {
+    background-color: #fddaa6;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    padding: 10px;
+    margin-bottom: 0px;
+    font-weight: 600;
+    font-size: large;
+
+}
+
+.cart-steps {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 12px;
+    position: relative;
+    color: rgba(0, 128, 0, 0.5);
+    width: 70px;
+    /* Set a fixed width for each step */
+}
+
+.step img {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 5px;
+    background-color: transparent;
+    position: relative;
+}
+
+.step .tick-icon {
+    position: absolute;
+    top: 50%;
+    left: 80%;
+    transform: translate(-50%, -50%);
+    color: green;
+    font-size: 14px;
+    z-index: 2;
+    opacity: 0.8;
+}
+
+.step span {
+    margin-top: 5px;
+    display: block;
+    text-align: center;
+}
+
+.step.active {
+    color:
+        #d16611;
+}
+
+.step.completed img,
+.step:not(.active) img {
+    opacity: 1;
+}
+
+.step.completed,
+.step:not(.active) {
+    color: #CF0909;
+}
+
+.badge {
+    position: absolute;
+    top: -10px;
+    right: 5px;
+    background-color: white;
+    color: #CF0909;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+    border-radius: 50%;
+    padding: 2px 5px;
+    font-size: 10px;
+}
+
+.arrow-icon {
+    width: 15px;
+    height: 15px;
+    opacity: 0.5;
+}
+
+.cart-total {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.full-width {
+    width: 100%;
+}
+
+@media (min-width: 1320px) and (max-width: 1560px) {
+    .cart-summary {
+        border-radius: 10px;
+        width: 100%;
+        margin: 0 auto;
+    }
+}
+
+.step-text {
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+    text-align: center;
+}
+
+.active-text {
+    color:
+        #d16611;
+    /* Red color for active steps */
+}
+
+.inactive-text {
+    color: black;
+    /* Black color for inactive steps */
+}
+
+.completed-text {
+    color: black;
+    /* Black color for completed steps */
+}

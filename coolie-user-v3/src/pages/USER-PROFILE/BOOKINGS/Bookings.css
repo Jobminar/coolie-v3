@@ -1,0 +1,138 @@
+.order-cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 50px;
+    font-family: Roboto, sans-serif;
+}
+
+.bookings-title {
+    font-weight: 500;
+    margin-left: 3rem;
+}
+
+.order-card {
+    background-color: #fff;
+    border: 3px solid #000000;
+    border-radius: 40px;
+    padding: 15px 80px;
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-left: 5rem;
+    margin-left: 5rem;
+    margin-bottom: 3rem
+}
+
+.order-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative;
+    padding-bottom: 0px;
+    /* Ensure there's enough space for the date */
+    min-height: 60px;
+    /* Adjust based on content size */
+}
+
+.order-card-header h3 {
+    margin: 0;
+    color: #333;
+}
+
+.order-card-header .time {
+    margin: 0;
+    color: #000000;
+    font-weight: bold;
+    position: absolute;
+    top: 0;
+    right: 0;
+
+}
+
+/* .bookings-date {
+    margin: 0;
+    color: #666;
+    font-weight: bold;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: transparent;
+} */
+
+.icon {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+
+
+
+.order-card-body p {
+    font-weight: 400;
+    font-size: 2.5rem;
+    margin: 5px 0;
+    color: #000000;
+
+}
+
+.order-card-body p:last-child {
+    font-weight: 400;
+    color: #000000;
+}
+
+.order-card-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.order-card-body p {
+    margin: 0;
+    color: #555;
+}
+
+.order-card-body .pricing-details {
+    flex: 1;
+    text-align: left;
+}
+
+.order-card-body .booking-date {
+    flex: 1;
+    text-align: right;
+    font-weight: 400;
+    color: #000000;
+}
+
+#selected-time {
+    margin-top: 2rem;
+    margin-bottom: 0;
+    font-weight: 500;
+    font-size: 2.5rem;
+}
+
+#booking-day {
+    font-size: 2rem;
+    margin-bottom: 5.5rem;
+    font-weight: 450;
+}
+
+
+.pricing-details {
+    color: #000000
+}
+
+#jobs-pricing {
+    color: #000000;
+    margin-bottom: 2rem;
+    font-weight: 400;
+}
+
+#booking-name {
+    font-weight: 500;
+    font-size: 3rem;
+}

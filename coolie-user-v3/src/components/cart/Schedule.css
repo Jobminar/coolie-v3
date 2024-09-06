@@ -1,0 +1,227 @@
+.schedule-container {
+    padding: 0.9375rem;
+    /* 15px */
+    background-color: #ffffff;
+    max-width: 25rem;
+    /* 400px */
+    margin: auto;
+    border-bottom-left-radius: 0.5rem;
+    /* 8px */
+    border-bottom-right-radius: 0.5rem;
+    /* 8px */
+    border-top: 0.015rem solid #d5d5d57b;
+    /* box-shadow: rgba(50, 50, 93, 0.1) 0px 10px 20px -10px inset,
+        rgba(0, 0, 0, 0.3) 0px 10px 20px -10px inset; */
+
+    /* 1px */
+    /* box-shadow: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.1); */
+    /* 1px 2px */
+    z-index: 10;
+    /* Ensure it stays above other content */
+}
+
+.schedule-container span {
+    margin-left: 0.3rem
+}
+
+h3 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0.9375rem;
+    /* 15px */
+    font-size: 0.75rem;
+    /* 12px */
+}
+
+h3 select {
+    padding: 0.234375rem 0.46875rem;
+    /* 3.75px 7.5px */
+    font-size: 0.75rem;
+    /* 12px */
+    border-radius: 0.3125rem;
+    /* 5px */
+    border: 0.0625rem solid #ccc;
+    /* 1px */
+    background-color: #ffffff;
+    margin-right: 0.46875rem;
+    /* 7.5px */
+}
+
+.date-selector,
+.time-selector {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.9375rem;
+    /* 15px */
+}
+
+.dates {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1rem;
+    /* 7.5px */
+    width: 90%;
+    margin: 0.5rem;
+    overflow: hidden;
+    height: 3.25rem;
+    font-weight: 600;
+}
+
+.date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    padding: 0.6rem 0.49375rem;
+    /* 9.5px */
+    text-align: center;
+    background-color: #f0f0f0;
+    border-radius: 0.3125rem;
+    /* 5px */
+    cursor: pointer;
+    border: 0.0625rem solid #ccc;
+    /* 1px */
+    font-size: 0.6625rem;
+
+    /* 9px */
+}
+
+.date.active {
+    border: 0.09375rem solid #ccc;
+    /* 1.5px */
+    background-color:
+        #fff7e3;
+}
+
+.date .day {
+    font-weight: bold;
+    margin-bottom: 0.234375rem;
+    /* 3.75px */
+    font-size: 0.5625rem;
+    /* 9px */
+}
+
+.arrow-btn {
+
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    /* 7.5px */
+    border-radius: 50%;
+    font-size: 0.5625rem;
+    margin: 0;
+    /* 9px */
+}
+
+.arrow-btn:disabled {
+    background: #ddd;
+    cursor: not-allowed;
+}
+
+.time-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.46875rem;
+    /* 7.5px */
+}
+
+.time input {
+    margin-right: 0.15625rem;
+    /* 2.5px */
+}
+
+.time label {
+    font-size: 0.65rem;
+    /* 6px */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.15625rem;
+    /* 2.5px */
+    border-radius: 0.3125rem;
+    /* 5px */
+    background-color: #f0f0f0;
+    border: 0.0625rem solid #ccc;
+    /* 1px */
+    text-align: center;
+    height: 1.5rem;
+    /* Fixed height */
+    width: 5rem;
+    /* Fixed width */
+
+    /* Smooth transition for the transform */
+}
+
+.time.active {
+    background-color: transparent;
+    color: rgb(0, 0, 0);
+    border-color: rgb(0, 0, 0);
+    padding: 0;
+
+    /* Move slightly to the left (4.8px) */
+}
+
+.confirm-payment-btn {
+    background-color: #FFA226;
+    color: white;
+    border: none;
+    padding: 0.46875rem 0.9375rem;
+    /* 7.5px 15px */
+    border-radius: 0.3125rem;
+    /* 5px */
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+}
+
+.confirm-payment-btn:hover {
+    background-color: #ffaf46;
+}
+
+.time-selector label {
+    font-size: 0.65rem;
+    /* 6px */
+}
+
+.time-selector input[type="radio"] {
+    accent-color: black;
+    /* This sets the radio button's color to black */
+}
+
+
+.scheduled-date {
+    font-size: 0.75rem;
+    color: #00ff2f;
+    position: relative;
+    left: 12.5%;
+    display: none;
+}
+
+.editing-btn {
+    color: #000000;
+    background-color: transparent;
+    border: none;
+    font-size: 0.8rem;
+}
+
+
+.apply-to-all-checkbox {
+    color: #000000;
+    background-color: transparent;
+    border: none;
+    margin: 0.8rem 0.1rem;
+}
+
+.apply-to-all-checkbox span {
+    color: #000000;
+    font-size: 0.8rem;
+}
+
+.apply-to-all-checkbox input[type="checkbox"] {
+    accent-color: black;
+    /* Change the checkmark color to black */
+}

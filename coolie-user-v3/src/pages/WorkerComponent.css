@@ -1,0 +1,90 @@
+.worker-component {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    max-width: 400px;
+    margin: auto;
+    text-align: center;
+}
+
+.time-left {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.worker-details {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.worker-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.worker-name {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.worker-distance,
+.worker-rating {
+    font-size: 14px;
+    color: #555;
+}
+
+.otp-section {
+    margin-bottom: 20px;
+}
+
+.otp-label {
+    font-size: 16px;
+    margin: 10px 0;
+}
+
+.otp-inputs input {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    margin: 0 5px;
+    font-size: 18px;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.call-button,
+.message-button,
+.cancel-button {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.cancel-button {
+    background-color: red;
+    color: #fff;
+    border-radius: 5px;
+    width: auto;
+    padding: 10px 20px;
+}
+
+.cancel-button:hover {
+    background-color: darkred;
+}
+
+.call-button:hover,
+.message-button:hover {
+    background-color: #f0f0f0;
+}

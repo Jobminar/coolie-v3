@@ -1,0 +1,143 @@
+.how-it-works-main-con {
+    min-height: 10rem;
+    padding: 2rem;
+    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+    margin: 1rem 0rem;
+    padding: 0rem;
+    /* border: 1px solid black; */
+}
+
+.above-headddig {
+    font-family: Roboto Condensed;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 37.5px;
+    text-align: left;
+}
+
+.above-headddig span {
+    font-family: Roboto Condensed;
+    font-size: 32px;
+    font-weight: 300;
+    line-height: 37.5px;
+    text-align: left;
+    color: #000000;
+    opacity: 55%;
+}
+
+.how-main-flow {
+    display: grid;
+    grid-template-columns: 22% 22% 22% 22%;
+    justify-content: space-between;
+    margin: 2rem 0rem;
+    
+}
+
+.how-sub-flow{
+    /* border: 1px solid  black; */
+    min-height: 25rem;
+    border-radius: 20px;
+    padding: 1rem 0.5rem 0.5rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    display: grid;
+    grid-template-rows: 15% 35% 50%;
+    
+}
+.hone{
+background-color: #7CCC6B;
+}
+.h-i-w-i{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.how-sub-flow h1{
+    font-family: Inter;
+font-size: 24px;
+font-weight: 700;
+line-height: 29.05px;
+text-align: center;
+padding: 5px ;
+margin: 0px;
+/* border:  1px solid black; */
+}
+.how-sub-flow p{
+    font-family: Inter;
+    font-size: 16px;
+    font-style: italic;
+    font-weight: 300;
+    line-height: 19.94px;
+    text-align: center;
+    color: #292C31CC;
+    padding: 10px;
+    margin: 0px;
+
+
+}
+.how-sub-flow img{
+    padding-top: 1rem;
+    /* width: 13rem;
+    height: 15rem; */
+
+}
+.flow{
+    position: absolute;
+    top: -20px;
+    left: 42%;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #7CCC6B;
+    color: white;
+}
+.ftwo{
+    
+    background-color: #FCBC80;
+    color: white;
+    top: -20px;
+
+}
+
+.two{
+    background-color: #FFAE62;
+}
+.two img{
+    width: 10rem;
+    height: 12.5rem;
+}
+.fthree{
+    background-color: #E8A6DC;
+    color: white;
+
+}
+
+.three{
+    background-color: #D58BC8;
+}
+.ffour{
+    background-color: #FF9FA8;
+    color: white;
+
+}
+
+.four{
+    background-color: #FF808B;
+}
+
+@media (min-width:360px) and (max-width:1000px){
+    .how-main-flow {
+        display: flex;
+        flex-wrap: wrap;
+        row-gap: 2rem;
+        
+    }
+    
+}

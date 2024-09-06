@@ -1,0 +1,45 @@
+.cart-total {
+    width: 85%;
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    /* Adjusted column widths for closer spacing */
+    align-items: center;
+    padding: 15px;
+    margin: 12px;
+    grid-gap: 3rem;
+    /* anil */
+    /* Adjust the gap between columns */
+}
+
+/* anil */
+
+.cart-total-info {
+    display: flex;
+    flex-direction: column;
+    margin: 0.5rem
+}
+
+.cart-total-info h5 {
+    margin-bottom: 0;
+    color: #666
+}
+
+.cart-total-button {
+    display: flex;
+    justify-content: start;
+}
+
+.go-to-address-btn {
+    background-color: #FFA226;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    width: 100%;
+    /* Button takes 75% of the column width */
+}
+
+.go-to-address-btn:hover {
+    background-color: #D16611;
+}

@@ -1,0 +1,395 @@
+/* Container for the address section */
+.address-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top: 0.015rem solid #d5d5d57b;
+    box-sizing: border-box;
+    width: 100%;
+    margin: auto;
+    text-align: left;
+}
+
+/* Group for address radio buttons */
+.address-radio-group {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    justify-content: flex-start;
+    margin-bottom: 1px;
+    flex-wrap: nowrap;
+}
+
+.address-radio-group p {
+    color: #093ecf;
+    margin: 0;
+    padding-right: 10px;
+    font-size: 14px;
+}
+
+.address-radio-group label {
+    color: #000000;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    flex-wrap: nowrap;
+}
+
+.address-radio-group input {
+    margin-right: 5px;
+}
+
+
+.address-radio {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+/* Add new address button styling */
+.add-new-address {
+    cursor: pointer;
+    color: #565656;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.add-new-address svg {
+    margin-right: 5px;
+}
+
+/* Toggle saved addresses container */
+.toggle-saved-addresses-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0px;
+    background-color: #ffffff;
+    border-radius: 4px;
+}
+
+/* Saved Addresses title styling */
+.saved-addresses-title {
+    display: flex;
+    align-items: center;
+}
+
+.saved-addresses-title span {
+    margin-left: 5px;
+    margin-right: 0px;
+    color: #565656;
+}
+
+/* Booking type filter container */
+.booking-type-filter {
+    display: flex;
+    align-items: center;
+}
+
+/* Booking type label styling */
+.bookingType {
+    margin-left: 20px;
+    margin-right: 2px;
+    font-size: 0.85rem;
+    color: #333;
+    font-weight: 400;
+}
+
+/* Wrapper for the select dropdown */
+.select-wrapper {
+    content: "▼";
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin-left: 0;
+}
+
+/* Styling for the select dropdown */
+.filter-container {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 8px 8px;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    background-color: #fff;
+    color: #495057;
+    outline: none;
+    width: 100px;
+    font-size: 14px;
+    background-position: right 10px center;
+    background-size: 12px 8px;
+    cursor: pointer;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    margin-left: 0;
+}
+
+/* Custom dropdown arrow */
+.select-wrapper::after {
+    content: "▼";
+    /* This is the dropdown icon */
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 12px;
+    color: #6c757d;
+}
+
+/* Focus styling for the select dropdown */
+.filter-container:focus {
+    border-color: #80bdff;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Option styling within the dropdown */
+.filter-container option {
+    padding: 10px;
+    font-size: 14px;
+    color: #343a40;
+    background-color: #fff;
+    border-bottom: 1px solid #ced4da;
+}
+
+.filter-container option:hover {
+    background-color: #f8f9fa;
+    color: #212529;
+}
+
+/* Styling the scrollbar for the dropdown */
+.filter-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.filter-container::-webkit-scrollbar-thumb {
+    background-color: #ced4da;
+    border-radius: 10px;
+}
+
+.filter-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Saved addresses container styling */
+.saved-addresses-container {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    border: 3px solid #cccccc76;
+    border-radius: 5px;
+    padding: 10px;
+    background: #fff;
+}
+
+/* Styling individual saved addresses */
+.saved-address {
+    position: relative;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.saved-address p {
+    color: #6b6b6b;
+    margin: 0;
+    margin-left: 10px;
+}
+
+/* Custom styling for radio buttons */
+.saved-address input[type="radio"] {
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.saved-address-content {
+    flex-grow: 1;
+}
+
+/* Address form container styling */
+.address-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+
+/* Form row styling */
+.form-row {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+/* Input fields styling within the form */
+.address-form input {
+    flex: 1 1 10%;
+    width: 100%;
+    padding: 12px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+}
+
+.address-form input.full-width {
+    flex: 1 1 100%;
+}
+
+.address-form input:focus {
+    border-color: #0988cf;
+    outline: none;
+}
+
+/* Button group styling within the form */
+.address-button-group {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+/* Save address button styling */
+.save-address-btn {
+    cursor: pointer;
+    background-color: #039f54;
+    color: #ffffff;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 2rem;
+}
+
+.save-address-btn span {
+    margin-left: 0.5rem;
+    margin-top: 0.1rem;
+}
+
+/* Cancel address button styling */
+.cancel-address-btn {
+    cursor: pointer;
+    background-color: #e74c3c;
+    color: #ffffff;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 2rem;
+}
+
+.cancel-address-btn span {
+    margin-left: 0.5rem;
+    margin-top: 0.1rem;
+}
+
+/* Error styling for inputs */
+.input-error {
+    border-color: red;
+}
+
+/* Error message styling */
+.error-message {
+    position: absolute;
+    bottom: -15px;
+    left: 0;
+    color: red;
+    font-size: 12px;
+}
+
+/* Address totals section styling */
+.address-totals {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0;
+    padding: 0 0.1rem;
+}
+
+.address-totals-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.address-totals-info h5 {
+    margin-bottom: 0;
+    color: #666;
+}
+
+.address-totals-info p {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-top: 0.1rem;
+}
+
+/* Schedule your visit button styling */
+.go-to-address-btn {
+    background-color: #FFA226;
+    padding: 0.8rem 1.2rem;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 0.1rem;
+}
+
+.go-to-address-btn:hover {
+    background-color: #ffaa3a;
+}
+
+/* FontAwesome dropdown icon styling */
+.dropdown-icon {
+    position: absolute;
+    right: 10px;
+    pointer-events: none;
+    color: #6c757d;
+    font-size: 12px;
+    display: none;
+}
+
+/* Scrollbar styling for saved addresses container */
+.saved-addresses-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.saved-addresses-container::-webkit-scrollbar-thumb {
+    background-color: #cccccc;
+    border-radius: 10px;
+}
+
+.saved-addresses-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* delete button added by sameer */
+.delete-address-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.delete-address-icon img {
+    width: 20px;
+    height: 20px;
+}
+
+.saved-address-content {
+    margin-left: 30px;
+    margin-right: 30px;
+}
+
+.saved-address-content p {
+    margin: 0;
+    font-size: small;
+}
