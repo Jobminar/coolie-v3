@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "./LoginComponent.css";
 import googleLogo from "../assets/images/google-logo.png";
-import coolieLogo from "../assets/images/coolie-logo.png";
+import coolieLogo from "../assets/images/brand-logo.svg";
 
 const LoginComponent = ({ onLoginSuccess }) => {
   const [phone, setPhone] = useState("");
@@ -59,26 +59,35 @@ const LoginComponent = ({ onLoginSuccess }) => {
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
         />
+      </div>
+
+      {/* Show Send OTP button if OTP hasn't been sent yet */}
+      {!otpSent && (
         <button className="send-otp-button" onClick={handleSendOtp}>
           Send OTP
         </button>
-      </div>
-      {otpSent && (
-        <div className="input-group">
-          <input
-            type="number"
-            placeholder="OTP"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-            className="otp-input"
-          />
-        </div>
       )}
-      <button className="login-button" onClick={handleLogin}>
-        Login
-      </button>
 
-      {/* <p>
+      {/* Show OTP input and Login button after OTP is sent */}
+      {otpSent && (
+        <>
+          <div className="input-group">
+            <input
+              type="number"
+              placeholder="OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              className="otp-input"
+            />
+          </div>
+          <button className="login-button" onClick={handleLogin}>
+            Login
+          </button>
+        </>
+      )}
+
+      {/* 
+      <p>
         Don't have an account? <a href="/signup">signup</a>
       </p>
       <div className="oval-shaped-div">
