@@ -8,7 +8,15 @@ export const CategoryProvider = ({ children }) => {
   const [subCategoryData, setSubCategoryData] = useState(null);
   const [selectedSubCategoryId, setSelectedSubCategoryId] = useState(null);
   const [servicesData, setServicesData] = useState(null);
+  // location wise usestates
+
+  // const [locationwiseCategory, setLocationwiseCategory] = useState("");
+  // const [locationwiseSubCategory, setLocationwiseSubCategory] = useState("");
+  // const [locationwiseServices, setLocationwiseServices] = useState("");
+  // const [locationWiseData, setLocationWiseData] = useState(null); 
   const [error, setError] = useState(null);
+
+
 
   console.log(selectedCategoryId, "category id");
 
@@ -53,18 +61,18 @@ export const CategoryProvider = ({ children }) => {
   }, [selectedCategoryId]);
 
   // Log the selected subcategory ID whenever it changes
-  useEffect(() => {
-    if (selectedSubCategoryId) {
-      console.log(selectedSubCategoryId, "selected sub category id in main");
-    }
-  }, [selectedSubCategoryId]);
+  // useEffect(() => {
+  //   if (selectedSubCategoryId) {
+  //     console.log(selectedSubCategoryId, "selected sub category id in main");
+  //   }
+  // }, [selectedSubCategoryId]);
 
-  // Log the selected category ID whenever it changes
-  useEffect(() => {
-    if (selectedCategoryId) {
-      console.log(selectedCategoryId, "selected category id in main");
-    }
-  }, [selectedCategoryId]);
+  // // Log the selected category ID whenever it changes
+  // useEffect(() => {
+  //   if (selectedCategoryId) {
+  //     console.log(selectedCategoryId, "selected category id in main");
+  //   }
+  // }, [selectedCategoryId]);
 
   // Fetch services based on selected category and subcategory
   useEffect(() => {
@@ -106,6 +114,38 @@ export const CategoryProvider = ({ children }) => {
       setSelectedSubCategoryId(subCategoryData[0]._id);
     }
   }, [subCategoryData]);
+
+
+
+  // fetch new location api details
+
+  // useEffect(() => {
+  //   const fetchLocationApi = async () => {
+  //     try {
+  //       // Fetching data from the API
+  //       const response = await fetch('https://api.coolieno1.in/v1.0/core/locations/500001');
+  //       const data = await response.json();
+    
+  //       console.log(data, 'locationwise data');
+
+  //       // Destructuring the necessary fields from the data and storing them in useState
+  //       const { category, subcategory, servicename } = data;
+  //       console.log(category,'cat,subcat,service')
+  //       // Setting the useState variables with the fetched data
+  //       setLocationwiseCategory(category);
+  //       setLocationwiseSubCategory(subcategory);
+  //       setLocationwiseServices(servicename);
+        
+        
+  //     } catch (err) {
+  //       console.log("Error fetching data:", err);
+  //     }
+  //   };
+
+  //   fetchLocationApi();
+  // }, []);
+
+
 
   return (
     <CategoryContext.Provider
