@@ -25,6 +25,7 @@
     flex-direction: column;
     width: 10rem  ;
     text-align: center;
+
   
 }
 
@@ -79,7 +80,7 @@
     cursor: grab;
     scroll-behavior: smooth;
     border-radius: 10px;
-    border: 1px solid black;
+    /* border: 1px solid black; */
     margin: 1rem 0rem;
    
 }
@@ -253,7 +254,7 @@
 
 /* ------------------------------------------------->responsive<-------------------------------------------- */
 @media (min-width: 360px) and (max-width: 600px){
-/* Main Category Styles */
+
 .main-category-con {
     border-radius: 5px;
     min-height: 5rem;
@@ -312,9 +313,9 @@
     margin-top: 0.3rem;
 }
 .coveredyou-con {
-    border: 1px solid black;
+    /* border: 1px solid black; */
     max-height: inherit;
-    margin: 0.1rem;
+    margin: 0rem;
     position: relative;
     cursor: grab;
     scroll-behavior: smooth;
@@ -343,6 +344,7 @@
     background-color: #f9f9f9;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
+  
     
 }
 
@@ -374,6 +376,9 @@
     color: #ffffff;
     margin: 0.5rem 0;
 }
+
+  
+
 
 .covered-book-button {
     width: 7rem;
@@ -408,8 +413,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-bottom-right-radius: 10px;
-    border-top-right-radius: 10px;
+    border-radius: 10px;
     margin: 0px;
 }
 
@@ -575,9 +579,9 @@
     .covered-you-sub-flow {
         display: flex;
         align-items: center;
-        padding: 0rem;
+        padding-left: 0rem;
         height: 10rem;
-        width: 5rem;
+        /* width: 5rem; */
         border-radius: 10px;
         background-color: #f9f9f9;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);

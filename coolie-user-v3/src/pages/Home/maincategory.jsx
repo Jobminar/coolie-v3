@@ -128,9 +128,16 @@ const Maincategory = () => {
         },
       },
       {
-        breakpoint: 1024,
+        breakpoint: 1200,
         settings: {
           slidesToShow: 2.5,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 2.2,
           slidesToScroll: 1,
         },
       },
@@ -156,9 +163,30 @@ const Maincategory = () => {
         },
       },
       {
-        breakpoint: 500,
+        breakpoint: 630,
+        settings: {
+          slidesToShow: 1.2,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 530,
         settings: {
           slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 400,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 360,
+        settings: {
+          slidesToShow: 0.9,
           slidesToScroll: 1,
         },
       },
