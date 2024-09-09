@@ -12,7 +12,8 @@
   font-weight: 700;
   line-height: 37.5px;
   text-align: left;
-  margin: 12px;
+  margin: 0px 10px;
+  margin-bottom: 10px;
 }
 .slick-slide {
     padding: 0 19px;
