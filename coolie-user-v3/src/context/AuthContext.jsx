@@ -69,7 +69,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (userCity) {
-      sessionStorage.setItem("selectedCity", userCity);
+      // sessionStorage.setItem("selectedCity", userCity);
     }
   }, [userCity]);
 
@@ -140,7 +140,7 @@ export const AuthProvider = ({ children }) => {
         const data = await response.json();
         console.log("OTP sent successfully:", data);
         setUser({ ...userInfo, phone: data.phone });
-        sessionStorage.setItem("phone", data.phone);
+        // sessionStorage.setItem("phone", data.phone);
         toast.success("OTP sent successfully.");
       } else {
         const errorData = await response.json();
@@ -192,8 +192,8 @@ export const AuthProvider = ({ children }) => {
         const expirationTime = Date.now() + 60 * 60 * 1000;
         sessionStorage.setItem("jwtToken", data.token);
         sessionStorage.setItem("userId", data.user._id);
-        sessionStorage.setItem("expirationTime", expirationTime);
-        sessionStorage.setItem("phone", data.user.phone);
+        // sessionStorage.setItem("expirationTime", expirationTime);
+        // sessionStorage.setItem("phone", data.user.phone);
         setSessionTimeout(60 * 60 * 1000);
         setUser(data.user);
         setIsAuthenticated(true);
@@ -253,7 +253,7 @@ export const AuthProvider = ({ children }) => {
             setCaptchaVerified(isVerified);
             if (isVerified) {
               const newExpirationTime = Date.now() + 60 * 60 * 1000;
-              sessionStorage.setItem("expirationTime", newExpirationTime);
+              // sessionStorage.setItem("expirationTime", newExpirationTime);
               setSessionTimeout(60 * 60 * 1000);
               toast.success("CAPTCHA verified. Session extended.");
             }
@@ -294,8 +294,8 @@ export const AuthProvider = ({ children }) => {
 
   const updateUserLocation = async (latitude, longitude) => {
     userLocationRef.current = { latitude, longitude };
-    sessionStorage.setItem("latitude", latitude);
-    sessionStorage.setItem("longitude", longitude);
+    // sessionStorage.setItem("latitude", latitude);
+    // sessionStorage.setItem("longitude", longitude);
 
     const city = await fetchCityName(latitude, longitude);
     setUserCity(city);
@@ -318,6 +318,7 @@ export const AuthProvider = ({ children }) => {
         googleUser,
         logout,
         fetchUserInfo,
+
       }}
     >
       {children}

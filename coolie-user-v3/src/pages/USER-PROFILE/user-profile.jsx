@@ -1,23 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./user-profile.css";
 import { useNavigate } from "react-router-dom";
-import { FaSignOutAlt } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
+import { FaEdit } from "react-icons/fa"; // Import edit icon
+import { toast, Toaster } from "react-hot-toast";
 
 const Userprofile = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
-
-  // State for form fields
+  const [userId, setUserId] = useState("");
   const [formData, setFormData] = useState({
     email: "",
     name: "",
     displayName: "",
-    image: null,
+    image: "", // This will be the URL of the image or a File object
     gender: "",
     dateOfBirth: "",
     city: "",
   });
+
+  const [isEditing, setIsEditing] = useState(false);
+  const storredUserId = sessionStorage.getItem("userId");
+
+  useEffect(() => {
+    setUserId(storredUserId);
+  }, [storredUserId]);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(
+          `https://api.coolieno1.in/v1.0/users/userAuth/${userId}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setFormData({
+            email: data.email || "",
+            name: data.name || "",
+            displayName: data.displayName || "",
+            gender: data.gender || "",
+            dateOfBirth: data.dateOfBirth || "",
+            city: data.city || "",
+            image: data.image || "", // Assuming this is a URL
+          });
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    if (userId) fetchUserData();
+  }, [userId]);
 
   // Handle input change
   const handleChange = (e) => {
@@ -26,7 +58,7 @@ const Userprofile = () => {
     if (name === "image") {
       setFormData({
         ...formData,
-        image: files[0], // Get the selected file
+        image: files[0], // Update with the File object for new image
       });
     } else {
       setFormData({
@@ -36,11 +68,10 @@ const Userprofile = () => {
     }
   };
 
-  // Handle form submission
+  // Handle form submission (PUT method for full update)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Create a FormData object to handle file upload
     const formDataToSend = new FormData();
     formDataToSend.append("email", formData.email);
     formDataToSend.append("name", formData.name);
@@ -48,108 +79,150 @@ const Userprofile = () => {
     formDataToSend.append("gender", formData.gender);
     formDataToSend.append("dateOfBirth", formData.dateOfBirth);
     formDataToSend.append("city", formData.city);
-    if (formData.image) {
+    if (formData.image instanceof File) {
       formDataToSend.append("image", formData.image);
     }
 
     try {
       const response = await fetch(
-        "http://localhost:3000/v1.0/users/userAuth/66c5e36f6e882182dda05115",
+        `https://api.coolieno1.in/v1.0/users/userAuth/${userId}`,
         {
           method: "PUT",
-          body: formDataToSend, // Send the FormData object
+          body: formDataToSend,
         }
       );
 
       if (response.ok) {
-        // Handle successful response
+        const updatedData = await response.json();
+        setFormData((prevData) => ({
+          ...prevData,
+          ...updatedData,
+        }));
+        setIsEditing(false); // Exit edit mode after successful update
+        toast.success('Profile updated successfully');
         console.log("Profile updated successfully");
-        navigate("/some-page"); // Navigate to another page if necessary
       } else {
-        // Handle error
+        toast.error("Error updating profile");
         console.error("Error updating profile");
       }
     } catch (error) {
+      toast.error("Error:", error.message);
       console.error("Error:", error);
     }
   };
 
+  // Toggle edit mode
+  const toggleEditMode = () => {
+    setIsEditing(!isEditing);
+  };
+
   return (
     <>
-      <h2>User Profile</h2>
+      <Toaster /> {/* Add the Toaster component to display toast notifications */}
+      <center><h2 className="profile-head">User Profile</h2></center>
       <form onSubmit={handleSubmit} className="user-profile-form">
-        <div className="form-group">
-          <label>Email:</label>
+        <div className="profile-image">
+          <label htmlFor="file-upload" className="custom-file-upload">
+            {formData.image && typeof formData.image === "string" ? (
+              <img
+                src={formData.image}
+                alt="profile preview"
+                className="profile-preview"
+              />
+            ) : formData.image instanceof File ? (
+              <img
+                src={URL.createObjectURL(formData.image)}
+                alt="profile preview"
+                className="profile-preview"
+              />
+            ) : (
+              <div className="placeholder">Upload Image</div>
+            )}
+          </label>
           <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Enter your email"
-          />
-        </div>
-        <div className="form-group">
-          <label>Name:</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Enter your name"
-          />
-        </div>
-        <div className="form-group">
-          <label>Display Name:</label>
-          <input
-            type="text"
-            name="displayName"
-            value={formData.displayName}
-            onChange={handleChange}
-            placeholder="Enter your display name"
-          />
-        </div>
-        <div className="form-group">
-          <label>Image:</label>
-          <input
+            id="file-upload"
             type="file"
             name="image"
-            onChange={handleChange} // No need for value here
-            accept="image/*" // Restrict file type to images
+            onChange={handleChange}
+            accept="image/*"
+            style={{ display: "none" }}
           />
         </div>
-        <div className="form-group">
-          <label>Gender:</label>
-          <select
-            name="gender"
-            value={formData.gender}
-            onChange={handleChange}
-          >
-            <option value="">Select Gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="others">Others</option>
-          </select>
+
+        <div className="form-container">
+          <div className="form-group">
+            <label>Email:</label>
+            <div className="input-with-icon">
+              <input
+                type="email"
+                name="email"
+                value={formData.email || ""}
+                onChange={handleChange}
+                disabled={!isEditing}
+              />
+            </div>
+          </div>
+          <div className="form-group">
+            <label>Name:</label>
+            <div className="input-with-icon">
+              <input
+                type="text"
+                name="name"
+                value={formData.name || ""}
+                onChange={handleChange}
+                disabled={!isEditing}
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>Gender:</label>
+            <div className="input-with-icon">
+              <select
+                name="gender"
+                value={formData.gender || ""}
+                onChange={handleChange}
+                disabled={!isEditing}
+              >
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="others">Others</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>Date of Birth:</label>
+            <div className="input-with-icon">
+              <input
+                type="date"
+                name="dateOfBirth"
+                value={formData.dateOfBirth || ""}
+                onChange={handleChange}
+                disabled={!isEditing}
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>City:</label>
+            <div className="input-with-icon">
+              <input
+                type="text"
+                name="city"
+                value={formData.city || ""}
+                onChange={handleChange}
+                disabled={!isEditing}
+              />
+            </div>
+          </div>
+
+          <button type="submit" disabled={!isEditing}>Save Profile</button>
+          <button type="button" onClick={toggleEditMode} className="editprofile">
+            {isEditing ? "Cancel edit" : "Edit profile"}
+          </button>
         </div>
-        <div className="form-group">
-          <label>Date of Birth:</label>
-          <input
-            type="date"
-            name="dateOfBirth"
-            value={formData.dateOfBirth}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-group">
-          <label>City:</label>
-          <input
-            type="text"
-            name="city"
-            value={formData.city}
-            onChange={handleChange}
-            placeholder="Enter your city"
-          />
-        </div>
-        <button type="submit">Save Profile</button>
       </form>
     </>
   );

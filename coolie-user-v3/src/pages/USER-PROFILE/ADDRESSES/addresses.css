@@ -16,6 +16,15 @@
 
     
 }
+.addresses-sub-con h1{
+    padding: 1rem;
+    font-family: Inter;
+    font-size: 25px;
+    font-weight: 400;
+    line-height: 38.73px;
+    text-align: left;
+
+}
 .add-head{
     font-family: Inter;
 font-size: 32px;

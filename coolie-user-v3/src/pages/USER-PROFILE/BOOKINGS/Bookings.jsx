@@ -13,6 +13,7 @@ const Bookings = () => {
   const [username, setUsername] = useState("");
   const [selectedBooking, setSelectedBooking] = useState(null); // State to track selected booking
 
+  // fetching user details
   useEffect(() => {
     const fetchUsername = async () => {
       try {
@@ -26,6 +27,7 @@ const Bookings = () => {
       }
     };
 
+    // fetch orders by userid
     const fetchOrders = async () => {
       try {
         const response = await fetch(
@@ -33,6 +35,7 @@ const Bookings = () => {
         );
         const data = await response.json();
         setOrders(data);
+        console.log(data,'orders in booking page')
       } catch (error) {
         console.error("Error fetching orders:", error);
       }
