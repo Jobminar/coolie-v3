@@ -192,7 +192,7 @@ export const AuthProvider = ({ children }) => {
         const expirationTime = Date.now() + 60 * 60 * 1000;
         sessionStorage.setItem("jwtToken", data.token);
         sessionStorage.setItem("userId", data.user._id);
-        // sessionStorage.setItem("expirationTime", expirationTime);
+        sessionStorage.setItem("expirationTime", expirationTime);
         // sessionStorage.setItem("phone", data.user.phone);
         setSessionTimeout(60 * 60 * 1000);
         setUser(data.user);
@@ -253,7 +253,7 @@ export const AuthProvider = ({ children }) => {
             setCaptchaVerified(isVerified);
             if (isVerified) {
               const newExpirationTime = Date.now() + 60 * 60 * 1000;
-              // sessionStorage.setItem("expirationTime", newExpirationTime);
+              sessionStorage.setItem("expirationTime", newExpirationTime);
               setSessionTimeout(60 * 60 * 1000);
               toast.success("CAPTCHA verified. Session extended.");
             }

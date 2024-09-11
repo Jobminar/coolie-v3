@@ -6,12 +6,14 @@ import Ourcoreservices from "./OUR-CORE-SERVICES/our-core-services";
 import ApplianceRepair from "./Appliance-Services/ApplianceRepair";
 import "./home.css";
 import OurPopularServices from "./OurPopularServices/OurPopularServices";
+import WomenSloon from "./Women-saloon/womenSloon";
 
 const Home = () => {
   return (
     <div className="home-main">
       <Maincategory />
       <Mostbookedservices />
+      <WomenSloon/>
       <Howitworks />
       <ApplianceRepair />
       <OurPopularServices />

@@ -1,0 +1,38 @@
+.women-saloon-main-con{
+    /* border: 1px solid black; */
+    min-height: 10rem;
+    margin-bottom: 3rem;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.w-s-sub-con{
+    /* border: 1px solid black; */
+    position: relative;
+    border: none;
+ 
+}
+.w-s-sub-con:hover{
+    cursor: pointer;
+}
+.w-s-headding{
+    font-family: Inter;
+font-size: 40px;
+font-weight: 400;
+line-height: 70.4px;
+text-align: left;
+margin: 10px;
+
+}
+.w-s-sub-con p{
+    position: absolute;
+    top: 10;
+    left: 10%;
+    font-family:Inter;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 32px;
+    letter-spacing: 0.03em;
+    text-align: left;
+
+}

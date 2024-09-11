@@ -8,6 +8,7 @@ import BookingDetails from "./BookingDetails"; // Import the new component
 const Bookings = () => {
   const { userId: authUserId } = useAuth();
   const userId = authUserId || sessionStorage.getItem("userId");
+  
 
   const [orders, setOrders] = useState([]);
   const [username, setUsername] = useState("");
@@ -15,6 +16,7 @@ const Bookings = () => {
 
   // fetching user details
   useEffect(() => {
+    console.log(userId,'userid in bookings')
     const fetchUsername = async () => {
       try {
         const response = await fetch(
