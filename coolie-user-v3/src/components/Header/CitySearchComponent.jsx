@@ -2,14 +2,17 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { ListGroup, Spinner, Card, Button } from "react-bootstrap";
-import "mapbox-gl/dist/mapbox-gl.css"; // Importing Mapbox CSS
-import "./CitySearchComponent.css"; // Importing the CSS file
+import { useLocationPrice } from "../../context/LocationPriceContext"; // Import the context to send coordinates
+import "mapbox-gl/dist/mapbox-gl.css";
+import "./CitySearchComponent.css";
 
 const CitySearchComponent = ({ query, onSelect, onClose }) => {
+  const { fetchGeocodeData } = useLocationPrice(); // Use the context
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(false);
   const MAPBOX_ACCESS_TOKEN = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
+  // Fetch cities based on user query
   useEffect(() => {
     if (query.length > 2) {
       const fetchCities = async () => {
@@ -34,10 +37,12 @@ const CitySearchComponent = ({ query, onSelect, onClose }) => {
     }
   }, [query, MAPBOX_ACCESS_TOKEN]);
 
+  // Handle city click and pass coordinates to the context
   const handleCityClick = (city) => {
-    onSelect(city);
-    onClose();
-    setCities([]);
+    fetchGeocodeData(city.coordinates[1], city.coordinates[0]); // Pass lat and lng to context
+    onSelect(city); // Pass city data back to parent if needed
+    onClose(); // Close the search component
+    setCities([]); // Clear cities after selection
   };
 
   return (
@@ -79,9 +84,9 @@ const CitySearchComponent = ({ query, onSelect, onClose }) => {
 };
 
 CitySearchComponent.propTypes = {
-  query: PropTypes.string.isRequired,
-  onSelect: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
+  query: PropTypes.string.isRequired, // Search query
+  onSelect: PropTypes.func.isRequired, // Function when a city is selected
+  onClose: PropTypes.func.isRequired, // Function to close the search component
 };
 
 export default CitySearchComponent;
