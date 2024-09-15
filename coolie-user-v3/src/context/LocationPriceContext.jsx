@@ -1,9 +1,9 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast"; // Importing toast for notifications
 
 // Create the context for Location and Price
-const LocationPriceContext = createContext();
+ const LocationPriceContext = createContext();
 
 // Custom hook to use the LocationPriceContext
 export const useLocationPrice = () => useContext(LocationPriceContext);
@@ -26,6 +26,10 @@ export const LocationPriceProvider = ({ children }) => {
   // State to handle loading and error conditions
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // useEffect(()=>{
+  //   console.log(customPriceData,districtPriceData,'custom and diostrict in location context')
+  // },[customPriceData,districtPriceData])
 
   // Function to fetch geocode data based on latitude and longitude
   const fetchGeocodeData = async (lat, lng) => {

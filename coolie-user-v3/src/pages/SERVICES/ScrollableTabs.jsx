@@ -5,7 +5,7 @@ import dropdownIcon from "../../assets/images/dropdown.svg"; // Import your SVG
 import "./ScrollableTabs.css";
 
 const ScrollableTabs = () => {
-  const { categoryData, selectedCategoryId, setSelectedCategoryId, error } =
+  const { locationCat, selectedCategoryId, setSelectedCategoryId, error } =
     useContext(CategoryContext);
   const [selectedCategoryIdLocal, setSelectedCategoryIdLocal] =
     useState(selectedCategoryId);
@@ -97,11 +97,11 @@ const ScrollableTabs = () => {
     return <div>Error: {error}</div>;
   }
 
-  if (!categoryData) {
+  if (!locationCat) {
     return <div>Loading...</div>;
   }
 
-  const clonedTabs = [...categoryData, ...categoryData, ...categoryData];
+  const clonedTabs = [...locationCat, ...locationCat, ...locationCat];
 
   return (
     <div className="scrollable-tabs-wrapper">

@@ -67,7 +67,7 @@ const Footer = () => {
                         <div>
                             <p>TERMS & POLICES</p>
                             <li>Refund policy</li>
-                            <li>Privacy policy</li>
+                            <li onClick={() => navigate('/privacypolicy')}>Privacy policy</li>
                             <li>Welfare policy</li>
                             <li>Blogs</li>
                         </div>

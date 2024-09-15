@@ -7,17 +7,21 @@ import ApplianceRepair from "./Appliance-Services/ApplianceRepair";
 import "./home.css";
 import OurPopularServices from "./OurPopularServices/OurPopularServices";
 import WomenSloon from "./Women-saloon/womenSloon";
+import Mensaloon from "./Men-saloon/mensaloon";
+import Test from "./test";
 
 const Home = () => {
   return (
     <div className="home-main">
       <Maincategory />
       <Mostbookedservices />
-      <WomenSloon/>
+      {/* <WomenSloon/> */}
       <Howitworks />
       <ApplianceRepair />
+      <Mensaloon/>
       <OurPopularServices />
       {/* <Ourcoreservices /> */}
+      {/* <Test/> */}
     </div>
   );
 };

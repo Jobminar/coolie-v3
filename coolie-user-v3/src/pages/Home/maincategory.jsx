@@ -19,7 +19,7 @@ import {
 
 const Maincategory = () => {
   const navigate = useNavigate();
-  const { categoryData, setSelectedCategoryId } = useContext(CategoryContext);
+  const { categoryData ,locationCat, setSelectedCategoryId } = useContext(CategoryContext);
   const [data, setData] = useState(null);
 
   useEffect(() => {

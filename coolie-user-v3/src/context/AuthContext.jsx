@@ -299,6 +299,7 @@ export const AuthProvider = ({ children }) => {
 
     const city = await fetchCityName(latitude, longitude);
     setUserCity(city);
+    console.log(city,'cityname')
   };
 
   return (
