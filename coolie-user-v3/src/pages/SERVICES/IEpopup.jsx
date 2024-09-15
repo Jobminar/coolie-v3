@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
+import { CartContext } from "../../context/CartContext"; // Import CartContext
 import "./IEpopup.css";
 import FAQ from "./FAQ"; // Import the FAQ component
 
@@ -8,6 +9,8 @@ const IEpopup = ({ isOpen, onClose, serviceId }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [bannerImageAdded, setBannerImageAdded] = useState(false); // State to track if the banner image has been added
+
+  const { addToCart } = useContext(CartContext); // Access the addToCart function from CartContext
 
   const generateRandomColor = () => {
     const colors = [
@@ -56,9 +59,18 @@ const IEpopup = ({ isOpen, onClose, serviceId }) => {
   };
 
   const handleAddBanner = (bannerImage) => {
-    // Function to handle adding the banner image (this can be customized)
-    console.log("Banner Image Added:", bannerImage);
+    // Handle adding the banner image to the cart
+    const itemToAdd = {
+      serviceId: serviceDetails[0].serviceId._id, // Assuming serviceId exists
+      categoryId: serviceDetails[0].serviceId.categoryId, // Assuming categoryId exists
+      subCategoryId: serviceDetails[0].serviceId.subCategoryId, // Assuming subCategoryId exists
+      quantity: 1, // Default quantity
+    };
+
+    // Call addToCart from the context
+    addToCart(itemToAdd);
     setBannerImageAdded(true); // Set the state to true after adding
+    console.log("Banner Image Added:", bannerImage);
   };
 
   // Grouping service details by title and featureTitle
