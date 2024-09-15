@@ -15,11 +15,14 @@ const Services = () => {
     categoryData,
     selectedCategoryId,
     subCategoryData,
+    locationSubCat,
     selectedSubCategoryId,
     setSelectedSubCategoryId,
     servicesData,
     error,
   } = useContext(CategoryContext);
+
+
 
   const { handleCart } = useContext(CartContext);
   const { isAuthenticated } = useAuth();
@@ -60,6 +63,10 @@ const Services = () => {
     }
   }, [categoryData, selectedCategoryId]);
 
+  useEffect(()=>{
+     console.log(selectedCategoryId, servicesData,'selected subcategory id')
+  },[selectedSubCategoryId])
+
   if (error) {
     return <div className="error">Error: {error}</div>;
   }
@@ -97,33 +104,28 @@ const Services = () => {
     setSelectedServiceId(null);
   };
 
-  const displayServices = (filteredServiceData) => {
-    if (filteredServiceData && filteredServiceData.length === 0) {
+  const displayServices = (serviceData) => {
+    if (serviceData && serviceData.length === 0) {
       return (
         <div className="sub-category-service-item">
           <div className="service-content">
-            <h5>No services found for this subcategory.</h5>
+            <h5>No services found .</h5>
           </div>
         </div>
       );
-    } else if (filteredServiceData) {
-      return filteredServiceData.map((service) => {
-        const activeVariant = service.serviceVariants.find(
-          (variant) => variant.variantName === variantName,
-        );
-
-        if (!activeVariant) return null;
-
+    } else if (serviceData) {
+      console.log(serviceData,'services data in service page')
+      return serviceData.map((service) => {
+  
+        // Check if the description should be expanded for this service
         const isExpanded = descriptionVisibility[service._id];
-
+  
         return (
           <div key={service._id} className="sub-category-service-item">
             <div className="service-main-head">
               <div
                 className={`service-icon-container ${
-                  selectedSubCategoryId === service.subCategoryId._id
-                    ? "active"
-                    : ""
+                  selectedSubCategoryId === service.subCategoryId._id ? "active" : ""
                 }`}
               >
                 <img
@@ -134,16 +136,16 @@ const Services = () => {
               </div>
               <div className="service-content">
                 <h5>{service.name}</h5>
-                <div key={activeVariant._id} className="service-levels">
-                  <p>
-                    {activeVariant.min} to {activeVariant.max}{" "}
-                    {activeVariant.metric}
-                  </p>
-                  <p>
-                    &#8377; {activeVariant.price} | {activeVariant.serviceTime}{" "}
-                    mins
-                  </p>
-                </div>
+                {/* {activeVariant && (
+                  <div key={activeVariant._id} className="service-levels">
+                    <p>
+                      {activeVariant.min} to {activeVariant.max} {activeVariant.metric}
+                    </p>
+                    <p>
+                      &#8377; {activeVariant.price.normal} | {activeVariant.serviceTime} mins
+                    </p>
+                  </div>
+                )} */}
               </div>
               <div className="dropdown-con">
                 <div
@@ -157,7 +159,7 @@ const Services = () => {
                     handleAddToCart(
                       service._id,
                       service.categoryId._id,
-                      service.subCategoryId._id,
+                      service.subCategoryId._id
                     )
                   }
                 >
@@ -184,9 +186,11 @@ const Services = () => {
         );
       });
     } else {
-      return <div className="loading">No Services Available for this</div>;
+      return <div className="loading">No Services Available</div>;
     }
   };
+  
+  
 
   const filteredCategoryData = useMemo(() => {
     return categoryData
@@ -194,21 +198,21 @@ const Services = () => {
       : [];
   }, [categoryData, selectedCategoryId]);
 
-  const filteredServiceData = useMemo(() => {
-    return servicesData
-      ? servicesData.filter((service) => {
-          if (variantName) {
-            return (
-              service.subCategoryId._id === selectedSubCategoryId &&
-              service.serviceVariants.some(
-                (variant) => variant.variantName === variantName,
-              )
-            );
-          }
-          return service.subCategoryId._id === selectedSubCategoryId;
-        })
-      : [];
-  }, [servicesData, selectedSubCategoryId, variantName]);
+  // const filteredServiceData = useMemo(() => {
+  //   return servicesData
+  //     ? servicesData.filter((service) => {
+  //         if (variantName) {
+  //           return (
+  //             service.subCategoryId._id === selectedSubCategoryId &&
+  //             service.serviceVariants.some(
+  //               (variant) => variant.variantName === variantName,
+  //             )
+  //           );
+  //         }
+  //         return service.subCategoryId._id === selectedSubCategoryId;
+  //       })
+  //     : [];
+  // }, [servicesData, selectedSubCategoryId, variantName]);
 
   return (
     <div className="services">
@@ -240,8 +244,8 @@ const Services = () => {
       <div className="services-cart-display">
         <div className="subcat-services-dispaly">
           <div className="sub-category-display">
-            {subCategoryData && subCategoryData.length > 0 ? (
-              subCategoryData.map((subCat) => (
+            {locationSubCat && locationSubCat.length > 0 ? (
+              locationSubCat.map((subCat) => (
                 <div
                   key={subCat._id}
                   className={`sub-category-item ${
@@ -274,7 +278,7 @@ const Services = () => {
             )}
           </div>
           <div className="services-display">
-            {displayServices(filteredServiceData)}
+            {displayServices(servicesData)}
           </div>
         </div>
         <div className="cart">

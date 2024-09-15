@@ -8,30 +8,24 @@ export const CategoryProvider = ({ children }) => {
   const [subCategoryData, setSubCategoryData] = useState(null);
   const [selectedSubCategoryId, setSelectedSubCategoryId] = useState(null);
   const [servicesData, setServicesData] = useState(null);
-  // location wise usestates
+  const [district, setDistrict] = useState('Secunderabad');
 
-  // const [locationwiseCategory, setLocationwiseCategory] = useState("");
-  // const [locationwiseSubCategory, setLocationwiseSubCategory] = useState("");
-  // const [locationwiseServices, setLocationwiseServices] = useState("");
-  // const [locationWiseData, setLocationWiseData] = useState(null); 
+  // States for location-specific data
+  const [locationCat, setLocationCat] = useState([]);
+  const [locationSubCat, setLocationSubCat] = useState([]);
+  const [locationServices, setLocationServices] = useState([]);
+
+  const [fetchedData, setFetchedData] = useState([]);
   const [error, setError] = useState(null);
-
-
-
-  console.log(selectedCategoryId, "category id");
 
   // Fetch categories when the component mounts
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch(
-          "https://api.coolieno1.in/v1.0/core/categories",
-        );
-        // Parse the response data and set categoryData state
+        const response = await fetch("https://api.coolieno1.in/v1.0/core/categories");
         const result = await response.json();
         setCategoryData(result);
       } catch (error) {
-        // Handle any errors that occur during the fetch
         setError(error.message);
       }
     };
@@ -39,19 +33,18 @@ export const CategoryProvider = ({ children }) => {
     fetchCategories();
   }, []);
 
-  // Fetch subcategories when a category is selected
-  useEffect(() => {
+
+// fetch subbcategories data
+
+
+  useEffect(() => { 
     if (selectedCategoryId) {
       const fetchSubCategories = async () => {
         try {
-          const response = await fetch(
-            `https://api.coolieno1.in/v1.0/core/sub-categories/category/${selectedCategoryId}`,
-          );
-          // Parse the response data and set subCategoryData state
+          const response = await fetch(`https://api.coolieno1.in/v1.0/core/sub-categories/category/${selectedCategoryId}`);
           const result = await response.json();
           setSubCategoryData(result);
         } catch (error) {
-          // Handle any errors that occur during the fetch
           setError(error.message);
         }
       };
@@ -60,40 +53,17 @@ export const CategoryProvider = ({ children }) => {
     }
   }, [selectedCategoryId]);
 
-  // Log the selected subcategory ID whenever it changes
-  // useEffect(() => {
-  //   if (selectedSubCategoryId) {
-  //     console.log(selectedSubCategoryId, "selected sub category id in main");
-  //   }
-  // }, [selectedSubCategoryId]);
-
-  // // Log the selected category ID whenever it changes
-  // useEffect(() => {
-  //   if (selectedCategoryId) {
-  //     console.log(selectedCategoryId, "selected category id in main");
-  //   }
-  // }, [selectedCategoryId]);
 
   // Fetch services based on selected category and subcategory
   useEffect(() => {
     if (selectedCategoryId && selectedSubCategoryId) {
       const fetchService = async () => {
         try {
-          const response = await fetch(
-            `https://api.coolieno1.in/v1.0/core/services/filter/${selectedCategoryId}/${selectedSubCategoryId}`,
-          );
-          // Parse the response data
+          const response = await fetch(`https://api.coolieno1.in/v1.0/core/services/filter/${selectedCategoryId}/${selectedSubCategoryId}`);
           const data = await response.json();
-
-          // Set the servicesData state with the fetched services
-          setServicesData(data.data); // Assuming `data.data` contains the actual array of services
-
-          // Log the fetched service data
-          console.log(data, "service data in main context");
+          setServicesData(data);  
         } catch (err) {
-          // Handle any errors that occur during the fetch
           setError(err.message);
-          console.log(err);
         }
       };
 
@@ -101,62 +71,95 @@ export const CategoryProvider = ({ children }) => {
     }
   }, [selectedCategoryId, selectedSubCategoryId]);
 
-  // Set the first category ID as the selectedCategoryId once categoryData is fetched
+
+
+  // Fetch location data
   useEffect(() => {
-    if (categoryData && categoryData.length > 0) {
-      setSelectedCategoryId(categoryData[0]._id);
-    }
-  }, [categoryData]);
+    const fetchLocationApi = async () => {
+      try {
+        const response = await fetch(`https://api.coolieno1.in/v1.0/core/locations/district/${district}`);
+        const data = await response.json();
+        setFetchedData(data); // Store the fetched data in state
+      } catch (err) {
+        setError(err.message);
+      }
+    };
 
-  // Set the first subcategory ID as the selectedSubCategoryId once subCategoryData is fetched
+    fetchLocationApi();
+  }, [district]);
+
+  
+
+  
+  // Compare categoryData and fetchedData and store the matched categoryData in locationCat
   useEffect(() => {
-    if (subCategoryData && subCategoryData.length > 0) {
-      setSelectedSubCategoryId(subCategoryData[0]._id);
+    if (Array.isArray(categoryData) && fetchedData.length > 0) {
+      const matchedCategories = categoryData.filter(cat =>
+        fetchedData.some(fetchedRecord => fetchedRecord.category === cat.name)
+      );
+      setLocationCat(matchedCategories);
     }
-  }, [subCategoryData]);
+  }, [categoryData, fetchedData]);
 
+  // Compare subCategoryData and fetchedData and store the matched subCategoryData in locationSubCat
+  useEffect(() => {
+    if (Array.isArray(subCategoryData) && fetchedData.length > 0) {
+      // Match subcategories
+      const matchedSubCategories = subCategoryData.filter(subCat =>
+        fetchedData.some(fetchedRecord => fetchedRecord.subcategory === subCat.name)
+      );
+      setLocationSubCat(matchedSubCategories);
+    }
+  
+  }, [subCategoryData, fetchedData]);
+  
 
+  // Compare servicesData and fetchedData and store the matched servicesData in locationServices
+  useEffect(() => {
+    if (Array.isArray(servicesData) && Array.isArray(fetchedData) && fetchedData.length > 0) {
+      const matchedServices = servicesData.filter(service =>
+        fetchedData.some(fetchedRecord => {
+          // Compare both servicename and subcategory for a more specific match
+          return (
+            fetchedRecord.servicename === service.name &&
+            fetchedRecord.subcategory === service.subCategoryId.name
+          );
+        })
+      );
+  
+      // Store matched services in locationServices
+      setLocationServices(matchedServices);
+    }
+  }, [servicesData, fetchedData]);
+  
 
-  // fetch new location api details
+  // Logging the matched data
+  useEffect(() => {
+    console.log(locationCat, 'location wise category data');
+  }, [locationCat]);
 
-  // useEffect(() => {
-  //   const fetchLocationApi = async () => {
-  //     try {
-  //       // Fetching data from the API
-  //       const response = await fetch('https://api.coolieno1.in/v1.0/core/locations/500001');
-  //       const data = await response.json();
-    
-  //       console.log(data, 'locationwise data');
+  useEffect(() => {
+    console.log(locationSubCat, 'location wise sub category data');
+  }, [locationSubCat]);
 
-  //       // Destructuring the necessary fields from the data and storing them in useState
-  //       const { category, subcategory, servicename } = data;
-  //       console.log(category,'cat,subcat,service')
-  //       // Setting the useState variables with the fetched data
-  //       setLocationwiseCategory(category);
-  //       setLocationwiseSubCategory(subcategory);
-  //       setLocationwiseServices(servicename);
-        
-        
-  //     } catch (err) {
-  //       console.log("Error fetching data:", err);
-  //     }
-  //   };
-
-  //   fetchLocationApi();
-  // }, []);
-
-
+  useEffect(() => {
+    console.log(locationServices, 'location wise services data');
+  }, [locationServices]);
 
   return (
     <CategoryContext.Provider
       value={{
         categoryData,
+        locationCat,
         selectedCategoryId,
         setSelectedCategoryId,
         subCategoryData,
+        locationSubCat,
         selectedSubCategoryId,
         setSelectedSubCategoryId,
         servicesData,
+        fetchedData,
+        locationServices,
         error,
       }}
     >
