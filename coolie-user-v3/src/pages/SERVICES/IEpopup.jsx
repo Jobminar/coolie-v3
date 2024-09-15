@@ -59,21 +59,19 @@ const IEpopup = ({ isOpen, onClose, serviceId }) => {
   };
 
   const handleAddBanner = (bannerImage) => {
-    // Handle adding the banner image to the cart
     const itemToAdd = {
-      serviceId: serviceDetails[0].serviceId._id, // Assuming serviceId exists
-      categoryId: serviceDetails[0].serviceId.categoryId, // Assuming categoryId exists
-      subCategoryId: serviceDetails[0].serviceId.subCategoryId, // Assuming subCategoryId exists
-      quantity: 1, // Default quantity
+      serviceId: serviceDetails[0].serviceId._id,
+      categoryId: serviceDetails[0].serviceId.categoryId,
+      subCategoryId: serviceDetails[0].serviceId.subCategoryId,
+      quantity: 1,
     };
 
-    // Call addToCart from the context
+    // Add banner to cart
     addToCart(itemToAdd);
     setBannerImageAdded(true); // Set the state to true after adding
     console.log("Banner Image Added:", bannerImage);
   };
 
-  // Grouping service details by title and featureTitle
   const groupedDetails = serviceDetails.reduce((acc, item) => {
     const existingGroup = acc.find((group) => group.title === item.title);
     if (existingGroup) {
