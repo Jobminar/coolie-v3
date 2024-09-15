@@ -1,17 +1,17 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useRef, useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast"; // Importing toast for notifications
 
 // Create the context for Location and Price
- const LocationPriceContext = createContext();
+const LocationPriceContext = createContext();
 
 // Custom hook to use the LocationPriceContext
 export const useLocationPrice = () => useContext(LocationPriceContext);
 
 // The provider component that wraps your app and provides context values
 export const LocationPriceProvider = ({ children }) => {
-  // State for location information
-  const [location, setLocation] = useState({
+  // Use refs to store data persistently across renders
+  const locationRef = useRef({
     adminLevel3: "",
     adminLevel2: "",
     adminLevel1: "",
@@ -19,17 +19,11 @@ export const LocationPriceProvider = ({ children }) => {
     postalCode: "",
   });
 
-  // State for price data (custom and district)
-  const [customPriceData, setCustomPriceData] = useState(null);
-  const [districtPriceData, setDistrictPriceData] = useState(null);
+  const customPriceDataRef = useRef(null);
+  const districtPriceDataRef = useRef(null);
 
-  // State to handle loading and error conditions
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  // useEffect(()=>{
-  //   console.log(customPriceData,districtPriceData,'custom and diostrict in location context')
-  // },[customPriceData,districtPriceData])
 
   // Function to fetch geocode data based on latitude and longitude
   const fetchGeocodeData = async (lat, lng) => {
@@ -44,6 +38,10 @@ export const LocationPriceProvider = ({ children }) => {
       const response = await axios.get(
         `${apiUrl}?latlng=${lat},${lng}&key=${apiKey}`,
       );
+      if (!response.data.results || response.data.results.length === 0) {
+        throw new Error("No results found for the given coordinates.");
+      }
+
       const addressComponents = response.data.results[0].address_components;
 
       let extractedAdminLevel3 = "";
@@ -71,22 +69,16 @@ export const LocationPriceProvider = ({ children }) => {
         }
       });
 
-      // Update the location state with the extracted data
-      setLocation({
+      // Update locationRef with the extracted data
+      locationRef.current = {
         adminLevel3: extractedAdminLevel3 || "Not found",
         adminLevel2: extractedAdminLevel2 || "Not found",
         adminLevel1: extractedAdminLevel1 || "Not found",
         locality: extractedLocality || "Not found",
         postalCode: extractedPostalCode || "Not found",
-      });
+      };
 
-      console.log("Location updated:", {
-        adminLevel3: extractedAdminLevel3,
-        adminLevel2: extractedAdminLevel2,
-        adminLevel1: extractedAdminLevel1,
-        locality: extractedLocality,
-        postalCode: extractedPostalCode,
-      });
+      console.log("Location updated:", locationRef.current);
 
       // Fetch price data based on the extracted postal code and administrative levels
       await fetchPriceData(
@@ -94,7 +86,9 @@ export const LocationPriceProvider = ({ children }) => {
         extractedAdminLevel3,
         extractedAdminLevel2,
         extractedAdminLevel1,
+        extractedLocality,
       );
+
       setLoading(false);
       setError("");
     } catch (err) {
@@ -104,98 +98,197 @@ export const LocationPriceProvider = ({ children }) => {
     }
   };
 
-  // Function to fetch price data based on postal code or administrative areas
+  // Function to fetch price data based on postal code, administrative areas, and locality
   const fetchPriceData = async (
     postalCode,
     adminLevel3,
     adminLevel2,
     adminLevel1,
+    locality,
   ) => {
     try {
       let priceResponse;
       setLoading(true);
+      let foundPricing = false;
 
       // Fetching custom pricing data using the postal code
       if (postalCode) {
-        priceResponse = await axios.get(
-          `https://api.coolieno1.in/v1.0/core/locations/custom/${postalCode}`,
-        );
-
-        if (priceResponse.data && priceResponse.data.length > 0) {
-          setCustomPriceData(priceResponse.data); // Store custom price data
-          console.log(
-            "Custom price data found using postal code:",
-            priceResponse.data,
+        try {
+          console.log(`Fetching custom pricing for postal code: ${postalCode}`);
+          priceResponse = await axios.get(
+            `https://api.coolieno1.in/v1.0/core/locations/custom/${postalCode}`,
           );
-          toast.success("Custom pricing found for this location");
-        } else {
-          toast.error("No custom pricing for this location");
-          console.log("No custom pricing found for postal code:", postalCode);
+
+          if (priceResponse.data && priceResponse.data.length > 0) {
+            customPriceDataRef.current = priceResponse.data;
+            foundPricing = true;
+            console.log(
+              "Custom price data found using postal code:",
+              customPriceDataRef.current,
+            );
+            toast.success("Custom pricing found for this location");
+          }
+        } catch (err) {
+          if (err.response && err.response.status === 404) {
+            console.log(
+              `No custom pricing found for postal code: ${postalCode}`,
+            );
+          } else {
+            console.error(
+              `Error fetching custom pricing for postal code: ${postalCode}`,
+              err,
+            );
+            throw err;
+          }
         }
       }
 
       // Fetching district-level pricing data using adminLevel3
-      if (adminLevel3) {
-        priceResponse = await axios.get(
-          `https://api.coolieno1.in/v1.0/core/locations/district/${adminLevel3}`,
-        );
+      if (!foundPricing && adminLevel3) {
+        try {
+          console.log(
+            `Fetching district pricing for Admin Level 3: ${adminLevel3}`,
+          );
+          priceResponse = await axios.get(
+            `https://api.coolieno1.in/v1.0/core/locations/district/${adminLevel3}`,
+          );
 
-        if (priceResponse.data && priceResponse.data.length > 0) {
-          setDistrictPriceData(priceResponse.data); // Store district price data
-          console.log(
-            "District price data found using Admin Level 3:",
-            priceResponse.data,
+          if (priceResponse.data && priceResponse.data.length > 0) {
+            districtPriceDataRef.current = priceResponse.data;
+            foundPricing = true;
+            console.log(
+              "District price data found using Admin Level 3:",
+              districtPriceDataRef.current,
+            );
+            toast.success(
+              "We are currently serving here based on district pricing",
+            );
+          }
+        } catch (err) {
+          if (err.response && err.response.status === 404) {
+            console.log(
+              `No district pricing found for Admin Level 3: ${adminLevel3}`,
+            );
+          } else {
+            console.error(
+              `Error fetching district pricing for Admin Level 3: ${adminLevel3}`,
+              err,
+            );
+            throw err;
+          }
+        }
+      }
+
+      // Fetching district-level pricing data using locality (fallback to locality if adminLevel3 fails)
+      if (!foundPricing && locality) {
+        try {
+          console.log(`Fetching district pricing for locality: ${locality}`);
+          priceResponse = await axios.get(
+            `https://api.coolieno1.in/v1.0/core/locations/district/${locality}`,
           );
-          toast.success("Pricing found based on district level");
-        } else {
-          console.log(
-            "No district pricing data found for Admin Level 3:",
-            adminLevel3,
-          );
+
+          if (priceResponse.data && priceResponse.data.length > 0) {
+            districtPriceDataRef.current = priceResponse.data;
+            foundPricing = true;
+            console.log(
+              "District price data found using locality:",
+              districtPriceDataRef.current,
+            );
+            toast.success(
+              "We are currently serving here based on locality pricing",
+            );
+          }
+        } catch (err) {
+          if (err.response && err.response.status === 404) {
+            console.log(`No locality pricing found for: ${locality}`);
+          } else {
+            console.error(
+              `Error fetching locality pricing for: ${locality}`,
+              err,
+            );
+            throw err;
+          }
         }
       }
 
       // Fallback to adminLevel2 (state level) if necessary
-      if (adminLevel2) {
-        priceResponse = await axios.get(
-          `https://api.coolieno1.in/v1.0/core/locations/district/${adminLevel2}`,
-        );
+      if (!foundPricing && adminLevel2) {
+        try {
+          console.log(
+            `Fetching state pricing for Admin Level 2: ${adminLevel2}`,
+          );
+          priceResponse = await axios.get(
+            `https://api.coolieno1.in/v1.0/core/locations/district/${adminLevel2}`,
+          );
 
-        if (priceResponse.data && priceResponse.data.length > 0) {
-          setDistrictPriceData(priceResponse.data);
-          console.log(
-            "State price data found using Admin Level 2:",
-            priceResponse.data,
-          );
-          toast.success("Pricing found based on state level");
-        } else {
-          console.log(
-            "No state pricing data found for Admin Level 2:",
-            adminLevel2,
-          );
+          if (priceResponse.data && priceResponse.data.length > 0) {
+            districtPriceDataRef.current = priceResponse.data;
+            foundPricing = true;
+            console.log(
+              "State price data found using Admin Level 2:",
+              districtPriceDataRef.current,
+            );
+            toast.success(
+              "We are currently serving here based on state pricing",
+            );
+          }
+        } catch (err) {
+          if (err.response && err.response.status === 404) {
+            console.log(
+              `No state pricing found for Admin Level 2: ${adminLevel2}`,
+            );
+          } else {
+            console.error(
+              `Error fetching state pricing for Admin Level 2: ${adminLevel2}`,
+              err,
+            );
+            throw err;
+          }
         }
       }
 
       // Fallback to adminLevel1 (country level) if necessary
-      if (adminLevel1) {
-        priceResponse = await axios.get(
-          `https://api.coolieno1.in/v1.0/core/locations/district/${adminLevel1}`,
-        );
-
-        if (priceResponse.data && priceResponse.data.length > 0) {
-          setDistrictPriceData(priceResponse.data);
+      if (!foundPricing && adminLevel1) {
+        try {
           console.log(
-            "Country price data found using Admin Level 1:",
-            priceResponse.data,
+            `Fetching country pricing for Admin Level 1: ${adminLevel1}`,
           );
-          toast.success("Pricing found based on country level");
-        } else {
-          setError("No price data available for this location.");
-          setCustomPriceData(null);
-          setDistrictPriceData(null);
-          console.error("No price data available for this location");
-          toast.error("We are not serving at this location");
+          priceResponse = await axios.get(
+            `https://api.coolieno1.in/v1.0/core/locations/district/${adminLevel1}`,
+          );
+
+          if (priceResponse.data && priceResponse.data.length > 0) {
+            districtPriceDataRef.current = priceResponse.data;
+            foundPricing = true;
+            console.log(
+              "Country price data found using Admin Level 1:",
+              districtPriceDataRef.current,
+            );
+            toast.success(
+              "We are currently serving here based on country pricing",
+            );
+          }
+        } catch (err) {
+          if (err.response && err.response.status === 404) {
+            console.log(
+              `No country-level pricing data found for Admin Level 1: ${adminLevel1}`,
+            );
+          } else {
+            console.error(
+              `Error fetching country pricing for Admin Level 1: ${adminLevel1}`,
+              err,
+            );
+            throw err;
+          }
         }
+      }
+
+      // If no pricing is found at all, show a fallback message
+      if (!foundPricing) {
+        customPriceDataRef.current = null;
+        districtPriceDataRef.current = null;
+        setError("No pricing data available for this location.");
+        toast.error("We are not serving at this location");
       }
 
       setLoading(false);
@@ -210,9 +303,9 @@ export const LocationPriceProvider = ({ children }) => {
   return (
     <LocationPriceContext.Provider
       value={{
-        location,
-        customPriceData,
-        districtPriceData,
+        location: locationRef.current,
+        customPriceData: customPriceDataRef.current,
+        districtPriceData: districtPriceDataRef.current,
         loading,
         error,
         fetchGeocodeData,

@@ -12,7 +12,7 @@ import "react-confirm-alert/src/react-confirm-alert.css";
 import { toast, Toaster } from "react-hot-toast";
 import useUserLocation from "../hooks/useUserLocation";
 import CaptchaComponent from "../components/Security/CaptchaComponent";
-
+import { useLocationPrice } from "../context/LocationPriceContext";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -26,13 +26,13 @@ export const AuthProvider = ({ children }) => {
     sessionStorage.getItem("selectedCity") || null,
   );
   const userLocationRef = useRef({ latitude: null, longitude: null });
-
+  const { fetchGeocodeData } = useLocationPrice();
   const {
     location: userLocation,
     error: locationError,
     setLocation: setUserLocation,
   } = useUserLocation();
-
+  //fetching user location---------------------------------------------------
   const fetchCityName = async (latitude, longitude) => {
     try {
       const response = await fetch(
@@ -63,16 +63,32 @@ export const AuthProvider = ({ children }) => {
       fetchCityName(latitude, longitude).then((city) => {
         setUserCity(city);
         userLocationRef.current = { latitude, longitude };
+        if (latitude && longitude) {
+          fetchGeocodeData(latitude, longitude); // Send latitude and longitude to LocationPriceContext
+        }
       });
     }
-  }, [userLocation]);
+  }, [userLocation, fetchGeocodeData]);
 
   useEffect(() => {
     if (userCity) {
       // sessionStorage.setItem("selectedCity", userCity);
     }
   }, [userCity]);
+  //----------updating user lat long to location pricing
+  const updateUserLocation = async (latitude, longitude) => {
+    userLocationRef.current = { latitude, longitude };
+    // sessionStorage.setItem("latitude", latitude);
+    // sessionStorage.setItem("longitude", longitude);
 
+    const city = await fetchCityName(latitude, longitude);
+    setUserCity(city);
+    console.log(city, "cityname");
+    if (latitude && longitude) {
+      fetchGeocodeData(latitude, longitude); // Call fetchGeocodeData with the coordinates
+    }
+  };
+  //getting user profile data--------------------------------------------------------------------
   const fetchUserInfo = async (userId) => {
     try {
       const response = await fetch(
@@ -292,16 +308,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const updateUserLocation = async (latitude, longitude) => {
-    userLocationRef.current = { latitude, longitude };
-    // sessionStorage.setItem("latitude", latitude);
-    // sessionStorage.setItem("longitude", longitude);
-
-    const city = await fetchCityName(latitude, longitude);
-    setUserCity(city);
-    console.log(city,'cityname')
-  };
-
   return (
     <AuthContext.Provider
       value={{
@@ -319,7 +325,6 @@ export const AuthProvider = ({ children }) => {
         googleUser,
         logout,
         fetchUserInfo,
-
       }}
     >
       {children}

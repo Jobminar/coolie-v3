@@ -19,7 +19,8 @@ import {
 
 const Maincategory = () => {
   const navigate = useNavigate();
-  const { categoryData ,locationCat, setSelectedCategoryId } = useContext(CategoryContext);
+  const { categoryData, locationCat, setSelectedCategoryId } =
+    useContext(CategoryContext);
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -28,12 +29,23 @@ const Maincategory = () => {
     }
   }, [categoryData]);
 
+  // Handle navigation to "/services"
   const handleCategory = (id) => {
-    setSelectedCategoryId(id);
-    navigate("/services");
-    
+    const isCategoryInLocation = locationCat?.some(
+      (locCat) => locCat._id === id,
+    );
+    if (isCategoryInLocation) {
+      setSelectedCategoryId(id);
+      navigate("/services");
+    } else {
+      // Alert if category is not available in user's location
+      window.alert(
+        "Currently we are not serving in your location, we are coming soon!",
+      );
+    }
   };
 
+  // Custom arrows for the slider
   const NextArrow = (props) => {
     const { className, onClick } = props;
     return (
@@ -52,43 +64,10 @@ const Maincategory = () => {
     );
   };
 
-  // const settings = {
-  //   dots: false,
-  //   infinite: true,
-  //   speed: 500,
-  //   slidesToShow: 3,
-  //   slidesToScroll: 1,
-  //   nextArrow: <NextArrow />,
-  //   prevArrow: <PrevArrow />,
-  //   autoplay: true,
-  //   autoplaySpeed: 3000,
-  //   responsive: [
-  //     {
-  //       breakpoint: 900,
-  //       settings: {
-  //         slidesToShow: 2,
-  //         slidesToScroll: 1,
-  //       },
-  //     },
-  //     {
-  //       breakpoint: 500,
-  //       settings: {
-  //         slidesToShow: 1,
-  //         slidesToScroll: 1,
-  //       },
-  //     },
-  //     {
-  //       breakpoint: 360,
-  //       settings: {
-  //         slidesToShow: 1,
-  //         slidesToScroll: 1,
-  //       },
-  //     },
-  //   ],
-  // };
+  // Slider settings
   const settings = {
     dots: false,
-    infinite: false, // Disable infinite scroll to hide the "Next" button when reaching the end
+    infinite: false,
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,
@@ -97,104 +76,26 @@ const Maincategory = () => {
     arrows: true,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
-    // afterChange: (index) => setCurrentIndex(index), // Update current index on slide change
     responsive: [
-      {
-        breakpoint: 2000,
-        settings: {
-          slidesToShow: 4,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 1750,
-        settings: {
-          slidesToShow: 3.5,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 1500,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 1300,
-        settings: {
-          slidesToShow: 2.8,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 1200,
-        settings: {
-          slidesToShow: 2.5,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2.2,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 900,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 850,
-        settings: {
-          slidesToShow: 1.5,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 700,
-        settings: {
-          slidesToShow: 1.5,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 630,
-        settings: {
-          slidesToShow: 1.2,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 530,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 400,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 360,
-        settings: {
-          slidesToShow: 0.9,
-          slidesToScroll: 1,
-        },
-      },
+      { breakpoint: 2000, settings: { slidesToShow: 4, slidesToScroll: 1 } },
+      { breakpoint: 1750, settings: { slidesToShow: 3.5, slidesToScroll: 1 } },
+      { breakpoint: 1500, settings: { slidesToShow: 3, slidesToScroll: 1 } },
+      { breakpoint: 1300, settings: { slidesToShow: 2.8, slidesToScroll: 1 } },
+      { breakpoint: 1200, settings: { slidesToShow: 2.5, slidesToScroll: 1 } },
+      { breakpoint: 1024, settings: { slidesToShow: 2.2, slidesToScroll: 1 } },
+      { breakpoint: 900, settings: { slidesToShow: 2, slidesToScroll: 1 } },
+      { breakpoint: 850, settings: { slidesToShow: 1.5, slidesToScroll: 1 } },
+      { breakpoint: 700, settings: { slidesToShow: 1.5, slidesToScroll: 1 } },
+      { breakpoint: 630, settings: { slidesToShow: 1.2, slidesToScroll: 1 } },
+      { breakpoint: 530, settings: { slidesToShow: 1, slidesToScroll: 1 } },
+      { breakpoint: 400, settings: { slidesToShow: 1, slidesToScroll: 1 } },
+      { breakpoint: 360, settings: { slidesToShow: 0.9, slidesToScroll: 1 } },
     ],
   };
 
   return (
     <>
+      {/* Main Category Section */}
       <div className="main-category-con">
         {data &&
           data.map((item) => (
@@ -211,6 +112,7 @@ const Maincategory = () => {
           ))}
       </div>
 
+      {/* Slider Section */}
       <div className="coveredyou-con">
         <Slider {...settings}>
           <div className="covered-you-sub-flow first-sub">
@@ -232,6 +134,7 @@ const Maincategory = () => {
               <img src={coverdyou1} alt="covered you" />
             </div>
           </div>
+
           <div className="covered-you-sub-flow second-sub">
             <div className="coveredyou-content">
               <h1>
@@ -246,6 +149,7 @@ const Maincategory = () => {
               <img src={coverdyou2} alt="covered you" />
             </div>
           </div>
+
           <div className="covered-you-sub-flow third-sub">
             <div className="coveredyou-content">
               <h1>
@@ -260,6 +164,7 @@ const Maincategory = () => {
               <img src={coverdyou3} alt="covered you" />
             </div>
           </div>
+
           <div className="covered-you-sub-flow fourth-sub">
             <div className="coveredyou-content">
               <h1>
@@ -274,6 +179,7 @@ const Maincategory = () => {
               <img src={coverdyou4} alt="covered you" />
             </div>
           </div>
+
           <div className="covered-you-sub-flow fifth-sub">
             <div className="coveredyou-content">
               <h1>
@@ -288,6 +194,7 @@ const Maincategory = () => {
               <img src={coverdyou5} alt="covered you" />
             </div>
           </div>
+
           <div className="covered-you-sub-flow sixth-sub">
             <div className="coveredyou-content">
               <h1>

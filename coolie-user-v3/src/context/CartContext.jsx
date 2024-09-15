@@ -1,7 +1,5 @@
 import React, { createContext, useState, useEffect, useCallback } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { confirmAlert } from "react-confirm-alert";
-import "react-confirm-alert/src/react-confirm-alert.css";
 import { useAuth } from "./AuthContext";
 
 // Creating the Cart Context
@@ -17,18 +15,31 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
   const [cartMessage, setCartMessage] = useState("");
   const { user, isAuthenticated } = useAuth();
 
-  // Fetch cart on mount or when user/cartId changes
-  useEffect(() => {
-    if ((user && user._id) || sessionStorage.getItem("userId")) {
-      fetchCart();
-    }
-  }, [user, cartId, fetchCart]);
+  // Calculate the total price of the cart items
+  const calculateTotalPrice = useCallback((cartItems) => {
+    const total = cartItems.reduce(
+      (acc, cart) =>
+        acc +
+        (Array.isArray(cart.items) ? cart.items : []).reduce(
+          (subTotal, item) => {
+            const price = item.serviceId?.serviceVariants?.[0]?.price || 0;
+            return subTotal + price * item.quantity;
+          },
+          0,
+        ),
+      0,
+    );
+    setTotalPrice(total);
+  }, []);
 
-  // Recalculate total price and items when cartItems changes
-  useEffect(() => {
-    calculateTotalPrice(cartItems);
-    calculateTotalItems(cartItems);
-  }, [cartItems, calculateTotalPrice, calculateTotalItems]);
+  // Calculate the total number of items in the cart
+  const calculateTotalItems = useCallback((cartItems) => {
+    const total = cartItems.reduce(
+      (acc, cart) => acc + (Array.isArray(cart.items) ? cart.items.length : 0),
+      0,
+    );
+    setTotalItems(total);
+  }, []);
 
   // Fetch the user's cart
   const fetchCart = useCallback(async () => {
@@ -59,31 +70,18 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
     }
   }, [user]);
 
-  // Calculate the total price of the cart items
-  const calculateTotalPrice = useCallback((cartItems) => {
-    const total = cartItems.reduce(
-      (acc, cart) =>
-        acc +
-        (Array.isArray(cart.items) ? cart.items : []).reduce(
-          (subTotal, item) => {
-            const price = item.serviceId?.serviceVariants?.[0]?.price || 0;
-            return subTotal + price * item.quantity;
-          },
-          0,
-        ),
-      0,
-    );
-    setTotalPrice(total);
-  }, []);
+  // Fetch cart on mount or when user/cartId changes
+  useEffect(() => {
+    if ((user && user._id) || sessionStorage.getItem("userId")) {
+      fetchCart();
+    }
+  }, [user, cartId, fetchCart]);
 
-  // Calculate the total number of items in the cart
-  const calculateTotalItems = useCallback((cartItems) => {
-    const total = cartItems.reduce(
-      (acc, cart) => acc + (Array.isArray(cart.items) ? cart.items.length : 0),
-      0,
-    );
-    setTotalItems(total);
-  }, []);
+  // Recalculate total price and items when cartItems changes
+  useEffect(() => {
+    calculateTotalPrice(cartItems);
+    calculateTotalItems(cartItems);
+  }, [cartItems, calculateTotalPrice, calculateTotalItems]);
 
   // Add an item to the cart
   const addToCart = async (item) => {
@@ -134,22 +132,9 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
     await addToCart(newItem);
   };
 
-  // Remove an item from the cart with confirmation
+  // Remove an item from the cart and show a toast message
   const removeFromCart = (itemId) => {
-    confirmAlert({
-      title: "Confirm to delete",
-      message: "Are you sure you want to remove this item from the cart?",
-      buttons: [
-        {
-          label: "Yes",
-          onClick: () => setItemIdToRemove(itemId),
-        },
-        {
-          label: "No",
-          onClick: () => console.log("Delete from cart canceled"),
-        },
-      ],
-    });
+    setItemIdToRemove(itemId); // Set item to be removed
   };
 
   // Remove the item from the cart when itemIdToRemove is set
