@@ -1,12 +1,18 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { CategoryContext } from "../../context/CategoryContext";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa"; // Import icons from react-icons
-import dropdownIcon from "../../assets/images/dropdown.svg"; // Import your SVG
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import dropdownIcon from "../../assets/images/dropdown.svg";
+import { toast } from "react-hot-toast"; // Import toast
 import "./ScrollableTabs.css";
 
 const ScrollableTabs = () => {
-  const { locationCat, selectedCategoryId, setSelectedCategoryId, error } =
-    useContext(CategoryContext);
+  const {
+    categoryData,
+    locationCat,
+    selectedCategoryId,
+    setSelectedCategoryId,
+    error,
+  } = useContext(CategoryContext);
   const [selectedCategoryIdLocal, setSelectedCategoryIdLocal] =
     useState(selectedCategoryId);
   const containerRef = useRef(null);
@@ -57,7 +63,7 @@ const ScrollableTabs = () => {
       );
       if (selectedTab) {
         const tabLeftPosition = selectedTab.offsetLeft;
-        const buttonWidthWithPadding = buttonWidth + 15; // Adjust based on new padding
+        const buttonWidthWithPadding = buttonWidth + 15;
 
         // Scroll the selected tab to the start of the container
         containerRef.current.scrollTo({
@@ -69,8 +75,17 @@ const ScrollableTabs = () => {
   }, [selectedCategoryIdLocal]);
 
   const handleCategoryClick = (id) => {
-    setSelectedCategoryId(id);
-    setSelectedCategoryIdLocal(id);
+    // Check if the category is in locationCat
+    const isMatchedCategory = locationCat.some((cat) => cat._id === id);
+
+    if (isMatchedCategory) {
+      // Proceed as normal
+      setSelectedCategoryId(id);
+      setSelectedCategoryIdLocal(id);
+    } else {
+      // Show toast message
+      toast.error("We are currently not serving in your place");
+    }
   };
 
   const scrollLeft = () => {
@@ -97,12 +112,11 @@ const ScrollableTabs = () => {
     return <div>Error: {error}</div>;
   }
 
-  if (!locationCat) {
+  if (!categoryData) {
     return <div>Loading...</div>;
   }
 
-  const clonedTabs = [...locationCat, ...locationCat, ...locationCat];
-
+  // Display all categories without special styling for matched categories
   return (
     <div className="scrollable-tabs-wrapper">
       {/* Left Scroll Button */}
@@ -112,13 +126,13 @@ const ScrollableTabs = () => {
 
       {/* Scrollable Tabs Container */}
       <div className="scrollable-tabs-container" ref={containerRef}>
-        {clonedTabs.map((category, index) => (
+        {categoryData.map((category, index) => (
           <div
             key={index}
             id={`tab-${category._id}`}
             className={`scrollable-tab ${
               selectedCategoryIdLocal === category._id ? "selected" : ""
-            }`}
+            }`} // Remove 'matched' class
             onClick={() => handleCategoryClick(category._id)}
           >
             {/* Category Image */}

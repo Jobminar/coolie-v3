@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./maincategory.css";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import { CategoryContext } from "../../context/CategoryContext";
 import coverdyou1 from "../../assets/images/covered-you-1.png";
 import coverdyou2 from "../../assets/images/covered-you-2.png";
@@ -39,8 +40,8 @@ const Maincategory = () => {
       navigate("/services");
     } else {
       // Alert if category is not available in user's location
-      window.alert(
-        "Currently we are not serving in your location, we are coming soon!",
+      toast.error(
+        "We are currently not serving in your place,we are coming soon!",
       );
     }
   };

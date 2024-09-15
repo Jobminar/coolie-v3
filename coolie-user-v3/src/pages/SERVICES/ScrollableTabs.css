@@ -30,18 +30,23 @@
 
 .scrollable-tabs-container {
     display: flex;
-    overflow-x: auto; /* Allow horizontal scrolling */
-    scroll-behavior: smooth; /* Smooth scrolling behavior */
-    white-space: nowrap; /* Prevent wrapping of items to keep them in one line */
+    overflow-x: auto;
+    /* Allow horizontal scrolling */
+    scroll-behavior: smooth;
+    /* Smooth scrolling behavior */
+    white-space: nowrap;
+    /* Prevent wrapping of items to keep them in one line */
     padding: 5px 10px;
     /* border: 1px solid black; */
-    
+
     /* Hide scrollbar for WebKit browsers (Chrome, Safari) */
-    scrollbar-width: none; /* For Firefox */
+    scrollbar-width: none;
+    /* For Firefox */
 }
 
 .scrollable-tabs-container::-webkit-scrollbar {
-    display: none; /* Hide scrollbar for WebKit browsers */
+    display: none;
+    /* Hide scrollbar for WebKit browsers */
 }
 
 
@@ -143,6 +148,7 @@
     object-fit: cover;
     /* Ensures the image fits within the circle without stretching */
 }
+
 
 /* Responsive styles for small screens */
 @media (max-width: 480px) {
