@@ -6,13 +6,6 @@ export const CategoryContext = createContext();
 export const CategoryProvider = ({ children }) => {
   const { customPriceData, districtPriceData } = useLocationPrice();
 
-  // Use useRef for storing price data and persist them in localStorage
-  const customPriceDataRef = useRef(
-    JSON.parse(localStorage.getItem("customPriceData")) || null,
-  );
-  const districtPriceDataRef = useRef(
-    JSON.parse(localStorage.getItem("districtPriceData")) || null,
-  );
 
   const [categoryData, setCategoryData] = useState(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
@@ -27,27 +20,7 @@ export const CategoryProvider = ({ children }) => {
 
   const [error, setError] = useState(null);
 
-  // Update the custom and district pricing data refs when they change
-  useEffect(() => {
-    if (customPriceData) {
-      customPriceDataRef.current = customPriceData;
-      localStorage.setItem(
-        "customPriceData",
-        JSON.stringify(customPriceDataRef.current),
-      );
-    }
 
-    if (districtPriceData) {
-      districtPriceDataRef.current = districtPriceData;
-      localStorage.setItem(
-        "districtPriceData",
-        JSON.stringify(districtPriceDataRef.current),
-      );
-    }
-
-    console.log("Custom Pricing Data (Ref):", customPriceDataRef.current);
-    console.log("District Pricing Data (Ref):", districtPriceDataRef.current);
-  }, [customPriceData, districtPriceData]);
 
   // Fetch categories when the component mounts
   useEffect(() => {
@@ -104,80 +77,49 @@ export const CategoryProvider = ({ children }) => {
     }
   }, [selectedCategoryId, selectedSubCategoryId]);
 
-  // Compare categoryData with customPriceData and districtPriceData
+
+
+  // comparisions of data
+  // Compare categoryData with districtPriceData
   useEffect(() => {
-    const matchedCategories = [];
-    if (
-      categoryData &&
-      (customPriceDataRef.current || districtPriceDataRef.current)
-    ) {
-      const pricingData = [
-        ...(customPriceDataRef.current || []),
-        ...(districtPriceDataRef.current || []),
-      ];
-
-      // Match categories based on pricing data
-      categoryData.forEach((cat) => {
-        if (pricingData.some((record) => record.category === cat.name)) {
-          matchedCategories.push(cat);
-        }
-      });
-
-      setLocationCat(matchedCategories);
+    if (categoryData && districtPriceData) {
+      const matched = categoryData.filter((cat) =>
+        districtPriceData.some((record) => record.category === cat.name)
+      );
+      setLocationCat(matched); 
     }
-  }, [categoryData]);
+  }, [categoryData, districtPriceData]);
+
+
 
   // Compare subCategoryData with customPriceData and districtPriceData
   useEffect(() => {
-    const matchedSubCategories = [];
-    if (
-      subCategoryData &&
-      (customPriceDataRef.current || districtPriceDataRef.current)
-    ) {
-      const pricingData = [
-        ...(customPriceDataRef.current || []),
-        ...(districtPriceDataRef.current || []),
-      ];
+    if (subCategoryData && districtPriceData) {
+      const matched = subCategoryData.filter((subCat) =>
+        districtPriceData.some((record) => record.subcategory === subCat.name)
+      );
 
-      // Match subcategories based on pricing data
-      subCategoryData.forEach((subCat) => {
-        if (pricingData.some((record) => record.subcategory === subCat.name)) {
-          matchedSubCategories.push(subCat);
-        }
-      });
-
-      setLocationSubCat(matchedSubCategories);
+      setLocationSubCat(matched); // Store matched subcategories
     }
-  }, [subCategoryData]);
+  }, [subCategoryData, districtPriceData]);
 
   // Compare servicesData with customPriceData and districtPriceData
   useEffect(() => {
-    const matchedServices = [];
-    if (
-      servicesData &&
-      (customPriceDataRef.current || districtPriceDataRef.current)
-    ) {
-      const pricingData = [
-        ...(customPriceDataRef.current || []),
-        ...(districtPriceDataRef.current || []),
-      ];
+    if (servicesData && districtPriceData) {
+      const pricingData = [...districtPriceData]; // Use only district pricing data
 
       // Match services based on pricing data
-      servicesData.forEach((service) => {
-        if (
-          pricingData.some(
-            (record) =>
-              record.servicename === service.name &&
-              record.subcategory === service.subCategoryId.name,
-          )
-        ) {
-          matchedServices.push(service);
-        }
-      });
+      const matched = servicesData.filter((service) =>
+        pricingData.some(
+          (record) =>
+            record.servicename === service.name &&
+            record.subcategory === service.subCategoryId.name
+        )
+      );
 
-      setLocationServices(matchedServices);
+      setLocationServices(matched); // Store matched services
     }
-  }, [servicesData]);
+  }, [servicesData, districtPriceData]);
 
   // Log the matched data for debugging purposes
   useEffect(() => {

@@ -12,12 +12,13 @@ import IEpopup from "./IEpopup";
 
 const Services = () => {
   const {
-    categoryData = [], // Default empty array to prevent undefined access
+    categoryData = [], 
     selectedCategoryId,
-    locationSubCat = [], // Default empty array to prevent undefined access
+    locationSubCat = [],
+    locationServices=[], 
     selectedSubCategoryId,
     setSelectedSubCategoryId,
-    servicesData = [], // Default empty array to prevent undefined access
+    servicesData = [],
     error,
   } = useContext(CategoryContext);
 
@@ -59,10 +60,10 @@ const Services = () => {
   }, [categoryData, selectedCategoryId]);
 
   // Debugging selected category/subcategory/service data
-  useEffect(() => {
-    console.log(`Selected Category ID: ${selectedCategoryId}`);
-    console.log(`Services Data:`, servicesData);
-  }, [selectedSubCategoryId]);
+  // useEffect(() => {
+  //   console.log(`Selected Category ID: ${selectedCategoryId}`);
+  //   console.log(`Services Data:`, servicesData);
+  // }, [selectedSubCategoryId]);
 
   // Display an error message if there's an error in fetching data
   if (error) {
@@ -259,7 +260,7 @@ const Services = () => {
             )}
           </div>
           <div className="services-display">
-            {displayServices(servicesData)}
+            {displayServices(locationServices)}
           </div>
         </div>
         <div className="cart">
