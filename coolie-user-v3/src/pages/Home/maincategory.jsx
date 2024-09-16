@@ -3,6 +3,7 @@ import "./maincategory.css";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { CategoryContext } from "../../context/CategoryContext";
+import { useLocationPrice } from "../../context/LocationPriceContext"; // Importing the LocationPriceContext
 import coverdyou1 from "../../assets/images/covered-you-1.png";
 import coverdyou2 from "../../assets/images/covered-you-2.png";
 import coverdyou3 from "../../assets/images/covered-you-3.png";
@@ -20,8 +21,13 @@ import {
 
 const Maincategory = () => {
   const navigate = useNavigate();
-  const { categoryData, locationCat, setSelectedCategoryId } =
-    useContext(CategoryContext);
+
+  // Getting categoryData from CategoryContext
+  const { categoryData, setSelectedCategoryId } = useContext(CategoryContext);
+
+  // Getting matched categories from LocationPriceContext
+  const { matchedCategories = [] } = useLocationPrice();
+  console.log("matchedcategories", matchedCategories);
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -32,8 +38,8 @@ const Maincategory = () => {
 
   // Handle navigation to "/services"
   const handleCategory = (id) => {
-    const isCategoryInLocation = locationCat?.some(
-      (locCat) => locCat._id === id,
+    const isCategoryInLocation = matchedCategories?.some(
+      (matchedCat) => matchedCat._id === id,
     );
     if (isCategoryInLocation) {
       setSelectedCategoryId(id);
@@ -41,7 +47,7 @@ const Maincategory = () => {
     } else {
       // Alert if category is not available in user's location
       toast.error(
-        "We are currently not serving in your place,we are coming soon!",
+        "We are currently not serving in your place, we are coming soon!",
       );
     }
   };

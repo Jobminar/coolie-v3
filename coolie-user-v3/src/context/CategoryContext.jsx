@@ -6,7 +6,6 @@ export const CategoryContext = createContext();
 export const CategoryProvider = ({ children }) => {
   const { customPriceData, districtPriceData } = useLocationPrice();
 
-
   const [categoryData, setCategoryData] = useState(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [subCategoryData, setSubCategoryData] = useState(null);
@@ -19,8 +18,6 @@ export const CategoryProvider = ({ children }) => {
   const [locationServices, setLocationServices] = useState([]);
 
   const [error, setError] = useState(null);
-
-
 
   // Fetch categories when the component mounts
   useEffect(() => {
@@ -77,26 +74,22 @@ export const CategoryProvider = ({ children }) => {
     }
   }, [selectedCategoryId, selectedSubCategoryId]);
 
-
-
   // comparisions of data
   // Compare categoryData with districtPriceData
   useEffect(() => {
     if (categoryData && districtPriceData) {
       const matched = categoryData.filter((cat) =>
-        districtPriceData.some((record) => record.category === cat.name)
+        districtPriceData.some((record) => record.category === cat.name),
       );
-      setLocationCat(matched); 
+      setLocationCat(matched);
     }
   }, [categoryData, districtPriceData]);
-
-
 
   // Compare subCategoryData with customPriceData and districtPriceData
   useEffect(() => {
     if (subCategoryData && districtPriceData) {
       const matched = subCategoryData.filter((subCat) =>
-        districtPriceData.some((record) => record.subcategory === subCat.name)
+        districtPriceData.some((record) => record.subcategory === subCat.name),
       );
 
       setLocationSubCat(matched); // Store matched subcategories
@@ -113,8 +106,8 @@ export const CategoryProvider = ({ children }) => {
         pricingData.some(
           (record) =>
             record.servicename === service.name &&
-            record.subcategory === service.subCategoryId.name
-        )
+            record.subcategory === service.subCategoryId.name,
+        ),
       );
 
       setLocationServices(matched); // Store matched services
