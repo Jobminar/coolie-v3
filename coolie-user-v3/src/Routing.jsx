@@ -27,47 +27,53 @@ import Rewards from "./pages/USER-PROFILE/MY-REWARDS/rewards.jsx";
 import OrderTracking from "./pages/OrderTracking/OrderTracking.jsx";
 import CartPage from "./pages/CartPage.jsx";
 import { LocationPriceProvider } from "./context/LocationPriceContext.jsx";
+import ToastManager from "./components/ToastManager.jsx";
 
 const Routing = () => {
   return (
-    <LocationPriceProvider>
-      <AuthProvider>
-        <CartProvider>
-          <CategoryProvider>
-            <MessagingProvider>
-              <OrdersProvider>
-                {" "}
-                {/* Wrap your application with MessagingProvider */}
-                <Router>
-                  <Header />
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/home" element={<Home />} />
-                    <Route path="/services" element={<Services />} />
-                    <Route path="/ordertracking" element={<OrderTracking />} />
+    <ToastManager>
+      <LocationPriceProvider>
+        <AuthProvider>
+          <CartProvider>
+            <CategoryProvider>
+              <MessagingProvider>
+                <OrdersProvider>
+                  {" "}
+                  {/* Wrap your application with MessagingProvider */}
+                  <Router>
+                    <Header />
+                    <Routes>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/home" element={<Home />} />
+                      <Route path="/services" element={<Services />} />
+                      <Route
+                        path="/ordertracking"
+                        element={<OrderTracking />}
+                      />
 
-                    <Route element={<ProtectedRoute />}>
-                      <Route path="/aboutus" element={<Aboutus />} />
-                      <Route path="/workers" element={<WorkerComponent />} />
-                      <Route path="/userprofile" element={<Userprofile />} />
-                      <Route path="/addresses" element={<Addresses />} />
-                      <Route path="/bookings" element={<Bookings />} />
-                      <Route path="/wallet" element={<Wallet />} />
-                      <Route path="/invite" element={<Invite />} />
-                      <Route path="/coupons" element={<Coupons />} />
-                      <Route path="/rewards" element={<Rewards />} />
-                      <Route path="/cart" element={<CartPage />} />
-                    </Route>
-                    <Route path="*" element={<Navigate to="/" />} />
-                  </Routes>
-                  <Footer />
-                </Router>
-              </OrdersProvider>
-            </MessagingProvider>
-          </CategoryProvider>
-        </CartProvider>
-      </AuthProvider>
-    </LocationPriceProvider>
+                      <Route element={<ProtectedRoute />}>
+                        <Route path="/aboutus" element={<Aboutus />} />
+                        <Route path="/workers" element={<WorkerComponent />} />
+                        <Route path="/userprofile" element={<Userprofile />} />
+                        <Route path="/addresses" element={<Addresses />} />
+                        <Route path="/bookings" element={<Bookings />} />
+                        <Route path="/wallet" element={<Wallet />} />
+                        <Route path="/invite" element={<Invite />} />
+                        <Route path="/coupons" element={<Coupons />} />
+                        <Route path="/rewards" element={<Rewards />} />
+                        <Route path="/cart" element={<CartPage />} />
+                      </Route>
+                      <Route path="*" element={<Navigate to="/" />} />
+                    </Routes>
+                    <Footer />
+                  </Router>
+                </OrdersProvider>
+              </MessagingProvider>
+            </CategoryProvider>
+          </CartProvider>
+        </AuthProvider>
+      </LocationPriceProvider>
+    </ToastManager>
   );
 };
 
