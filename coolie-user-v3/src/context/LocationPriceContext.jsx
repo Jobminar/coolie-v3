@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useRef, useState } from "react";
 import axios from "axios";
-import { toast } from "react-hot-toast"; // Importing toast for notifications
+import { useToast } from "../context/ToastContext"; // Importing the global toast context
 
 // Create the context for Location and Price
 const LocationPriceContext = createContext();
@@ -10,6 +10,8 @@ export const useLocationPrice = () => useContext(LocationPriceContext);
 
 // The provider component that wraps your app and provides context values
 export const LocationPriceProvider = ({ children }) => {
+  const { addToast } = useToast(); // Access the global addToast function
+
   // Use refs to store data persistently across renders
   const locationRef = useRef({
     adminLevel3: "",
@@ -95,6 +97,7 @@ export const LocationPriceProvider = ({ children }) => {
       setError("Failed to fetch address data.");
       setLoading(false);
       console.error("Error fetching geocode data:", err);
+      addToast("Failed to fetch location data. Please try again.", "error"); // Use the addToast function
     }
   };
 
@@ -111,7 +114,7 @@ export const LocationPriceProvider = ({ children }) => {
       setLoading(true);
       let foundPricing = false;
 
-      // Fetching custom pricing data using the postal code
+      // Fetch custom pricing data using the postal code
       if (postalCode) {
         try {
           console.log(`Fetching custom pricing for postal code: ${postalCode}`);
@@ -126,24 +129,18 @@ export const LocationPriceProvider = ({ children }) => {
               "Custom price data found using postal code:",
               customPriceDataRef.current,
             );
-            toast.success("Custom pricing found for this location");
-          }
-        } catch (err) {
-          if (err.response && err.response.status === 404) {
+            addToast("Custom pricing found for this location", "success"); // Trigger success toast
+          } else {
             console.log(
               `No custom pricing found for postal code: ${postalCode}`,
             );
-          } else {
-            console.error(
-              `Error fetching custom pricing for postal code: ${postalCode}`,
-              err,
-            );
-            throw err;
           }
+        } catch (err) {
+          handlePricingError(err, postalCode, "custom");
         }
       }
 
-      // Fetching district-level pricing data using adminLevel3
+      // Fetch district-level pricing data using adminLevel3
       if (!foundPricing && adminLevel3) {
         try {
           console.log(
@@ -160,26 +157,21 @@ export const LocationPriceProvider = ({ children }) => {
               "District price data found using Admin Level 3:",
               districtPriceDataRef.current,
             );
-            toast.success(
+            addToast(
               "We are currently serving here based on district pricing",
+              "success",
             );
-          }
-        } catch (err) {
-          if (err.response && err.response.status === 404) {
+          } else {
             console.log(
               `No district pricing found for Admin Level 3: ${adminLevel3}`,
             );
-          } else {
-            console.error(
-              `Error fetching district pricing for Admin Level 3: ${adminLevel3}`,
-              err,
-            );
-            throw err;
           }
+        } catch (err) {
+          handlePricingError(err, adminLevel3, "district");
         }
       }
 
-      // Fetching district-level pricing data using locality (fallback to locality if adminLevel3 fails)
+      // Fallback to locality if no pricing is found using adminLevel3
       if (!foundPricing && locality) {
         try {
           console.log(`Fetching district pricing for locality: ${locality}`);
@@ -194,20 +186,15 @@ export const LocationPriceProvider = ({ children }) => {
               "District price data found using locality:",
               districtPriceDataRef.current,
             );
-            toast.success(
+            addToast(
               "We are currently serving here based on locality pricing",
+              "success",
             );
+          } else {
+            console.log(`No locality pricing found for: ${locality}`);
           }
         } catch (err) {
-          if (err.response && err.response.status === 404) {
-            console.log(`No locality pricing found for: ${locality}`);
-          } else {
-            console.error(
-              `Error fetching locality pricing for: ${locality}`,
-              err,
-            );
-            throw err;
-          }
+          handlePricingError(err, locality, "locality");
         }
       }
 
@@ -228,22 +215,17 @@ export const LocationPriceProvider = ({ children }) => {
               "State price data found using Admin Level 2:",
               districtPriceDataRef.current,
             );
-            toast.success(
+            addToast(
               "We are currently serving here based on state pricing",
+              "success",
             );
-          }
-        } catch (err) {
-          if (err.response && err.response.status === 404) {
+          } else {
             console.log(
               `No state pricing found for Admin Level 2: ${adminLevel2}`,
             );
-          } else {
-            console.error(
-              `Error fetching state pricing for Admin Level 2: ${adminLevel2}`,
-              err,
-            );
-            throw err;
           }
+        } catch (err) {
+          handlePricingError(err, adminLevel2, "state");
         }
       }
 
@@ -264,22 +246,17 @@ export const LocationPriceProvider = ({ children }) => {
               "Country price data found using Admin Level 1:",
               districtPriceDataRef.current,
             );
-            toast.success(
+            addToast(
               "We are currently serving here based on country pricing",
+              "success",
             );
-          }
-        } catch (err) {
-          if (err.response && err.response.status === 404) {
+          } else {
             console.log(
               `No country-level pricing data found for Admin Level 1: ${adminLevel1}`,
             );
-          } else {
-            console.error(
-              `Error fetching country pricing for Admin Level 1: ${adminLevel1}`,
-              err,
-            );
-            throw err;
           }
+        } catch (err) {
+          handlePricingError(err, adminLevel1, "country");
         }
       }
 
@@ -288,7 +265,7 @@ export const LocationPriceProvider = ({ children }) => {
         customPriceDataRef.current = null;
         districtPriceDataRef.current = null;
         setError("No pricing data available for this location.");
-        toast.error("We are not serving at this location");
+        addToast("We are not serving at this location", "error");
       }
 
       setLoading(false);
@@ -296,6 +273,16 @@ export const LocationPriceProvider = ({ children }) => {
       setError("Failed to fetch price data.");
       setLoading(false);
       console.error("Error fetching price data:", err);
+      addToast("Failed to fetch pricing data.", "error");
+    }
+  };
+
+  // Error handling function for pricing data fetching
+  const handlePricingError = (err, location, type) => {
+    if (err.response && err.response.status === 404) {
+      console.log(`No ${type} pricing found for: ${location}`);
+    } else {
+      console.error(`Error fetching ${type} pricing for: ${location}`, err);
     }
   };
 
