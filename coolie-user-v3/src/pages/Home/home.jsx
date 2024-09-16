@@ -8,7 +8,8 @@ import "./home.css";
 import OurPopularServices from "./OurPopularServices/OurPopularServices";
 import WomenSloon from "./Women-saloon/womenSloon";
 import Mensaloon from "./Men-saloon/mensaloon";
-import Test from "./test";
+import SpaWomen from "./Spa-women/spaWomen";
+
 
 const Home = () => {
   return (
@@ -16,12 +17,13 @@ const Home = () => {
       <Maincategory />
       <Mostbookedservices />
       <WomenSloon/>
+      <SpaWomen/>
       <Howitworks />
       <ApplianceRepair />
-      <Mensaloon/>
       <OurPopularServices />
       {/* <Ourcoreservices /> */}
       {/* <Test/> */}
+      <Mensaloon/>
     </div>
   );
 };

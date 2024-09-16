@@ -33,6 +33,8 @@ const Services = () => {
 
   const initialCategoryRef = useRef(null);
 
+
+
   // Handle UI variants and set the default variant
   useEffect(() => {
     if (categoryData.length > 0) {
@@ -60,10 +62,10 @@ const Services = () => {
   }, [categoryData, selectedCategoryId]);
 
   // Debugging selected category/subcategory/service data
-  // useEffect(() => {
-  //   console.log(`Selected Category ID: ${selectedCategoryId}`);
-  //   console.log(`Services Data:`, servicesData);
-  // }, [selectedSubCategoryId]);
+  useEffect(() => {
+    console.log(`Selected Category ID: ${selectedCategoryId}`);
+    console.log(`Services Data:`, servicesData);
+  }, [selectedSubCategoryId]);
 
   // Display an error message if there's an error in fetching data
   if (error) {
