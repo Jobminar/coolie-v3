@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useRef, useMemo } from "react";
-import ReactDOM from "react-dom"; // Ensure you import this
+import ReactDOM from "react-dom";
 import "./Services.css";
 import ScrollableTabs from "./ScrollableTabs";
 import { CategoryContext } from "../../context/CategoryContext";
@@ -12,65 +12,66 @@ import IEpopup from "./IEpopup";
 
 const Services = () => {
   const {
-    categoryData,
+    categoryData = [], // Default empty array to prevent undefined access
     selectedCategoryId,
-    subCategoryData,
-    locationSubCat,
+    locationSubCat = [], // Default empty array to prevent undefined access
     selectedSubCategoryId,
     setSelectedSubCategoryId,
-    servicesData,
+    servicesData = [], // Default empty array to prevent undefined access
     error,
   } = useContext(CategoryContext);
-
-
 
   const { handleCart } = useContext(CartContext);
   const { isAuthenticated } = useAuth();
 
   const [descriptionVisibility, setDescriptionVisibility] = useState({});
-  const [isLoginVisible, setLoginVisible] = useState(false); // State to manage login visibility
-  const [variantName, setVariantName] = useState("");
+  const [isLoginVisible, setLoginVisible] = useState(false);
+  const [variantName, setVariantName] = useState(""); // Track variant selection
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedServiceId, setSelectedServiceId] = useState(null);
 
   const initialCategoryRef = useRef(null);
 
+  // Handle UI variants and set the default variant
   useEffect(() => {
-    if (categoryData?.length > 0) {
+    if (categoryData.length > 0) {
       const initialCategory = categoryData.find(
         (item) => item._id === selectedCategoryId,
       );
-
       initialCategoryRef.current = initialCategory;
 
       if (initialCategory) {
-        const validVariants = initialCategory.uiVariant.filter(
+        const validVariants = initialCategory.uiVariant?.filter(
           (variant) => variant.toLowerCase() !== "none",
         );
 
-        if (validVariants.length > 0) {
-          setVariantName(validVariants[0]);
+        if (validVariants?.length > 0) {
+          setVariantName(validVariants[0]); // Set first valid variant
         } else {
-          setVariantName("");
+          setVariantName(""); // Default to empty if no valid variants
         }
       } else {
         console.warn(`No category found with ID: ${selectedCategoryId}`);
-        setVariantName("");
       }
     } else {
       console.warn("No category data available or the list is empty.");
-      setVariantName("");
     }
   }, [categoryData, selectedCategoryId]);
 
-  useEffect(()=>{
-     console.log(selectedCategoryId, servicesData,'selected subcategory id')
-  },[selectedSubCategoryId])
+  // Debugging selected category/subcategory/service data
+  useEffect(() => {
+    console.log(`Selected Category ID: ${selectedCategoryId}`);
+    console.log(`Services Data:`, servicesData);
+  }, [selectedSubCategoryId]);
 
+  // Display an error message if there's an error in fetching data
   if (error) {
-    return <div className="error">Error: {error}</div>;
+    return (
+      <div className="error">Error: {error.message || "An error occurred"}</div>
+    );
   }
 
+  // Toggle description visibility for services
   const toggleDescription = (serviceId) => {
     setDescriptionVisibility((prevState) => ({
       ...prevState,
@@ -78,9 +79,10 @@ const Services = () => {
     }));
   };
 
+  // Handle Add to Cart functionality with login check
   const handleAddToCart = (serviceId, categoryId, subCategoryId) => {
     if (!isAuthenticated) {
-      setLoginVisible(true); // Show login modal if the user is not authenticated
+      setLoginVisible(true); // Show login modal if not authenticated
       return;
     }
     handleCart(serviceId, categoryId, subCategoryId);
@@ -90,10 +92,12 @@ const Services = () => {
     setLoginVisible(false);
   };
 
+  // Handle variant selection
   const handleVariant = (variantname) => {
     setVariantName(variantname);
   };
 
+  // Open the service detail popup
   const handleKnowMoreClick = (serviceId) => {
     setSelectedServiceId(serviceId);
     setIsPopupOpen(true);
@@ -104,126 +108,103 @@ const Services = () => {
     setSelectedServiceId(null);
   };
 
+  // Display services based on the selected subcategory and variant
   const displayServices = (serviceData) => {
-    if (serviceData && serviceData.length === 0) {
+    if (!serviceData || serviceData.length === 0) {
       return (
         <div className="sub-category-service-item">
           <div className="service-content">
-            <h5>No services found .</h5>
+            <h5>No services found for this subcategory.</h5>
           </div>
         </div>
       );
-    } else if (serviceData) {
-      console.log(serviceData,'services data in service page')
-      return serviceData.map((service) => {
-  
-        // Check if the description should be expanded for this service
-        const isExpanded = descriptionVisibility[service._id];
-  
-        return (
-          <div key={service._id} className="sub-category-service-item">
-            <div className="service-main-head">
-              <div
-                className={`service-icon-container ${
-                  selectedSubCategoryId === service.subCategoryId._id ? "active" : ""
-                }`}
-              >
-                <img
-                  src={service.image}
-                  alt={service.subCategoryId.name}
-                  className="tab-image"
-                />
-              </div>
-              <div className="service-content">
-                <h5>{service.name}</h5>
-                {/* {activeVariant && (
-                  <div key={activeVariant._id} className="service-levels">
-                    <p>
-                      {activeVariant.min} to {activeVariant.max} {activeVariant.metric}
-                    </p>
-                    <p>
-                      &#8377; {activeVariant.price.normal} | {activeVariant.serviceTime} mins
-                    </p>
-                  </div>
-                )} */}
-              </div>
-              <div className="dropdown-con">
-                <div
-                  className="dropdown"
-                  onClick={() => toggleDescription(service._id)}
-                >
-                  <img src={dropdown} alt="dropdown" />
-                </div>
-                <button
-                  onClick={() =>
-                    handleAddToCart(
-                      service._id,
-                      service.categoryId._id,
-                      service.subCategoryId._id
-                    )
-                  }
-                >
-                  ADD
-                </button>
-              </div>
-            </div>
+    }
+
+    return serviceData.map((service) => {
+      const isExpanded = descriptionVisibility[service._id];
+
+      return (
+        <div key={service._id} className="sub-category-service-item">
+          <div className="service-main-head">
             <div
-              className="description"
-              style={{
-                display: isExpanded ? "block" : "none",
-              }}
+              className={`service-icon-container ${
+                selectedSubCategoryId === service.subCategoryId._id
+                  ? "active"
+                  : ""
+              }`}
             >
-              {service.description.length > 100
-                ? service.description.slice(0, 30) + "..."
-                : service.description}
-              {service.description.length > 30 && (
-                <button onClick={() => handleKnowMoreClick(service._id)}>
-                  Know More
-                </button>
-              )}
+              <img
+                src={service.image}
+                alt={service.subCategoryId.name}
+                className="tab-image"
+              />
+            </div>
+            <div className="service-content">
+              <h5>{service.name}</h5>
+            </div>
+            <div className="dropdown-con">
+              <div
+                className="dropdown"
+                onClick={() => toggleDescription(service._id)}
+              >
+                <img src={dropdown} alt="dropdown" />
+              </div>
+              <button
+                onClick={() =>
+                  handleAddToCart(
+                    service._id,
+                    service.categoryId._id,
+                    service.subCategoryId._id,
+                  )
+                }
+              >
+                ADD
+              </button>
             </div>
           </div>
-        );
-      });
-    } else {
-      return <div className="loading">No Services Available</div>;
-    }
+          <div
+            className="description"
+            style={{
+              display: isExpanded ? "block" : "none",
+            }}
+          >
+            {service.description.length > 100
+              ? service.description.slice(0, 30) + "..."
+              : service.description}
+            {service.description.length > 30 && (
+              <button onClick={() => handleKnowMoreClick(service._id)}>
+                Know More
+              </button>
+            )}
+          </div>
+        </div>
+      );
+    });
   };
-  
-  
 
+  // Filter category data to render UI variant buttons
   const filteredCategoryData = useMemo(() => {
-    return categoryData
-      ? categoryData.filter((item) => item._id === selectedCategoryId)
-      : [];
+    return categoryData.filter((item) => item._id === selectedCategoryId);
   }, [categoryData, selectedCategoryId]);
-
-  // const filteredServiceData = useMemo(() => {
-  //   return servicesData
-  //     ? servicesData.filter((service) => {
-  //         if (variantName) {
-  //           return (
-  //             service.subCategoryId._id === selectedSubCategoryId &&
-  //             service.serviceVariants.some(
-  //               (variant) => variant.variantName === variantName,
-  //             )
-  //           );
-  //         }
-  //         return service.subCategoryId._id === selectedSubCategoryId;
-  //       })
-  //     : [];
-  // }, [servicesData, selectedSubCategoryId, variantName]);
 
   return (
     <div className="services">
       <ScrollableTabs />
       <div>
         {filteredCategoryData.map((uiItem) => {
-          const validVariants = uiItem.uiVariant.filter(
+          const validVariants = uiItem.uiVariant?.filter(
             (variant) => variant.toLowerCase() !== "none",
           );
+
+          // If no valid variants exist, preserve the space and hide the buttons using `visibility: hidden`
           return (
-            <div key={uiItem._id} className="variant">
+            <div
+              key={uiItem._id}
+              className="variant"
+              style={{
+                visibility: validVariants?.length > 0 ? "visible" : "hidden",
+              }}
+            >
               {validVariants.length > 0 &&
                 validVariants.map((variant, index) => (
                   <div
@@ -244,7 +225,7 @@ const Services = () => {
       <div className="services-cart-display">
         <div className="subcat-services-dispaly">
           <div className="sub-category-display">
-            {locationSubCat && locationSubCat.length > 0 ? (
+            {locationSubCat.length > 0 ? (
               locationSubCat.map((subCat) => (
                 <div
                   key={subCat._id}
@@ -274,7 +255,7 @@ const Services = () => {
                 </div>
               ))
             ) : (
-              <p>No additional subcategories available.</p>
+              <p>No subcategories available for this filter.</p>
             )}
           </div>
           <div className="services-display">
