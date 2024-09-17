@@ -106,32 +106,20 @@ export const CategoryProvider = ({ children }) => {
 
 
   useEffect(() => {
-    console.log("Services Data: ", servicesData);
-    console.log("District Price Data: ", districtPriceData);
-
     if (servicesData && districtPriceData) {
-      const matched = servicesData.map((service) => {
-       
-
-        const matchedPrice = districtPriceData.find(
+      // Filter servicesData based on matching servicename and subcategory in districtPriceData
+      const matched = servicesData.filter((service) =>
+        districtPriceData.some(
           (record) =>
             record.servicename === service?.name && 
             record.subcategory === service?.subCategoryId?.name
-        );
-
-        if (matchedPrice) {
-          return {
-            service,
-            districtData: matchedPrice
-          };
-        }
-        return null;
-      }).filter(item => item !== null);
-
-      setLocationServices(matched);
+        )
+      );
+  
+      setLocationServices(matched); // Store only the matched services data
     }
-}, [servicesData, districtPriceData]);
-
+  }, [servicesData, districtPriceData]);
+  
 
 
   
