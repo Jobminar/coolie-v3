@@ -85,7 +85,8 @@ export const CategoryProvider = ({ children }) => {
             `https://api.coolieno1.in/v1.0/core/services/filter/${selectedCategoryId}/${selectedSubCategoryId}`,
           );
           const data = await response.json();
-          console.log("Services API Response:", data);
+          setServicesData(data)
+          // console.log("Services API Response:", data);
         } catch (error) {
           console.error("Error fetching services:", error);
           setError("Failed to load services.");
@@ -98,6 +99,11 @@ export const CategoryProvider = ({ children }) => {
       fetchServices();
     }
   }, [selectedCategoryId, selectedSubCategoryId]);
+
+
+  useEffect(()=>{
+    console.log(servicesData,'service data in api')
+  },[servicesData])
 
   // Match categories with pricing data
   useEffect(() => {
@@ -127,25 +133,34 @@ export const CategoryProvider = ({ children }) => {
     }
   }, [subCategoryData, districtPriceData, customPriceData]);
 
-  // Match services with pricing data
-  useEffect(() => {
-    if (servicesData.length && (districtPriceData || customPriceData)) {
-      const pricingData = [
-        ...(districtPriceData || []),
-        ...(customPriceData || []),
-      ];
 
+  // Match services with pricing data
+
+  useEffect(() => {
+    console.log(typeof(servicesData), districtPriceData, 'services and district in mat');
+  
+    // Ensure both servicesData and districtPriceData are arrays before proceeding
+    if (Array.isArray(servicesData) && Array.isArray(districtPriceData)) {
+      // Filter servicesData based on matching servicename and subcategory in districtPriceData
       const matched = servicesData.filter((service) =>
-        pricingData.some(
+        districtPriceData.some(
           (record) =>
-            record.servicename === service.name &&
-            record.subcategory === service.subCategoryId.name,
-        ),
+            record.servicename === service?.name &&
+            record.subcategory === service?.subCategoryId?.name
+        )
       );
-      console.log("Matched Services:", matched);
-      setLocationServices(matched);
+  
+      setLocationServices(matched); // Store only the matched services data
+    } else {
+      // Log an error or handle the case where data is not in the expected format
+      console.error('Expected servicesData and districtPriceData to be arrays, but received:', {
+        servicesData,
+        districtPriceData
+      });
     }
-  }, [servicesData, districtPriceData, customPriceData]);
+  }, [servicesData, districtPriceData, selectedSubCategoryId]);
+  
+  
 
   return (
     <CategoryContext.Provider

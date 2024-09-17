@@ -49,7 +49,7 @@ const Footer = () => {
                 <div className="bottom-footer">
                     <div className="first-footer">
                         <div>
-                            <p>COMPANY </p>
+                            <p> OUR COMPANY </p>
                             <li onClick={() => { navigate('/aboutus') }}>About us</li>
                             <li>Reviews</li>
                             <li>Contact us</li>

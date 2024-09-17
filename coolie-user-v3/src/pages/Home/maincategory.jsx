@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./maincategory.css";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { CategoryContext } from "../../context/CategoryContext";
-import { useLocationPrice } from "../../context/LocationPriceContext"; // Importing the LocationPriceContext
 import coverdyou1 from "../../assets/images/covered-you-1.png";
 import coverdyou2 from "../../assets/images/covered-you-2.png";
 import coverdyou3 from "../../assets/images/covered-you-3.png";
@@ -21,65 +20,28 @@ import {
 
 const Maincategory = () => {
   const navigate = useNavigate();
-
-  // Getting categoryData from CategoryContext
-  const { categoryData, setSelectedCategoryId } = useContext(CategoryContext);
-
-  // Getting district and custom price data from LocationPriceContext
-  const { districtPriceData = [], customPriceData = [] } = useLocationPrice();
-
-  // Ref to store category data to avoid unlimited reloads
-  const cachedCategoryDataRef = useRef(null);
-
-  // State to hold the current category data
+  const { categoryData, locationCat, setSelectedCategoryId } =
+    useContext(CategoryContext);
   const [data, setData] = useState(null);
 
-
-  useEffect(()=>{
-       console.log(categoryData,'categorydata')
-  },categoryData)
-
-  // Load cached data or fetch from category context
   useEffect(() => {
-    const cachedCategoryData = localStorage.getItem("categoryData");
-    if (cachedCategoryData) {
-      cachedCategoryDataRef.current = JSON.parse(cachedCategoryData);
-      setData(JSON.parse(cachedCategoryData));
-    } else if (categoryData) {
+    if (categoryData) {
       setData(categoryData);
-      cachedCategoryDataRef.current = categoryData;
-      localStorage.setItem("categoryData", JSON.stringify(categoryData));
     }
   }, [categoryData]);
 
-  // Function to check if the category is in custom or district price data
-  const isCategoryInPricingData = (categoryName) => {
-    const normalizedCategoryName = categoryName?.toLowerCase().trim();
-
-    const isInCustomPricing = customPriceData?.some(
-      (pricing) =>
-        pricing.category?.toLowerCase().trim() === normalizedCategoryName,
+  // Handle navigation to "/services"
+  const handleCategory = (id) => {
+    const isCategoryInLocation = locationCat?.some(
+      (locCat) => locCat._id === id,
     );
-
-    const isInDistrictPricing = districtPriceData?.some(
-      (pricing) =>
-        pricing.category?.toLowerCase().trim() === normalizedCategoryName,
-    );
-
-    return isInCustomPricing || isInDistrictPricing;
-  };
-
-  // Handle category click
-  const handleCategory = (id, name) => {
-    const isCategoryAvailable = isCategoryInPricingData(name);
-
-    if (isCategoryAvailable) {
+    if (isCategoryInLocation) {
       setSelectedCategoryId(id);
       navigate("/services");
     } else {
-      // Show popup or toast if category is not available in user's location
+      // Alert if category is not available in user's location
       toast.error(
-        "We are currently not serving in your place, we are coming soon!",
+        "We are currently not serving in your place,we are coming soon!",
       );
     }
   };
@@ -141,7 +103,7 @@ const Maincategory = () => {
             <div
               key={item._id}
               className="sub-cat-con"
-              onClick={() => handleCategory(item._id, item.name)}
+              onClick={() => handleCategory(item._id)}
             >
               <div className="main-cat-img">
                 <img src={item.imageKey} alt={item.name} />

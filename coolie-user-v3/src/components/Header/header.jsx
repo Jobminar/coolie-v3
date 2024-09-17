@@ -108,9 +108,9 @@ const Header = ({ children }) => {
 
   // Placeholder texts for typewriter effect in service search
   const placeholders = [
-    " Room cleaning, kitchen cleaning",
-    " Laundry, dishwashing",
-    " Gardening, pet sitting",
+    " Room cleaning",
+    " Laundry",
+    " Gardening",
   ];
   const placeholder = useTypewriter(placeholders, isTyping); // Use typewriter effect for dynamic placeholder
 
