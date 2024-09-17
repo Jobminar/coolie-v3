@@ -1,10 +1,10 @@
 import React from 'react'
 import './womenSaloon.css'
-import saloon1 from '../../../assets/images/saloon-women-1.png'
-import saloon2 from '../../../assets/images/saloon-women-2.png'
-import saloon3 from '../../../assets/images/saloon-women-3.png'
-import saloon4 from '../../../assets/images/women-saloon-4.png'
-import saloon5 from '../../../assets/images/women-saloon-5.png'
+import saloon1 from '../../../assets/images/s-1.png'
+import saloon2 from '../../../assets/images/s-2.png'
+import saloon3 from '../../../assets/images/s-3.png'
+import saloon4 from '../../../assets/images/s-4.png'
+import saloon5 from '../../../assets/images/s-5.png'
 
 const WomenSloon = () => {
   return (

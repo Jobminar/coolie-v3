@@ -1,15 +1,18 @@
 import React from 'react'
 import '../Women-saloon/womenSaloon.css'
-import saloon1 from '../../../assets/images/saloon-women-1.png'
-import saloon2 from '../../../assets/images/saloon-women-2.png'
-import saloon3 from '../../../assets/images/saloon-women-3.png'
-import saloon4 from '../../../assets/images/women-saloon-4.png'
-import saloon5 from '../../../assets/images/women-saloon-5.png'
+import saloon1 from '../../../assets/images/m-1.png'
+import saloon2 from '../../../assets/images/m-2.png'
+import saloon3 from '../../../assets/images/m-3.png'
+import saloon4 from '../../../assets/images/m-4.png'
+import saloon5 from '../../../assets/images/m-5.png'
 
 const Mensaloon = () => {
   return (
     <>
          <h2 className='w-s-headding'>Saloon for Men</h2>
+         <div>
+            
+         </div>
             <div className='women-saloon-main-con'>
                 <div className='w-s-sub-con'>
                     <p>Hair cutting & <br/> Grooming</p>
