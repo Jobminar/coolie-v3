@@ -48,7 +48,7 @@
     
 }
 .hone{
-background-color: #7CCC6B;
+background-color: #FDFFEE;
 }
 .h-i-w-i{
     display: flex;
@@ -107,7 +107,7 @@ margin: 0px;
 }
 
 .two{
-    background-color: #FFAE62;
+    background-color: #FFE5EA;
 }
 .two img{
     width: 10rem;
@@ -120,7 +120,7 @@ margin: 0px;
 }
 
 .three{
-    background-color: #D58BC8;
+    background-color: #F2FFF1;
 }
 .ffour{
     background-color: #FF9FA8;
@@ -129,7 +129,7 @@ margin: 0px;
 }
 
 .four{
-    background-color: #FF808B;
+    background-color: #FFEBEF;
 }
 
 @media (min-width:360px) and (max-width:1000px){
