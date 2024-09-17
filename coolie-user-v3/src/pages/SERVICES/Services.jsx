@@ -12,13 +12,13 @@ import IEpopup from "./IEpopup";
 
 const Services = () => {
   const {
-    categoryData = [], 
+    categoryData = [],
     selectedCategoryId,
     locationSubCat = [],
-    locationServices=[], 
+    locationServices = [],
     selectedSubCategoryId,
     setSelectedSubCategoryId,
-    servicesData = [],
+    servicesData,
     error,
   } = useContext(CategoryContext);
 
@@ -27,13 +27,11 @@ const Services = () => {
 
   const [descriptionVisibility, setDescriptionVisibility] = useState({});
   const [isLoginVisible, setLoginVisible] = useState(false);
-  const [variantName, setVariantName] = useState(""); // Track variant selection
+  const [variantName, setVariantName] = useState(""); // Track selected variant
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedServiceId, setSelectedServiceId] = useState(null);
 
   const initialCategoryRef = useRef(null);
-
-
 
   // Handle UI variants and set the default variant
   useEffect(() => {
@@ -61,18 +59,21 @@ const Services = () => {
     }
   }, [categoryData, selectedCategoryId]);
 
-  // Debugging selected category/subcategory/service data
-  useEffect(() => {
-    console.log(`Selected Category ID: ${selectedCategoryId}`);
-    console.log(`Services Data:`, servicesData);
-  }, [selectedSubCategoryId]);
+  // Filter subcategories based on the selected variant
+  const filteredSubCategories = useMemo(() => {
+    if (!locationSubCat || variantName === "") return locationSubCat;
 
-  // Display an error message if there's an error in fetching data
-  if (error) {
-    return (
-      <div className="error">Error: {error.message || "An error occurred"}</div>
+    return locationSubCat.filter(
+      (subCat) => subCat.variantName === variantName,
     );
-  }
+  }, [locationSubCat, variantName]);
+
+  // Automatically select the first subcategory when variant changes or filteredSubCategories change
+  useEffect(() => {
+    if (filteredSubCategories.length > 0) {
+      setSelectedSubCategoryId(filteredSubCategories[0]._id);
+    }
+  }, [filteredSubCategories, setSelectedSubCategoryId]);
 
   // Toggle description visibility for services
   const toggleDescription = (serviceId) => {
@@ -85,7 +86,7 @@ const Services = () => {
   // Handle Add to Cart functionality with login check
   const handleAddToCart = (serviceId, categoryId, subCategoryId) => {
     if (!isAuthenticated) {
-      setLoginVisible(true); // Show login modal if not authenticated
+      setLoginVisible(true);
       return;
     }
     handleCart(serviceId, categoryId, subCategoryId);
@@ -111,14 +112,12 @@ const Services = () => {
     setSelectedServiceId(null);
   };
 
-  // Display services based on the selected subcategory and variant
+  // Display services or error message inside "services-display" div
   const displayServices = (serviceData) => {
-    if (!serviceData || serviceData.length === 0) {
+    if (!Array.isArray(serviceData) || serviceData.length === 0) {
       return (
-        <div className="sub-category-service-item">
-          <div className="service-content">
-            <h5>No services found for this subcategory.</h5>
-          </div>
+        <div className="services-display">
+          <h5>Error: No services found for the selected subcategory.</h5>
         </div>
       );
     }
@@ -192,14 +191,15 @@ const Services = () => {
 
   return (
     <div className="services">
+      {/* Ensure ScrollableTabs always renders, even if services are not found */}
       <ScrollableTabs />
+
       <div>
         {filteredCategoryData.map((uiItem) => {
           const validVariants = uiItem.uiVariant?.filter(
             (variant) => variant.toLowerCase() !== "none",
           );
 
-          // If no valid variants exist, preserve the space and hide the buttons using `visibility: hidden`
           return (
             <div
               key={uiItem._id}
@@ -226,10 +226,10 @@ const Services = () => {
       </div>
 
       <div className="services-cart-display">
-        <div className="subcat-services-dispaly">
+        <div className="subcat-services-display">
           <div className="sub-category-display">
-            {locationSubCat.length > 0 ? (
-              locationSubCat.map((subCat) => (
+            {filteredSubCategories.length > 0 ? (
+              filteredSubCategories.map((subCat) => (
                 <div
                   key={subCat._id}
                   className={`sub-category-item ${
@@ -273,7 +273,7 @@ const Services = () => {
       <IEpopup
         isOpen={isPopupOpen}
         onClose={handleClosePopup}
-        serviceId={selectedServiceId} // Pass the selected serviceId to IEpopup
+        serviceId={selectedServiceId}
       />
 
       {isLoginVisible &&

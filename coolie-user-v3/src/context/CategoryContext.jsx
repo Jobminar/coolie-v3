@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useRef } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import { useLocationPrice } from "../context/LocationPriceContext";
 
 export const CategoryContext = createContext();
@@ -6,30 +6,39 @@ export const CategoryContext = createContext();
 export const CategoryProvider = ({ children }) => {
   const { customPriceData, districtPriceData } = useLocationPrice();
 
-  const [categoryData, setCategoryData] = useState(null);
+  const [categoryData, setCategoryData] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
-  const [subCategoryData, setSubCategoryData] = useState(null);
+  const [subCategoryData, setSubCategoryData] = useState([]);
   const [selectedSubCategoryId, setSelectedSubCategoryId] = useState(null);
-  const [servicesData, setServicesData] = useState(null);
-
-  // States for location-specific data
+  const [servicesData, setServicesData] = useState([]); // Initialize as an empty array
   const [locationCat, setLocationCat] = useState([]);
   const [locationSubCat, setLocationSubCat] = useState([]);
   const [locationServices, setLocationServices] = useState([]);
-
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false); // Loading state for better UX
 
   // Fetch categories when the component mounts
   useEffect(() => {
     const fetchCategories = async () => {
+      setLoading(true);
       try {
         const response = await fetch(
           "https://api.coolieno1.in/v1.0/core/categories",
         );
         const result = await response.json();
-        setCategoryData(result);
+        console.log("Categories API Response:", result);
+
+        if (Array.isArray(result) && result.length > 0) {
+          setCategoryData(result);
+          setSelectedCategoryId(result[0]._id); // Default to the first category
+        } else {
+          setError("No categories available.");
+        }
       } catch (error) {
-        setError(error.message);
+        console.error("Error fetching categories:", error);
+        setError("Failed to load categories.");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -40,14 +49,25 @@ export const CategoryProvider = ({ children }) => {
   useEffect(() => {
     if (selectedCategoryId) {
       const fetchSubCategories = async () => {
+        setLoading(true);
         try {
           const response = await fetch(
             `https://api.coolieno1.in/v1.0/core/sub-categories/category/${selectedCategoryId}`,
           );
           const result = await response.json();
-          setSubCategoryData(result);
+          console.log("Subcategories API Response:", result);
+
+          if (Array.isArray(result)) {
+            setSubCategoryData(result);
+          } else {
+            setSubCategoryData([]);
+            setError("No subcategories available for this category.");
+          }
         } catch (error) {
-          setError(error.message);
+          console.error("Error fetching subcategories:", error);
+          setError("Failed to load subcategories.");
+        } finally {
+          setLoading(false);
         }
       };
 
@@ -59,14 +79,19 @@ export const CategoryProvider = ({ children }) => {
   useEffect(() => {
     if (selectedCategoryId && selectedSubCategoryId) {
       const fetchServices = async () => {
+        setLoading(true);
         try {
           const response = await fetch(
             `https://api.coolieno1.in/v1.0/core/services/filter/${selectedCategoryId}/${selectedSubCategoryId}`,
           );
           const data = await response.json();
-          setServicesData(data);
+          console.log("Services API Response:", data);
         } catch (error) {
-          setError(error.message);
+          console.error("Error fetching services:", error);
+          setError("Failed to load services.");
+          setServicesData([]); // Fallback to empty array on error
+        } finally {
+          setLoading(false);
         }
       };
 
@@ -74,34 +99,42 @@ export const CategoryProvider = ({ children }) => {
     }
   }, [selectedCategoryId, selectedSubCategoryId]);
 
-  // comparisions of data
-  // Compare categoryData with districtPriceData
+  // Match categories with pricing data
   useEffect(() => {
-    if (categoryData && districtPriceData) {
-      const matched = categoryData.filter((cat) =>
-        districtPriceData.some((record) => record.category === cat.name),
+    if (categoryData.length && (districtPriceData || customPriceData)) {
+      const matched = categoryData.filter(
+        (cat) =>
+          districtPriceData?.some((record) => record.category === cat.name) ||
+          customPriceData?.some((record) => record.category === cat.name),
       );
+      console.log("Matched Categories:", matched);
       setLocationCat(matched);
     }
-  }, [categoryData, districtPriceData]);
+  }, [categoryData, districtPriceData, customPriceData]);
 
-  // Compare subCategoryData with customPriceData and districtPriceData
+  // Match subcategories with pricing data
   useEffect(() => {
-    if (subCategoryData && districtPriceData) {
-      const matched = subCategoryData.filter((subCat) =>
-        districtPriceData.some((record) => record.subcategory === subCat.name),
+    if (subCategoryData.length && (districtPriceData || customPriceData)) {
+      const matched = subCategoryData.filter(
+        (subCat) =>
+          districtPriceData?.some(
+            (record) => record.subcategory === subCat.name,
+          ) ||
+          customPriceData?.some((record) => record.subcategory === subCat.name),
       );
-
-      setLocationSubCat(matched); // Store matched subcategories
+      console.log("Matched Subcategories:", matched);
+      setLocationSubCat(matched);
     }
-  }, [subCategoryData, districtPriceData]);
+  }, [subCategoryData, districtPriceData, customPriceData]);
 
-  // Compare servicesData with customPriceData and districtPriceData
+  // Match services with pricing data
   useEffect(() => {
-    if (servicesData && districtPriceData) {
-      const pricingData = [...districtPriceData]; // Use only district pricing data
+    if (servicesData.length && (districtPriceData || customPriceData)) {
+      const pricingData = [
+        ...(districtPriceData || []),
+        ...(customPriceData || []),
+      ];
 
-      // Match services based on pricing data
       const matched = servicesData.filter((service) =>
         pricingData.some(
           (record) =>
@@ -109,23 +142,10 @@ export const CategoryProvider = ({ children }) => {
             record.subcategory === service.subCategoryId.name,
         ),
       );
-
-      setLocationServices(matched); // Store matched services
+      console.log("Matched Services:", matched);
+      setLocationServices(matched);
     }
-  }, [servicesData, districtPriceData]);
-
-  // Log the matched data for debugging purposes
-  useEffect(() => {
-    console.log("Matched Categories:", locationCat);
-  }, [locationCat]);
-
-  useEffect(() => {
-    console.log("Matched SubCategories:", locationSubCat);
-  }, [locationSubCat]);
-
-  useEffect(() => {
-    console.log("Matched Services:", locationServices);
-  }, [locationServices]);
+  }, [servicesData, districtPriceData, customPriceData]);
 
   return (
     <CategoryContext.Provider
@@ -141,6 +161,7 @@ export const CategoryProvider = ({ children }) => {
         servicesData,
         locationServices,
         error,
+        loading, // Pass loading state to handle loading indicators
       }}
     >
       {children}

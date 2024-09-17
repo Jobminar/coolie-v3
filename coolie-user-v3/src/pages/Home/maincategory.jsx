@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import "./maincategory.css";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
@@ -25,27 +25,54 @@ const Maincategory = () => {
   // Getting categoryData from CategoryContext
   const { categoryData, setSelectedCategoryId } = useContext(CategoryContext);
 
-  // Getting matched categories from LocationPriceContext
-  const { matchedCategories = [] } = useLocationPrice();
-  console.log("matchedcategories", matchedCategories);
+  // Getting district and custom price data from LocationPriceContext
+  const { districtPriceData = [], customPriceData = [] } = useLocationPrice();
+
+  // Ref to store category data to avoid unlimited reloads
+  const cachedCategoryDataRef = useRef(null);
+
+  // State to hold the current category data
   const [data, setData] = useState(null);
 
+  // Load cached data or fetch from category context
   useEffect(() => {
-    if (categoryData) {
+    const cachedCategoryData = localStorage.getItem("categoryData");
+    if (cachedCategoryData) {
+      cachedCategoryDataRef.current = JSON.parse(cachedCategoryData);
+      setData(JSON.parse(cachedCategoryData));
+    } else if (categoryData) {
       setData(categoryData);
+      cachedCategoryDataRef.current = categoryData;
+      localStorage.setItem("categoryData", JSON.stringify(categoryData));
     }
   }, [categoryData]);
 
-  // Handle navigation to "/services"
-  const handleCategory = (id) => {
-    const isCategoryInLocation = matchedCategories?.some(
-      (matchedCat) => matchedCat._id === id,
+  // Function to check if the category is in custom or district price data
+  const isCategoryInPricingData = (categoryName) => {
+    const normalizedCategoryName = categoryName?.toLowerCase().trim();
+
+    const isInCustomPricing = customPriceData?.some(
+      (pricing) =>
+        pricing.category?.toLowerCase().trim() === normalizedCategoryName,
     );
-    if (isCategoryInLocation) {
+
+    const isInDistrictPricing = districtPriceData?.some(
+      (pricing) =>
+        pricing.category?.toLowerCase().trim() === normalizedCategoryName,
+    );
+
+    return isInCustomPricing || isInDistrictPricing;
+  };
+
+  // Handle category click
+  const handleCategory = (id, name) => {
+    const isCategoryAvailable = isCategoryInPricingData(name);
+
+    if (isCategoryAvailable) {
       setSelectedCategoryId(id);
       navigate("/services");
     } else {
-      // Alert if category is not available in user's location
+      // Show popup or toast if category is not available in user's location
       toast.error(
         "We are currently not serving in your place, we are coming soon!",
       );
@@ -109,7 +136,7 @@ const Maincategory = () => {
             <div
               key={item._id}
               className="sub-cat-con"
-              onClick={() => handleCategory(item._id)}
+              onClick={() => handleCategory(item._id, item.name)}
             >
               <div className="main-cat-img">
                 <img src={item.imageKey} alt={item.name} />

@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-   
+
 }
 
 .services-cart-display {
@@ -24,19 +24,21 @@
     border-radius: 10px;
     /* border: 1px solid black; */
 }
+
 .sub-category-display {
     display: flex;
     flex-direction: column;
     /* border: 1px solid black;2 */
     max-height: 500px;
     overflow-y: auto;
-    
-    
+
+
 }
 
 /* For WebKit browsers (Chrome, Safari) */
 .sub-category-display::-webkit-scrollbar {
-    width: 8px; /* Set the scrollbar width to 1px */
+    width: 8px;
+    /* Set the scrollbar width to 1px */
 }
 
 .sub-category-display::-webkit-scrollbar-thumb {
@@ -46,9 +48,11 @@
 }
 
 .sub-category-display::-webkit-scrollbar-track {
-    background: #f1f1f1; /* Optional: Track color */
+    background: #f1f1f1;
+    /* Optional: Track color */
     border-radius: 10px;
 }
+
 .sub-category-display::-webkit-scrollbar-thumb:hover {
     background-color: #555;
 }
@@ -95,7 +99,7 @@
     color: #0a0a0a;
 }
 
-.subcat-services-dispaly {
+.subcat-services-display {
     display: grid;
     grid-template-columns: 45% 55%;
     /* border: 1px solid black; */
@@ -108,31 +112,40 @@
     border-radius: 0px 10px 10px 10px;
     display: flex;
     flex-direction: column;
-    justify-content: top; /* Note: 'start' is the better value here */
+    justify-content: top;
+    /* Note: 'start' is the better value here */
     align-items: center;
     border: 1px solid rgba(0, 0, 0, 0.1);
-    max-height: 500px; /* Set your desired max-height */
-    overflow-y: auto; /* Enable vertical scrolling */
+    max-height: 500px;
+    /* Set your desired max-height */
+    overflow-y: auto;
+    /* Enable vertical scrolling */
 }
 
 /* For WebKit browsers (Chrome, Safari) */
 .services-display::-webkit-scrollbar {
-    width: 2px; /* Customize scrollbar width */
+    width: 2px;
+    /* Customize scrollbar width */
 }
 
 .services-display::-webkit-scrollbar-thumb {
-    background-color: darkgrey; /* Scrollbar thumb color */
-    border-radius: 10px; /* Round scrollbar edges */
+    background-color: darkgrey;
+    /* Scrollbar thumb color */
+    border-radius: 10px;
+    /* Round scrollbar edges */
 }
 
 .services-display::-webkit-scrollbar-track {
-    background: #f1f1f1; /* Scrollbar track color */
+    background: #f1f1f1;
+    /* Scrollbar track color */
 }
 
 /* For Firefox */
 .services-display {
-    scrollbar-width: thin; /* Thin scrollbar for Firefox */
-    scrollbar-color: darkgrey #f1f1f1; /* Custom scrollbar and track color for Firefox */
+    scrollbar-width: thin;
+    /* Thin scrollbar for Firefox */
+    scrollbar-color: darkgrey #f1f1f1;
+    /* Custom scrollbar and track color for Firefox */
 }
 
 
@@ -231,7 +244,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    
+
 }
 
 .service-levels {
@@ -339,7 +352,7 @@
     text-align: center;
     background-color: #FFF7E3;
     color: black;
-   
+
 }
 
 .ui-variant-item:hover {
@@ -419,16 +432,17 @@
         margin-bottom: 1rem;
         /* border: 1PX solid black; */
     }
+
     .sub-category-display {
         display: flex;
         flex-direction: column;
         /* border: 1px olid black;2 */
         max-height: 300px;
         overflow-y: auto;
-        
-        
+
+
     }
-    
+
 
     .sub-category-item {
         /* border: 1px solid black; */
@@ -453,6 +467,7 @@
         width: 95%;
         min-height: 3rem;
     }
+
     .sub-category-item p {
         font-family: Roboto;
         font-size: 10px;
@@ -476,29 +491,34 @@
         padding: 0.1rem;
         text-align: center;
     }
+
     .services-display {
         background-color: rgba(255, 247, 227, 0.16);
         border-radius: 0px 10px 10px 10px;
         display: flex;
         flex-direction: column;
-        justify-content: top; /* Note: 'start' is the better value here */
+        justify-content: top;
+        /* Note: 'start' is the better value here */
         align-items: center;
         border: 1px solid rgba(0, 0, 0, 0.1);
-        max-height: 300px; /* Set your desired max-height */
-        overflow-y: auto; /* Enable vertical scrolling */
+        max-height: 300px;
+        /* Set your desired max-height */
+        overflow-y: auto;
+        /* Enable vertical scrolling */
     }
+
     .service-icon-container {
-      /* border: 1px solid black; */
+        /* border: 1px solid black; */
         height: auto;
         width: 90%;
     }
-    
+
     .service-icon-container img {
         width: 100%;
         height: 100%;
         border-radius: 10px;
     }
-    
+
     .service-main-head {
         padding: 0.1rem 0.2rem;
         display: grid;
@@ -507,7 +527,7 @@
         align-items: center;
         min-height: 4rem;
     }
-    
+
     .service-content {
         width: 100%;
         height: 100%;
@@ -515,7 +535,7 @@
         grid-template-rows: 45% 55%;
         padding: 0px 5px;
     }
-    
+
     .service-content h5 {
         font-family: Roboto;
         font-size: 10px;
@@ -527,9 +547,9 @@
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        
+
     }
-    
+
     .service-levels {
         display: grid;
         grid-template-rows: 50% 50%;
@@ -537,7 +557,7 @@
         margin: 0px 10px;
         height: 100%;
     }
-    
+
     .service-levels p {
         margin: 0px;
         padding: 0px;
@@ -547,34 +567,35 @@
         line-height: 15.23px;
         text-align: left;
     }
-    
+
     .dropdown {
         width: 1rem;
         height: 1rem;
-       display: flex;
-       justify-content: center;
-       align-items: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         margin-right: 15px;
         align-items: center;
         /* border: 1px solid black; */
     }
-    .dropdown img{
+
+    .dropdown img {
         width: 100%;
         height: 100%;
     }
-    
+
     .dropdown-con {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: space-evenly;
         height: 90%;
-        margin-bottom:0px;
+        margin-bottom: 0px;
         /* border: 1px solid black; */
         width: 100%;
-     
+
     }
-    
+
     .dropdown-con button {
         width: 2.5rem;
         height: 1.2rem;
@@ -589,14 +610,14 @@
         cursor: pointer;
         margin-right: 0.3rem;
     }
-    
+
     .dropdown-con button:hover {
         background-color: #f0f0f0;
         border-color: #e3e3e3;
         color: #000000;
         border: 1px solid #95959592;
     }
-    
+
     .description {
         font-family: Poppins, sans-serif;
         font-size: 8px;
@@ -606,7 +627,7 @@
         padding: 1rem;
         padding-right: 4rem;
     }
-    
+
     .description button {
         background: none;
         border: none;
@@ -617,7 +638,7 @@
         padding: 0;
         cursor: pointer;
     }
-    
+
     .description button:hover {
         color: #0056b3;
     }
@@ -636,7 +657,7 @@
         /* border: 1px solid black; */
         height: 2.5rem;
     }
-    
+
     .ui-variant-item {
         width: 6rem;
         padding-top: 12px;
@@ -649,7 +670,7 @@
         background-color: #FFF7E3;
         color: black;
         /* border: 1px solid black; */
-       
+
     }
 }
 

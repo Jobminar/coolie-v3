@@ -6,7 +6,8 @@ import React, {
   useEffect,
 } from "react";
 import axios from "axios";
-import { toast } from "react-hot-toast"; // Importing toast for notifications
+import LZString from "lz-string"; // Importing LZString for compression
+import { toast } from "react-hot-toast";
 
 // Create the context for Location and Price
 const LocationPriceContext = createContext();
@@ -30,74 +31,20 @@ export const LocationPriceProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const [matchedCategories, setMatchedCategories] = useState([]);
-  const [matchedSubCategories, setMatchedSubCategories] = useState([]);
-  const [matchedServices, setMatchedServices] = useState([]);
+  // Function to compress and store data in session storage
+  const compressAndStore = (key, data) => {
+    const compressedData = LZString.compress(JSON.stringify(data));
+    sessionStorage.setItem(key, compressedData);
+  };
 
-  const [categoryData, setCategoryData] = useState(null);
-  const [subCategoryData, setSubCategoryData] = useState(null);
-  const [servicesData, setServicesData] = useState(null);
-
-  // Fetch categories on mount
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch(
-          "https://api.coolieno1.in/v1.0/core/categories",
-        );
-        const data = await response.json();
-        setCategoryData(data);
-        console.log("Fetched categories:", data);
-      } catch (error) {
-        setError("Failed to fetch categories");
-        console.error("Error fetching categories:", error);
-      }
-    };
-
-    fetchCategories();
-  }, []);
-
-  // Fetch subcategories based on categories
-  useEffect(() => {
-    if (categoryData) {
-      const fetchSubCategories = async () => {
-        try {
-          const response = await fetch(
-            "https://api.coolieno1.in/v1.0/core/sub-categories",
-          );
-          const data = await response.json();
-          setSubCategoryData(data);
-          console.log("Fetched subcategories:", data);
-        } catch (error) {
-          setError("Failed to fetch subcategories");
-          console.error("Error fetching subcategories:", error);
-        }
-      };
-
-      fetchSubCategories();
+  // Function to retrieve and decompress data from session storage
+  const retrieveFromStorage = (key) => {
+    const compressedData = sessionStorage.getItem(key);
+    if (compressedData) {
+      return JSON.parse(LZString.decompress(compressedData));
     }
-  }, [categoryData]);
-
-  // Fetch services based on subcategories
-  useEffect(() => {
-    if (subCategoryData) {
-      const fetchServices = async () => {
-        try {
-          const response = await fetch(
-            "https://api.coolieno1.in/v1.0/core/services",
-          );
-          const data = await response.json();
-          setServicesData(data);
-          console.log("Fetched services:", data);
-        } catch (error) {
-          setError("Failed to fetch services");
-          console.error("Error fetching services:", error);
-        }
-      };
-
-      fetchServices();
-    }
-  }, [subCategoryData]);
+    return null;
+  };
 
   // Function to fetch geocode data based on latitude and longitude
   const fetchGeocodeData = async (lat, lng) => {
@@ -170,7 +117,7 @@ export const LocationPriceProvider = ({ children }) => {
     }
   };
 
-  // Function to fetch price data
+  // Function to fetch price data based on postal code, administrative areas, and locality
   const fetchPriceData = async (
     postalCode,
     adminLevel3,
@@ -178,78 +125,65 @@ export const LocationPriceProvider = ({ children }) => {
     adminLevel1,
     locality,
   ) => {
-    try {
-      let priceResponse;
-      setLoading(true);
-      let foundPricing = false;
+    let customPriceFetched = false;
+    let districtPriceFetched = false;
 
-      // Fetch custom pricing data using the postal code
-      if (postalCode) {
+    try {
+      setLoading(true);
+
+      // Check if data is available in session storage
+      const storedCustomPricing = retrieveFromStorage("customPriceData");
+      const storedDistrictPricing = retrieveFromStorage("districtPriceData");
+
+      if (storedCustomPricing) {
+        customPriceDataRef.current = storedCustomPricing;
+        customPriceFetched = true;
+        console.log(
+          "Loaded custom pricing from session storage:",
+          storedCustomPricing,
+        );
+      }
+
+      if (storedDistrictPricing) {
+        districtPriceDataRef.current = storedDistrictPricing;
+        districtPriceFetched = true;
+        console.log(
+          "Loaded district pricing from session storage:",
+          storedDistrictPricing,
+        );
+      }
+
+      // If no custom pricing is stored, fetch it
+      if (!customPriceFetched && postalCode) {
         try {
-          priceResponse = await axios.get(
+          const priceResponse = await axios.get(
             `https://api.coolieno1.in/v1.0/core/locations/custom/${postalCode}`,
           );
-          console.log("Custom pricing response:", priceResponse.data);
-
           if (priceResponse.data && priceResponse.data.length > 0) {
             customPriceDataRef.current = priceResponse.data;
-            foundPricing = true;
-            console.log(
-              "Custom price data found using postal code:",
-              customPriceDataRef.current,
-            );
+            customPriceFetched = true;
+            console.log("Custom price data found:", customPriceDataRef.current);
+            compressAndStore("customPriceData", priceResponse.data);
+            toast.success("Custom pricing found for this location.");
           }
         } catch (err) {
           handlePricingError(err, postalCode, "custom");
         }
       }
 
-      // Fetch district-level pricing data using adminLevel3 (District-level)
-      if (!foundPricing && adminLevel3) {
-        try {
-          priceResponse = await axios.get(
-            `https://api.coolieno1.in/v1.0/core/locations/district/${adminLevel3}`,
-          );
-          console.log("District pricing response:", priceResponse.data);
-
-          if (priceResponse.data && priceResponse.data.length > 0) {
-            districtPriceDataRef.current = priceResponse.data;
-            foundPricing = true;
-            console.log(
-              "District price data found using Admin Level 3:",
-              districtPriceDataRef.current,
-            );
-          }
-        } catch (err) {
-          handlePricingError(err, adminLevel3, "district");
-        }
+      // If no district pricing is stored, fetch it
+      if (!districtPriceFetched) {
+        await fetchDistrictPricing(
+          adminLevel3,
+          adminLevel2,
+          adminLevel1,
+          locality,
+        );
       }
 
-      // Fallback to locality if no district-level pricing is found
-      if (!foundPricing && locality) {
-        try {
-          priceResponse = await axios.get(
-            `https://api.coolieno1.in/v1.0/core/locations/district/${locality}`,
-          );
-          console.log("Locality pricing response:", priceResponse.data);
-
-          if (priceResponse.data && priceResponse.data.length > 0) {
-            districtPriceDataRef.current = priceResponse.data;
-            foundPricing = true;
-            console.log(
-              "District price data found using locality:",
-              districtPriceDataRef.current,
-            );
-          }
-        } catch (err) {
-          handlePricingError(err, locality, "locality");
-        }
-      }
-
-      // If no pricing is found, log the failure
-      if (!foundPricing) {
+      if (!customPriceFetched && !districtPriceFetched) {
         setError("No pricing data available for this location.");
-        toast.error("We are not serving at this location");
+        toast.error("We are not serving at this location.");
       }
 
       setLoading(false);
@@ -258,6 +192,84 @@ export const LocationPriceProvider = ({ children }) => {
       setLoading(false);
       console.error("Error fetching price data:", err);
       toast.error("Failed to fetch pricing data.");
+    }
+  };
+
+  // Function to fetch district-level pricing data
+  const fetchDistrictPricing = async (
+    adminLevel3,
+    adminLevel2,
+    adminLevel1,
+    locality,
+  ) => {
+    let districtPriceFetched = false;
+
+    // Fetch district-level pricing data using adminLevel3
+    if (adminLevel3 && !districtPriceFetched) {
+      try {
+        const priceResponse = await axios.get(
+          `https://api.coolieno1.in/v1.0/core/locations/district/${adminLevel3}`,
+        );
+        if (priceResponse.data && priceResponse.data.length > 0) {
+          districtPriceDataRef.current = priceResponse.data;
+          districtPriceFetched = true;
+          compressAndStore("districtPriceData", priceResponse.data);
+          toast.success("District pricing found for Admin Level 3.");
+        }
+      } catch (err) {
+        handlePricingError(err, adminLevel3, "district");
+      }
+    }
+
+    // Fetch district-level pricing data using adminLevel2
+    if (adminLevel2 && !districtPriceFetched) {
+      try {
+        const priceResponse = await axios.get(
+          `https://api.coolieno1.in/v1.0/core/locations/district/${adminLevel2}`,
+        );
+        if (priceResponse.data && priceResponse.data.length > 0) {
+          districtPriceDataRef.current = priceResponse.data;
+          districtPriceFetched = true;
+          compressAndStore("districtPriceData", priceResponse.data);
+          toast.success("District pricing found for Admin Level 2.");
+        }
+      } catch (err) {
+        handlePricingError(err, adminLevel2, "district");
+      }
+    }
+
+    // Fetch district-level pricing data using adminLevel1
+    if (adminLevel1 && !districtPriceFetched) {
+      try {
+        const priceResponse = await axios.get(
+          `https://api.coolieno1.in/v1.0/core/locations/district/${adminLevel1}`,
+        );
+        if (priceResponse.data && priceResponse.data.length > 0) {
+          districtPriceDataRef.current = priceResponse.data;
+          districtPriceFetched = true;
+          compressAndStore("districtPriceData", priceResponse.data);
+          toast.success("District pricing found for Admin Level 1.");
+        }
+      } catch (err) {
+        handlePricingError(err, adminLevel1, "district");
+      }
+    }
+
+    // Fetch district-level pricing data using locality
+    if (locality && !districtPriceFetched) {
+      try {
+        const priceResponse = await axios.get(
+          `https://api.coolieno1.in/v1.0/core/locations/district/${locality}`,
+        );
+        if (priceResponse.data && priceResponse.data.length > 0) {
+          districtPriceDataRef.current = priceResponse.data;
+          districtPriceFetched = true;
+          compressAndStore("districtPriceData", priceResponse.data);
+          toast.success("District pricing found for locality.");
+        }
+      } catch (err) {
+        handlePricingError(err, locality, "locality");
+      }
     }
   };
 
@@ -270,67 +282,7 @@ export const LocationPriceProvider = ({ children }) => {
     }
   };
 
-  // Match categories, subcategories, and services based on pricing data
-  useEffect(() => {
-    if (
-      categoryData &&
-      (customPriceDataRef.current || districtPriceDataRef.current)
-    ) {
-      const pricingData = [
-        ...(customPriceDataRef.current || []),
-        ...(districtPriceDataRef.current || []),
-      ];
-      const matchedCategories = categoryData.filter((cat) =>
-        pricingData.some((record) => record.category === cat.name),
-      );
-      setMatchedCategories(matchedCategories);
-      console.log("Matched categories:", matchedCategories);
-    }
-  }, [categoryData, customPriceDataRef.current, districtPriceDataRef.current]);
-
-  useEffect(() => {
-    if (
-      subCategoryData &&
-      (customPriceDataRef.current || districtPriceDataRef.current)
-    ) {
-      const pricingData = [
-        ...(customPriceDataRef.current || []),
-        ...(districtPriceDataRef.current || []),
-      ];
-      const matchedSubCategories = subCategoryData.filter((subCat) =>
-        pricingData.some((record) => record.subcategory === subCat.name),
-      );
-      setMatchedSubCategories(matchedSubCategories);
-      console.log("Matched subcategories:", matchedSubCategories);
-    }
-  }, [
-    subCategoryData,
-    customPriceDataRef.current,
-    districtPriceDataRef.current,
-  ]);
-
-  useEffect(() => {
-    if (
-      servicesData &&
-      (customPriceDataRef.current || districtPriceDataRef.current)
-    ) {
-      const pricingData = [
-        ...(customPriceDataRef.current || []),
-        ...(districtPriceDataRef.current || []),
-      ];
-      const matchedServices = servicesData.filter((service) =>
-        pricingData.some(
-          (record) =>
-            record.servicename === service.name &&
-            record.subcategory === service.subCategoryId.name,
-        ),
-      );
-      setMatchedServices(matchedServices);
-      console.log("Matched services:", matchedServices);
-    }
-  }, [servicesData, customPriceDataRef.current, districtPriceDataRef.current]);
-
-  // Auto-fetch geocode data when the app loads
+  // Automatically fetch user's geolocation when the app loads
   useEffect(() => {
     const fetchUserLocation = () => {
       if (navigator.geolocation) {
@@ -350,7 +302,6 @@ export const LocationPriceProvider = ({ children }) => {
       }
     };
 
-    // Fetch user location on app load
     fetchUserLocation();
   }, []);
 
@@ -360,9 +311,6 @@ export const LocationPriceProvider = ({ children }) => {
         location: locationRef.current,
         customPriceData: customPriceDataRef.current,
         districtPriceData: districtPriceDataRef.current,
-        matchedCategories,
-        matchedSubCategories,
-        matchedServices,
         loading,
         error,
         fetchGeocodeData,
