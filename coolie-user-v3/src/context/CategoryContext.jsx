@@ -103,23 +103,38 @@ export const CategoryProvider = ({ children }) => {
     }
   }, [subCategoryData, districtPriceData]);
 
-  // Compare servicesData with customPriceData and districtPriceData
+
+
   useEffect(() => {
+    console.log("Services Data: ", servicesData);
+    console.log("District Price Data: ", districtPriceData);
+
     if (servicesData && districtPriceData) {
-      const pricingData = [...districtPriceData]; // Use only district pricing data
+      const matched = servicesData.map((service) => {
+       
 
-      // Match services based on pricing data
-      const matched = servicesData.filter((service) =>
-        pricingData.some(
+        const matchedPrice = districtPriceData.find(
           (record) =>
-            record.servicename === service.name &&
-            record.subcategory === service.subCategoryId.name
-        )
-      );
+            record.servicename === service?.name && 
+            record.subcategory === service?.subCategoryId?.name
+        );
 
-      setLocationServices(matched); // Store matched services
+        if (matchedPrice) {
+          return {
+            service,
+            districtData: matchedPrice
+          };
+        }
+        return null;
+      }).filter(item => item !== null);
+
+      setLocationServices(matched);
     }
-  }, [servicesData, districtPriceData]);
+}, [servicesData, districtPriceData]);
+
+
+
+  
 
   // Log the matched data for debugging purposes
   useEffect(() => {

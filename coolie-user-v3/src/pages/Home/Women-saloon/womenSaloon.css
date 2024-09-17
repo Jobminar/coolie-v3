@@ -1,19 +1,42 @@
-.women-saloon-main-con{
+.women-saloon-main-con {
     /* border: 1px solid black; */
     min-height: 10rem;
     margin-bottom: 3rem;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
     align-items: center;
+    row-gap: 1rem; /* Use row-gap instead of column-gap for vertical layout */
+
+    /* Add vertical scrolling */
+   
+}
+
+
+.women-spa-main-con{
+    /* border: 1px solid black; */
+    min-height: 10rem;
+      margin-bottom: 3rem;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    column-gap: 2.5rem;
 }
 .w-s-sub-con{
-    border: 1px solid black;
+    /* border: 1px solid black; */
     position: relative;
     border: none;
+    width: 12rem;
+    height: 13rem;
  
+}
+.w-s-sub-con img{
+    width: 100%;
+    height: 100%;
 }
 .w-s-sub-con:hover{
     cursor: pointer;
+    border: 0.5px solid gray;
+    border-radius: 15px;
 }
 .w-s-headding{
     font-family: Inter;

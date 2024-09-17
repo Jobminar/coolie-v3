@@ -9,6 +9,7 @@ import { CartContext } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 import LoginComponent from "../../components/LoginComponent";
 import IEpopup from "./IEpopup";
+import { useLocationPrice } from "../../context/LocationPriceContext";
 
 const Services = () => {
   const {
@@ -21,6 +22,7 @@ const Services = () => {
     servicesData = [],
     error,
   } = useContext(CategoryContext);
+  const { customPriceData, districtPriceData } = useLocationPrice();
 
   const { handleCart } = useContext(CartContext);
   const { isAuthenticated } = useAuth();
@@ -30,12 +32,46 @@ const Services = () => {
   const [variantName, setVariantName] = useState(""); // Track variant selection
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedServiceId, setSelectedServiceId] = useState(null);
+  const [matchedData, setMatchedData] = useState([]);
 
   const initialCategoryRef = useRef(null);
 
 
 
+//   useEffect(() => {
+//     if (districtPriceData && locationServices) {
+//         const matched = locationServices.map((service) => {
+//             // Find the matching price record based on servicename and subcategory name
+//             const matchedPrice = districtPriceData.find((price) =>
+//                 price.servicename === service.name && // Match by service name
+//                 price.subcategory === service.subCategoryId.name // Match by subcategory name
+//             );
+
+//             // If a match is found, return an object combining service and price data
+//             if (matchedPrice) {
+//                 return {
+//                     service,  // Include matched service data
+//                     districtData: matchedPrice // Include matched district price data
+//                 };
+//             }
+
+//             return null; // Return null for non-matching services
+//         }).filter(item => item !== null); // Remove null values from the resulting array
+
+//         setMatchedData(matched); // Store matched data in state
+//     }
+
+//     console.log(districtPriceData, 'districtPriceData in services');
+//     console.log(locationServices, 'location-wise service data');
+//     console.log(matchedData, 'Matched bothData');
+// }, [districtPriceData, locationServices]);
+
+
+
   // Handle UI variants and set the default variant
+  
+  
+  
   useEffect(() => {
     if (categoryData.length > 0) {
       const initialCategory = categoryData.find(
