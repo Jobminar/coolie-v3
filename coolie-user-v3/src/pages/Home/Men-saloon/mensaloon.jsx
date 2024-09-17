@@ -10,6 +10,9 @@ const Mensaloon = () => {
   return (
     <>
          <h2 className='w-s-headding'>Saloon for Men</h2>
+         <div>
+            
+         </div>
             <div className='women-saloon-main-con'>
                 <div className='w-s-sub-con'>
                     <p>Hair cutting & <br/> Grooming</p>

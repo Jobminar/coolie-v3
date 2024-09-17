@@ -1,14 +1,12 @@
 .women-saloon-main-con {
     /* border: 1px solid black; */
-    min-height: 10rem;
+    min-height: 12rem;
     margin-bottom: 3rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    row-gap: 1rem; /* Use row-gap instead of column-gap for vertical layout */
-
-    /* Add vertical scrolling */
-   
+    row-gap: 1rem; 
+    
 }
 
 
@@ -27,6 +25,7 @@
     border: none;
     width: 12rem;
     height: 13rem;
+    width: 1200px;
  
 }
 .w-s-sub-con img{
@@ -58,4 +57,19 @@ margin: 10px;
     letter-spacing: 0.03em;
     text-align: left;
 
+}
+@media (min-width: 820px) and (max-width: 1020px) {
+    .women-saloon-main-con {
+        /* border: 1px solid black; */
+        min-height: 12rem;
+        margin-bottom: 3rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        row-gap: 1rem; 
+        overflow-x: auto;
+        overflow-y: hidden;
+        max-width: 100%;
+       
+    }
 }
