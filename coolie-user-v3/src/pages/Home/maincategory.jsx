@@ -34,6 +34,11 @@ const Maincategory = () => {
   // State to hold the current category data
   const [data, setData] = useState(null);
 
+
+  useEffect(()=>{
+       console.log(categoryData,'categorydata')
+  },categoryData)
+
   // Load cached data or fetch from category context
   useEffect(() => {
     const cachedCategoryData = localStorage.getItem("categoryData");

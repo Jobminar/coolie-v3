@@ -320,3 +320,4 @@ export const LocationPriceProvider = ({ children }) => {
     </LocationPriceContext.Provider>
   );
 };
+
