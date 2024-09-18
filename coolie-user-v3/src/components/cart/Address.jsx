@@ -14,16 +14,17 @@ import {
   getSavedAddresses,
   deleteAddress,
 } from "./api/address-api";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AddressForm from "./AddressForm";
 import LocationModal from "./LocationModal";
 import { CartContext } from "../../context/CartContext";
 import { OrdersContext } from "../../context/OrdersContext";
+const { clearCart } = useContext(CartContext); // Import clearCart function from CartContext
 import DeleteIcon from "../../assets/images/Delete.png"; // Import the delete icon
 
 const Address = ({ onNext }) => {
-  const { user, userLocation, phone } = useAuth();
+  const { user, updateUserLocation, phone } = useAuth(); // Added updateUserLocation
   const { totalItems, totalPrice } = useContext(CartContext);
   const { updateSelectedAddressId } = useContext(OrdersContext);
   const [cookies, setCookie] = useCookies(["location"]);
@@ -53,17 +54,7 @@ const Address = ({ onNext }) => {
   const [filterBookingType, setFilterBookingType] = useState("");
   const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
 
-  // delete button functionality
-  const handleDeleteAddress = async (addressId) => {
-    try {
-      await deleteAddress(addressId); // Call deleteAddress API
-      const addresses = await getSavedAddresses(userId); // Fetch updated addresses
-      setSavedAddresses(addresses); // Update state with new addresses
-    } catch (error) {
-      console.error("Error deleting address:", error);
-    }
-  };
-
+  // Fetch saved addresses for the user
   useEffect(() => {
     const fetchSavedAddresses = async () => {
       if (userId) {
@@ -75,24 +66,28 @@ const Address = ({ onNext }) => {
             setSavedAddresses([addresses]);
           }
 
+          // Automatically select the first address if there is only one
           if (addresses.length === 1) {
             setSelectedAddress(addresses[0]);
             updateSelectedAddressId(addresses[0]._id);
           }
         } catch (error) {
           console.error("Error fetching saved addresses:", error);
+          toast.error("Error fetching saved addresses.");
         }
       }
     };
     fetchSavedAddresses();
   }, [userId, updateSelectedAddressId]);
 
+  // Handle radio button change for selecting an address
   const handleRadioChange = (address) => {
     setSelectedAddress(address);
-    setAddressData({ ...address, userId: userId });
+    setAddressData({ ...address, userId });
     updateSelectedAddressId(address._id);
   };
 
+  // Handle save address
   const handleSaveAddress = async (addressData) => {
     try {
       const requestBody = {
@@ -102,18 +97,22 @@ const Address = ({ onNext }) => {
         longitude: Number(addressData.longitude),
         userId: userId,
       };
-      delete requestBody.name;
+      delete requestBody.name; // Remove name since we're using 'username'
+
       await saveAddress(requestBody);
       const addresses = await getSavedAddresses(userId);
       setSavedAddresses(addresses);
       setShowForm(false);
       setShowSavedAddresses(true);
       setIsAddingNewAddress(false);
+      toast.success("Address saved successfully.");
     } catch (error) {
-      console.error("Error in handleSaveAddress:", error);
+      console.error("Error saving address:", error);
+      toast.error("Error saving address.");
     }
   };
 
+  // Handle form submission
   const handleSubmit = () => {
     if (!selectedAddress) {
       alert("Please select an address before proceeding.");
@@ -122,8 +121,11 @@ const Address = ({ onNext }) => {
     onNext("schedule");
   };
 
+  // Handle location selection from LocationModal
   const handleLocationSelect = (location) => {
     const parsedAddress = parseAddress(location.address);
+
+    // Update address data and set latitude/longitude
     setAddressData((prevData) => ({
       ...prevData,
       address: parsedAddress.address,
@@ -135,11 +137,16 @@ const Address = ({ onNext }) => {
       longitude: location.longitude,
       userId: userId,
     }));
+
+    // Update the location in AuthContext
+    updateUserLocation(location.latitude, location.longitude); // Call updateUserLocation
+    clearCart(); // Clear the cart on location change
     setShowLocationModal(false);
     setShowForm(true);
     setShowSavedAddresses(false);
   };
 
+  // Parse address string into components
   const parseAddress = (fullAddress) => {
     const parts = fullAddress.split(", ");
     return {
@@ -148,10 +155,10 @@ const Address = ({ onNext }) => {
       city: parts[3] || "",
       landmark: parts[4] || "",
       state: parts[5] || "",
-      country: parts[6] || "",
     };
   };
 
+  // Toggle between adding new address and viewing saved addresses
   const handleAddNewAddressClick = () => {
     if (isAddingNewAddress) {
       setShowLocationModal(false);
@@ -166,6 +173,19 @@ const Address = ({ onNext }) => {
     }
   };
 
+  // Handle deleting an address
+  const handleDeleteAddress = async (addressId) => {
+    try {
+      await deleteAddress(addressId);
+      const addresses = await getSavedAddresses(userId);
+      setSavedAddresses(addresses);
+      toast.success("Address deleted successfully.");
+    } catch (error) {
+      console.error("Error deleting address:", error);
+      toast.error("Error deleting address.");
+    }
+  };
+
   const filteredAddresses = filterBookingType
     ? savedAddresses.filter(
         (address) => address.bookingType === filterBookingType,
@@ -174,15 +194,13 @@ const Address = ({ onNext }) => {
 
   return (
     <div className="address-container">
-      <ToastContainer />
-
+      <ToastContainer /> {/* Toast notifications */}
       <div className="add-new-address" onClick={handleAddNewAddressClick}>
         <FontAwesomeIcon icon={isAddingNewAddress ? faArrowLeft : faAdd} />
         <span>
           {isAddingNewAddress ? "Saved Addresses" : "Add New Address"}
         </span>
       </div>
-
       {showSavedAddresses && (
         <div className="toggle-saved-addresses-container">
           <div className="saved-addresses-title">
@@ -207,7 +225,6 @@ const Address = ({ onNext }) => {
           </div>
         </div>
       )}
-
       {showSavedAddresses && (
         <div className="saved-addresses-container">
           {filteredAddresses.length > 0 ? (
@@ -238,11 +255,10 @@ const Address = ({ onNext }) => {
               </div>
             ))
           ) : (
-            <p>No address available</p>
+            <p>No addresses available</p>
           )}
         </div>
       )}
-
       {showForm && (
         <AddressForm
           addressData={addressData}

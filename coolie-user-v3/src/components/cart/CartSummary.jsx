@@ -21,21 +21,35 @@ import { OrdersProvider } from "../../context/OrdersContext";
 import LoginComponent from "../LoginComponent";
 
 const CartSummary = ({ fullWidth }) => {
-  const { cartItems, totalItems } = useContext(CartContext);
+  const { cartItems, totalItems, clearCart } = useContext(CartContext);
   const { isAuthenticated, user } = useContext(AuthContext);
+
+  // State management
   const [activeTabs, setActiveTabs] = useState(["cart"]);
   const [error, setError] = useState(null);
   const [showLogin, setShowLogin] = useState(false);
 
+  // Refs to track initial render and authentication state
   const initialRender = useRef(true);
   const isAuthenticatedRef = useRef(isAuthenticated);
   const userRef = useRef(user);
 
+  // Effect to handle cart reset when it's cleared
+  useEffect(() => {
+    if (cartItems.length === 0 && !initialRender.current) {
+      console.log("Cart is cleared, resetting to 'cart' tab.");
+      setActiveTabs(["cart"]);
+    }
+    initialRender.current = false;
+  }, [cartItems]);
+
+  // Effect to sync authentication state with refs
   useEffect(() => {
     isAuthenticatedRef.current = isAuthenticated;
     userRef.current = user;
   }, [isAuthenticated, user]);
 
+  // Effect to reset active tabs on logout
   useEffect(() => {
     if (initialRender.current) {
       initialRender.current = false;
@@ -43,13 +57,16 @@ const CartSummary = ({ fullWidth }) => {
     }
 
     if (!isAuthenticatedRef.current) {
-      setActiveTabs(["cart"]); // Reset active tabs when the user logs out
+      console.log("User logged out, resetting to 'cart' tab.");
+      setActiveTabs(["cart"]);
     }
   }, [isAuthenticatedRef.current]);
 
+  // Handles tab progression logic
   const handleNextStep = (nextTab) => {
     if (!isAuthenticatedRef.current) {
-      setShowLogin(true); // Show the login component if not authenticated
+      console.log("User not authenticated, showing login modal.");
+      setShowLogin(true);
       return;
     }
 
@@ -63,6 +80,7 @@ const CartSummary = ({ fullWidth }) => {
     });
   };
 
+  // Renders the component based on active tab
   const renderActiveComponent = () => {
     try {
       if (activeTabs.includes("checkout")) {
@@ -80,6 +98,7 @@ const CartSummary = ({ fullWidth }) => {
     }
   };
 
+  // Checks if a step is completed
   const isCompleted = (step) => {
     return (
       activeTabs.indexOf(step) !== -1 &&
@@ -87,26 +106,29 @@ const CartSummary = ({ fullWidth }) => {
     );
   };
 
+  // Determines which icon to display (active/inactive)
   const getIcon = (step, activeIcon, inactiveIcon) => {
     if (step === "cart" && totalItems === 0) {
       return inactiveIcon; // If no items in cart, use inactive icon
     }
     if (isCompleted(step)) {
-      return inactiveIcon;
+      return inactiveIcon; // Use inactive icon if the step is completed
     }
     return activeTabs.includes(step) ? activeIcon : inactiveIcon;
   };
 
+  // Determines the text color class based on step status
   const getTextClass = (step) => {
     if (step === "cart" && totalItems === 0) {
       return "inactive-text"; // If no items in cart, use inactive text color
     }
     if (isCompleted(step)) {
-      return "completed-text"; // Text color for completed steps
+      return "completed-text"; // Use completed text color for completed steps
     }
     return activeTabs.includes(step) ? "active-text" : "inactive-text";
   };
 
+  // Closes the login modal
   const closeModal = () => {
     setShowLogin(false);
   };
@@ -114,7 +136,10 @@ const CartSummary = ({ fullWidth }) => {
   return (
     <OrdersProvider activeTab={activeTabs[activeTabs.length - 1]}>
       <div className={`cart-summary ${fullWidth ? "full-width" : ""}`}>
+        {/* Display error if any */}
         {error && <div className="error-message">{error}</div>}
+
+        {/* Show login modal if not authenticated */}
         {showLogin && (
           <div className="modalOverlay" onClick={closeModal}>
             <div className="modalContent" onClick={(e) => e.stopPropagation()}>
@@ -125,10 +150,12 @@ const CartSummary = ({ fullWidth }) => {
             </div>
           </div>
         )}
+
         {!showLogin && (
           <>
             <div className="cart-steps-container">
               <div className="cart-steps">
+                {/* Cart Step */}
                 <div
                   className={`step ${
                     activeTabs.includes("cart") ? "active" : ""
@@ -155,6 +182,8 @@ const CartSummary = ({ fullWidth }) => {
                     />
                   )}
                 </div>
+
+                {/* Address Step */}
                 <img src={arrowIconActive} alt="Arrow" className="arrow-icon" />
                 <div
                   className={`step ${
@@ -182,6 +211,8 @@ const CartSummary = ({ fullWidth }) => {
                     />
                   )}
                 </div>
+
+                {/* Schedule Step */}
                 <img src={arrowIconActive} alt="Arrow" className="arrow-icon" />
                 <div
                   className={`step ${
@@ -209,6 +240,8 @@ const CartSummary = ({ fullWidth }) => {
                     />
                   )}
                 </div>
+
+                {/* Checkout Step */}
                 <img src={arrowIconActive} alt="Arrow" className="arrow-icon" />
                 <div
                   className={`step ${
@@ -238,6 +271,8 @@ const CartSummary = ({ fullWidth }) => {
                 </div>
               </div>
             </div>
+
+            {/* Render the active component */}
             {renderActiveComponent()}
           </>
         )}
