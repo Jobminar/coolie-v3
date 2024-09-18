@@ -135,22 +135,30 @@ export const CategoryProvider = ({ children }) => {
 
 
   // Match services with pricing data
-
   useEffect(() => {
     console.log(typeof(servicesData), districtPriceData, 'services and district in mat');
   
     // Ensure both servicesData and districtPriceData are arrays before proceeding
     if (Array.isArray(servicesData) && Array.isArray(districtPriceData)) {
-      // Filter servicesData based on matching servicename and subcategory in districtPriceData
-      const matched = servicesData.filter((service) =>
-        districtPriceData.some(
+      // Map over servicesData and find matching districtPriceData
+      const matched = servicesData.reduce((acc, service) => {
+        const matchingDistrict = districtPriceData.find(
           (record) =>
             record.servicename === service?.name &&
             record.subcategory === service?.subCategoryId?.name
-        )
-      );
+        );
   
-      setLocationServices(matched); // Store only the matched services data
+        if (matchingDistrict) {
+          acc.push({
+            service,            // Include matched service data
+            districtPrice: matchingDistrict  // Include corresponding districtPriceData
+          });
+        }
+  
+        return acc;
+      }, []);
+  
+      setLocationServices(matched); // Store the combined matched data
     } else {
       // Log an error or handle the case where data is not in the expected format
       console.error('Expected servicesData and districtPriceData to be arrays, but received:', {
@@ -159,6 +167,11 @@ export const CategoryProvider = ({ children }) => {
       });
     }
   }, [servicesData, districtPriceData, selectedSubCategoryId]);
+
+  
+  useEffect(()=>{
+      console.log(locationServices,'locationservice')
+  },[locationServices])
   
   
 
