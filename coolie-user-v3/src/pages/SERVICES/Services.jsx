@@ -15,15 +15,14 @@ const Services = () => {
   const {
     categoryData = [],
     selectedCategoryId,
-    locationSubCat = [],
-    locationServices = [],
+    locationSubCat = [], // List of subcategories
+    locationServices = [], // List of services
     selectedSubCategoryId,
     setSelectedSubCategoryId,
-    servicesData,
     error,
   } = useContext(CategoryContext);
-  const { customPriceData, districtPriceData } = useLocationPrice();
 
+  const { customPriceData, districtPriceData } = useLocationPrice();
   const { handleCart } = useContext(CartContext);
   const { isAuthenticated } = useAuth();
 
@@ -36,44 +35,32 @@ const Services = () => {
 
   const initialCategoryRef = useRef(null);
 
-
-
-//   useEffect(() => {
-//     if (districtPriceData && locationServices) {
-//         const matched = locationServices.map((service) => {
-//             // Find the matching price record based on servicename and subcategory name
-//             const matchedPrice = districtPriceData.find((price) =>
-//                 price.servicename === service.name && // Match by service name
-//                 price.subcategory === service.subCategoryId.name // Match by subcategory name
-//             );
-
-//             // If a match is found, return an object combining service and price data
-//             if (matchedPrice) {
-//                 return {
-//                     service,  // Include matched service data
-//                     districtData: matchedPrice // Include matched district price data
-//                 };
-//             }
-
-//             return null; // Return null for non-matching services
-//         }).filter(item => item !== null); // Remove null values from the resulting array
-
-//         setMatchedData(matched); // Store matched data in state
-//     }
-
-//     console.log(districtPriceData, 'districtPriceData in services');
-//     console.log(locationServices, 'location-wise service data');
-//     console.log(matchedData, 'Matched bothData');
-// }, [districtPriceData, locationServices]);
-
-
-
-  // Handle UI variants and set the default variant
-  
-  
-  
+  // Match services with pricing data based on district or custom pricing and update when districtPriceData or customPriceData changes
   useEffect(() => {
-    if (categoryData.length > 0) {
+    if (locationServices.length > 0 && (districtPriceData || customPriceData)) {
+      const matched = locationServices.filter(
+        (service) =>
+          districtPriceData.some(
+            (price) =>
+              price.servicename === service.name &&
+              price.subcategory === service.subCategoryId?.name,
+          ) ||
+          customPriceData.some(
+            (price) =>
+              price.servicename === service.name &&
+              price.subcategory === service.subCategoryId?.name,
+          ),
+      );
+
+      setMatchedData(matched); // Store matched data in state
+    } else {
+      setMatchedData([]); // Reset if no matching services
+    }
+  }, [districtPriceData, customPriceData, locationServices]);
+
+  // Handle UI variants and set the default variant when category changes
+  useEffect(() => {
+    if (categoryData.length > 0 && selectedCategoryId) {
       const initialCategory = categoryData.find(
         (item) => item._id === selectedCategoryId,
       );
@@ -97,19 +84,23 @@ const Services = () => {
     }
   }, [categoryData, selectedCategoryId]);
 
-  // Filter subcategories based on the selected variant
+  // Filter subcategories based on the selected category and variant
   const filteredSubCategories = useMemo(() => {
     if (!locationSubCat || variantName === "") return locationSubCat;
 
     return locationSubCat.filter(
-      (subCat) => subCat.variantName === variantName,
+      (subCat) =>
+        subCat.variantName === variantName &&
+        subCat.categoryId === selectedCategoryId,
     );
-  }, [locationSubCat, variantName]);
+  }, [locationSubCat, variantName, selectedCategoryId]);
 
-  // Automatically select the first subcategory when variant changes or filteredSubCategories change
+  // Automatically select the first subcategory when variant or subcategories change
   useEffect(() => {
     if (filteredSubCategories.length > 0) {
       setSelectedSubCategoryId(filteredSubCategories[0]._id);
+    } else {
+      setSelectedSubCategoryId(null); // No subcategories available
     }
   }, [filteredSubCategories, setSelectedSubCategoryId]);
 
@@ -150,17 +141,21 @@ const Services = () => {
     setSelectedServiceId(null);
   };
 
-  // Display services or error message inside "services-display" div
-  const displayServices = (serviceData) => {
-    if (!Array.isArray(serviceData) || serviceData.length === 0) {
+  // Display matched services or error message inside "services-display" div
+  const displayServices = () => {
+    if (
+      !selectedSubCategoryId ||
+      !Array.isArray(matchedData) ||
+      matchedData.length === 0
+    ) {
       return (
         <div className="services-display">
-          <h5>Error: No services found for the selected subcategory.</h5>
+          <h5>No matching services found for the selected subcategory.</h5>
         </div>
       );
     }
 
-    return serviceData.map((service) => {
+    return matchedData.map((service) => {
       const isExpanded = descriptionVisibility[service._id];
 
       return (
@@ -299,9 +294,7 @@ const Services = () => {
               <p>No subcategories available for this filter.</p>
             )}
           </div>
-          <div className="services-display">
-            {displayServices(locationServices)}
-          </div>
+          <div className="services-display">{displayServices()}</div>
         </div>
         <div className="cart">
           <CartSummary />
