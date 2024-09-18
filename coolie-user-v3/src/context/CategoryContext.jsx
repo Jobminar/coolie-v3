@@ -26,8 +26,6 @@ export const CategoryProvider = ({ children }) => {
           "https://api.coolieno1.in/v1.0/core/categories",
         );
         const result = await response.json();
-        console.log("Categories API Response:", result);
-
         if (Array.isArray(result) && result.length > 0) {
           setCategoryData(result);
           setSelectedCategoryId(result[0]._id); // Default to the first category
@@ -35,7 +33,6 @@ export const CategoryProvider = ({ children }) => {
           setError("No categories available.");
         }
       } catch (error) {
-        console.error("Error fetching categories:", error);
         setError("Failed to load categories.");
       } finally {
         setLoading(false);
@@ -55,8 +52,6 @@ export const CategoryProvider = ({ children }) => {
             `https://api.coolieno1.in/v1.0/core/sub-categories/category/${selectedCategoryId}`,
           );
           const result = await response.json();
-          console.log("Subcategories API Response:", result);
-
           if (Array.isArray(result)) {
             setSubCategoryData(result);
           } else {
@@ -64,7 +59,6 @@ export const CategoryProvider = ({ children }) => {
             setError("No subcategories available for this category.");
           }
         } catch (error) {
-          console.error("Error fetching subcategories:", error);
           setError("Failed to load subcategories.");
         } finally {
           setLoading(false);
@@ -85,10 +79,8 @@ export const CategoryProvider = ({ children }) => {
             `https://api.coolieno1.in/v1.0/core/services/filter/${selectedCategoryId}/${selectedSubCategoryId}`,
           );
           const data = await response.json();
-          setServicesData(data)
-          // console.log("Services API Response:", data);
+          setServicesData(data);
         } catch (error) {
-          console.error("Error fetching services:", error);
           setError("Failed to load services.");
           setServicesData([]); // Fallback to empty array on error
         } finally {
@@ -100,36 +92,36 @@ export const CategoryProvider = ({ children }) => {
     }
   }, [selectedCategoryId, selectedSubCategoryId]);
 
-
-  useEffect(()=>{
-    console.log(servicesData,'service data in api')
-  },[servicesData])
-
   // Match categories with pricing data
   useEffect(() => {
     if (categoryData.length && (districtPriceData || customPriceData)) {
-      const matched = categoryData.filter(
+      const matchedCategories = categoryData.filter(
         (cat) =>
           districtPriceData?.some((record) => record.category === cat.name) ||
           customPriceData?.some((record) => record.category === cat.name),
       );
-      console.log("Matched Categories:", matched);
-      setLocationCat(matched);
+      setLocationCat(matchedCategories);
     }
   }, [categoryData, districtPriceData, customPriceData]);
 
-  // Match subcategories with pricing data
+  // Match subcategories with pricing data based on selected category
   useEffect(() => {
-    if (subCategoryData.length && (districtPriceData || customPriceData)) {
-      const matched = subCategoryData.filter(
+    if (
+      subCategoryData.length &&
+      selectedCategoryId &&
+      (districtPriceData || customPriceData)
+    ) {
+      const matchedSubCategories = subCategoryData.filter(
         (subCat) =>
-          districtPriceData?.some(
+          subCat.categoryId === selectedCategoryId && // Make sure subcategory belongs to the selected category
+          (districtPriceData?.some(
             (record) => record.subcategory === subCat.name,
           ) ||
-          customPriceData?.some((record) => record.subcategory === subCat.name),
+            customPriceData?.some(
+              (record) => record.subcategory === subCat.name,
+            )),
       );
-      console.log("Matched Subcategories:", matched);
-      setLocationSubCat(matched);
+      setLocationSubCat(matchedSubCategories);
     }
   }, [subCategoryData, districtPriceData, customPriceData]);
 
@@ -137,8 +129,6 @@ export const CategoryProvider = ({ children }) => {
   // Match services with pricing data
   useEffect(() => {
     console.log(typeof(servicesData), districtPriceData, 'services and district in mat');
-  
-    // Ensure both servicesData and districtPriceData are arrays before proceeding
     if (Array.isArray(servicesData) && Array.isArray(districtPriceData)) {
       // Map over servicesData and find matching districtPriceData
       const matched = servicesData.reduce((acc, service) => {
@@ -154,10 +144,8 @@ export const CategoryProvider = ({ children }) => {
             districtPrice: matchingDistrict  // Include corresponding districtPriceData
           });
         }
-  
         return acc;
       }, []);
-  
       setLocationServices(matched); // Store the combined matched data
     } else {
       // Log an error or handle the case where data is not in the expected format

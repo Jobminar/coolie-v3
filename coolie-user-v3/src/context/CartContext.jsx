@@ -182,7 +182,35 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
       })),
     );
   };
+  //Delete all cart items when location changes
+  const clearCart = async () => {
+    const userId = user?._id || sessionStorage.getItem("userId");
+    if (!userId) {
+      console.warn("clearCart: user or userId is undefined");
+      return;
+    }
 
+    try {
+      const response = await fetch(
+        `https://api.coolieno1.in/v1.0/users/cart/${userId}`,
+        {
+          method: "DELETE",
+        },
+      );
+
+      if (response.ok) {
+        setCartItems([]); // Clear cart items in state
+        setTotalPrice(0);
+        setTotalItems(0);
+        toast.success("Cart cleared successfully.");
+      } else {
+        throw new Error("Failed to clear cart.");
+      }
+    } catch (error) {
+      toast.error("Error clearing the cart.");
+      console.error("Error clearing the cart:", error);
+    }
+  };
   return (
     <CartContext.Provider
       value={{
@@ -195,6 +223,7 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
         fetchCart,
         handleCart,
         cartMessage,
+        clearCart,
       }}
     >
       {cartNotFound && <div>{cartMessage}</div>}

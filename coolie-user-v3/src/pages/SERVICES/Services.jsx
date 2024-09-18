@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect, useRef, useMemo } from "react";
 import ReactDOM from "react-dom";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for page reload
 import "./Services.css";
 import ScrollableTabs from "./ScrollableTabs";
 import { CategoryContext } from "../../context/CategoryContext";
@@ -15,17 +16,17 @@ const Services = () => {
   const {
     categoryData = [],
     selectedCategoryId,
-    locationSubCat = [],
-    locationServices = [],
+    locationSubCat = [], // List of subcategories
+    locationServices = [], // List of services
     selectedSubCategoryId,
     setSelectedSubCategoryId,
-    servicesData,
     error,
   } = useContext(CategoryContext);
-  const { customPriceData, districtPriceData } = useLocationPrice();
 
+  const { customPriceData, districtPriceData } = useLocationPrice();
   const { handleCart } = useContext(CartContext);
   const { isAuthenticated } = useAuth();
+  const navigate = useNavigate(); // Initialize the navigate hook for navigation
 
   const [descriptionVisibility, setDescriptionVisibility] = useState({});
   const [isLoginVisible, setLoginVisible] = useState(false);
@@ -33,47 +34,45 @@ const Services = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedServiceId, setSelectedServiceId] = useState(null);
   const [matchedData, setMatchedData] = useState([]);
+  const [forceRender, setForceRender] = useState(0); // State to trigger re-mount
 
   const initialCategoryRef = useRef(null);
 
-
-
-//   useEffect(() => {
-//     if (districtPriceData && locationServices) {
-//         const matched = locationServices.map((service) => {
-//             // Find the matching price record based on servicename and subcategory name
-//             const matchedPrice = districtPriceData.find((price) =>
-//                 price.servicename === service.name && // Match by service name
-//                 price.subcategory === service.subCategoryId.name // Match by subcategory name
-//             );
-
-//             // If a match is found, return an object combining service and price data
-//             if (matchedPrice) {
-//                 return {
-//                     service,  // Include matched service data
-//                     districtData: matchedPrice // Include matched district price data
-//                 };
-//             }
-
-//             return null; // Return null for non-matching services
-//         }).filter(item => item !== null); // Remove null values from the resulting array
-
-//         setMatchedData(matched); // Store matched data in state
-//     }
-
-//     console.log(districtPriceData, 'districtPriceData in services');
-//     console.log(locationServices, 'location-wise service data');
-//     console.log(matchedData, 'Matched bothData');
-// }, [districtPriceData, locationServices]);
-
-
-
-  // Handle UI variants and set the default variant
-  
-  
-  
+  // Force a component re-render when district or custom price data changes
   useEffect(() => {
-    if (categoryData.length > 0) {
+    console.log("Price data or services changed. Forcing re-render.");
+    setForceRender((prev) => prev + 1);
+  }, [districtPriceData, customPriceData, locationServices]);
+
+  // Match services with pricing data based on district or custom pricing
+  useEffect(() => {
+    console.log("Matching services with pricing data");
+    if (locationServices.length > 0 && (districtPriceData || customPriceData)) {
+      const matched = locationServices.filter(
+        (service) =>
+          districtPriceData.some(
+            (price) =>
+              price.servicename === service.name &&
+              price.subcategory === service.subCategoryId?.name,
+          ) ||
+          customPriceData.some(
+            (price) =>
+              price.servicename === service.name &&
+              price.subcategory === service.subCategoryId?.name,
+          ),
+      );
+      console.log("Matched services: ", matched);
+      setMatchedData(matched); // Store matched data in state
+    } else {
+      console.log("No matched services.");
+      setMatchedData([]); // Reset if no matching services
+    }
+  }, [districtPriceData, customPriceData, locationServices]);
+
+  // Handle UI variants and set the default variant when category changes
+  useEffect(() => {
+    console.log("Category or variant changed");
+    if (categoryData.length > 0 && selectedCategoryId) {
       const initialCategory = categoryData.find(
         (item) => item._id === selectedCategoryId,
       );
@@ -85,8 +84,10 @@ const Services = () => {
         );
 
         if (validVariants?.length > 0) {
+          console.log("Setting initial variant: ", validVariants[0]);
           setVariantName(validVariants[0]); // Set first valid variant
         } else {
+          console.log("No valid variants found");
           setVariantName(""); // Default to empty if no valid variants
         }
       } else {
@@ -97,24 +98,37 @@ const Services = () => {
     }
   }, [categoryData, selectedCategoryId]);
 
-  // Filter subcategories based on the selected variant
+  // Filter subcategories based on the selected category and variant
   const filteredSubCategories = useMemo(() => {
+    console.log("Filtering subcategories based on variant and category");
     if (!locationSubCat || variantName === "") return locationSubCat;
 
     return locationSubCat.filter(
-      (subCat) => subCat.variantName === variantName,
+      (subCat) =>
+        subCat.variantName === variantName &&
+        subCat.categoryId === selectedCategoryId,
     );
-  }, [locationSubCat, variantName]);
+  }, [locationSubCat, variantName, selectedCategoryId]);
 
-  // Automatically select the first subcategory when variant changes or filteredSubCategories change
+  // Automatically select the first subcategory when variant or subcategories change
   useEffect(() => {
+    console.log("Selecting default subcategory");
     if (filteredSubCategories.length > 0) {
       setSelectedSubCategoryId(filteredSubCategories[0]._id);
+    } else {
+      setSelectedSubCategoryId(null); // No subcategories available
     }
   }, [filteredSubCategories, setSelectedSubCategoryId]);
 
+  // Quick reload by navigating to the same route
+  const quickReload = () => {
+    console.log("Triggering quick reload using navigate");
+    navigate(0); // Navigate to the same page for a quick reload
+  };
+
   // Toggle description visibility for services
   const toggleDescription = (serviceId) => {
+    console.log("Toggling description for service: ", serviceId);
     setDescriptionVisibility((prevState) => ({
       ...prevState,
       [serviceId]: !prevState[serviceId],
@@ -123,6 +137,7 @@ const Services = () => {
 
   // Handle Add to Cart functionality with login check
   const handleAddToCart = (serviceId, categoryId, subCategoryId) => {
+    console.log("Handling Add to Cart for service: ", serviceId);
     if (!isAuthenticated) {
       setLoginVisible(true);
       return;
@@ -131,36 +146,46 @@ const Services = () => {
   };
 
   const closeModal = () => {
+    console.log("Closing modal");
     setLoginVisible(false);
   };
 
   // Handle variant selection
   const handleVariant = (variantname) => {
+    console.log("Handling variant selection: ", variantname);
     setVariantName(variantname);
   };
 
   // Open the service detail popup
   const handleKnowMoreClick = (serviceId) => {
+    console.log("Opening service details for: ", serviceId);
     setSelectedServiceId(serviceId);
     setIsPopupOpen(true);
   };
 
   const handleClosePopup = () => {
+    console.log("Closing service details popup");
     setIsPopupOpen(false);
     setSelectedServiceId(null);
   };
 
-  // Display services or error message inside "services-display" div
-  const displayServices = (serviceData) => {
-    if (!Array.isArray(serviceData) || serviceData.length === 0) {
+  // Display matched services or error message inside "services-display" div
+  const displayServices = () => {
+    console.log("Displaying services");
+    if (
+      !selectedSubCategoryId ||
+      !Array.isArray(matchedData) ||
+      matchedData.length === 0
+    ) {
+      console.log("No matching services found");
       return (
         <div className="services-display">
-          <h5>Error: No services found for the selected subcategory.</h5>
+          <h5>No matching services found for the selected subcategory.</h5>
         </div>
       );
     }
 
-    return serviceData.map((service) => {
+    return matchedData.map((service) => {
       const isExpanded = descriptionVisibility[service._id];
 
       return (
@@ -224,11 +249,12 @@ const Services = () => {
 
   // Filter category data to render UI variant buttons
   const filteredCategoryData = useMemo(() => {
+    console.log("Filtering category data");
     return categoryData.filter((item) => item._id === selectedCategoryId);
   }, [categoryData, selectedCategoryId]);
 
   return (
-    <div className="services">
+    <div className="services" key={forceRender}>
       {/* Ensure ScrollableTabs always renders, even if services are not found */}
       <ScrollableTabs />
 
@@ -299,9 +325,7 @@ const Services = () => {
               <p>No subcategories available for this filter.</p>
             )}
           </div>
-          <div className="services-display">
-            {displayServices(locationServices)}
-          </div>
+          <div className="services-display">{displayServices()}</div>
         </div>
         <div className="cart">
           <CartSummary />
@@ -327,6 +351,11 @@ const Services = () => {
           </div>,
           document.getElementById("modal-root"),
         )}
+
+      {/* Quick Reload Button */}
+      <div className="reset-button-container">
+        <button onClick={quickReload}>Quick Reload</button>
+      </div>
     </div>
   );
 };

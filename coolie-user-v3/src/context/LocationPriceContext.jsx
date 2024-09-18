@@ -46,8 +46,19 @@ export const LocationPriceProvider = ({ children }) => {
     return null;
   };
 
+  // Function to clear stored data when new geocode is fetched
+  const clearStoredData = () => {
+    sessionStorage.removeItem("customPriceData");
+    sessionStorage.removeItem("districtPriceData");
+    customPriceDataRef.current = null;
+    districtPriceDataRef.current = null;
+  };
+
   // Function to fetch geocode data based on latitude and longitude
   const fetchGeocodeData = async (lat, lng) => {
+    // Clear old data before starting a new fetch
+    clearStoredData();
+
     const apiUrl = "https://maps.googleapis.com/maps/api/geocode/json";
     const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -100,7 +111,11 @@ export const LocationPriceProvider = ({ children }) => {
 
       console.log("Updated location data:", locationRef.current);
 
-      // Fetch price data based on the extracted postal code and administrative levels
+      // Persist latitude and longitude in session storage
+      sessionStorage.setItem("latitude", lat);
+      sessionStorage.setItem("longitude", lng);
+
+      // Now fetch new pricing data after clearing the old one
       await fetchPriceData(
         extractedPostalCode,
         extractedAdminLevel3,
@@ -164,7 +179,6 @@ export const LocationPriceProvider = ({ children }) => {
             customPriceFetched = true;
             console.log("Custom price data found:", customPriceDataRef.current);
             compressAndStore("customPriceData", priceResponse.data);
-            toast.success("Custom pricing found for this location.");
           }
         } catch (err) {
           handlePricingError(err, postalCode, "custom");
@@ -183,7 +197,7 @@ export const LocationPriceProvider = ({ children }) => {
 
       if (!customPriceFetched && !districtPriceFetched) {
         setError("No pricing data available for this location.");
-        toast.error("We are not serving at this location.");
+        console.error("We are not serving at this location.");
       }
 
       setLoading(false);
@@ -191,7 +205,6 @@ export const LocationPriceProvider = ({ children }) => {
       setError("Failed to fetch price data.");
       setLoading(false);
       console.error("Error fetching price data:", err);
-      toast.error("Failed to fetch pricing data.");
     }
   };
 
@@ -214,7 +227,7 @@ export const LocationPriceProvider = ({ children }) => {
           districtPriceDataRef.current = priceResponse.data;
           districtPriceFetched = true;
           compressAndStore("districtPriceData", priceResponse.data);
-          toast.success("District pricing found for Admin Level 3.");
+          console.log("District pricing found for Admin Level 3.");
         }
       } catch (err) {
         handlePricingError(err, adminLevel3, "district");
@@ -231,7 +244,7 @@ export const LocationPriceProvider = ({ children }) => {
           districtPriceDataRef.current = priceResponse.data;
           districtPriceFetched = true;
           compressAndStore("districtPriceData", priceResponse.data);
-          toast.success("District pricing found for Admin Level 2.");
+          console.log("District pricing found for Admin Level 2.");
         }
       } catch (err) {
         handlePricingError(err, adminLevel2, "district");
@@ -248,7 +261,7 @@ export const LocationPriceProvider = ({ children }) => {
           districtPriceDataRef.current = priceResponse.data;
           districtPriceFetched = true;
           compressAndStore("districtPriceData", priceResponse.data);
-          toast.success("District pricing found for Admin Level 1.");
+          console.log("District pricing found for Admin Level 1.");
         }
       } catch (err) {
         handlePricingError(err, adminLevel1, "district");
@@ -265,11 +278,18 @@ export const LocationPriceProvider = ({ children }) => {
           districtPriceDataRef.current = priceResponse.data;
           districtPriceFetched = true;
           compressAndStore("districtPriceData", priceResponse.data);
-          toast.success("District pricing found for locality.");
+          console.log("District pricing found for locality.");
         }
       } catch (err) {
         handlePricingError(err, locality, "locality");
       }
+    }
+
+    // Show toast if district pricing is found
+    if (districtPriceFetched) {
+      toast.success("District pricing found.");
+    } else {
+      console.error("No district pricing found at any level.");
     }
   };
 
@@ -282,27 +302,35 @@ export const LocationPriceProvider = ({ children }) => {
     }
   };
 
-  // Automatically fetch user's geolocation when the app loads
+  // Automatically fetch user's geolocation when the app loads, only if location isn't already stored
   useEffect(() => {
-    const fetchUserLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            fetchGeocodeData(latitude, longitude);
-          },
-          (error) => {
-            console.error("Error getting location:", error);
-            setError("Failed to retrieve location");
-          },
-        );
-      } else {
-        console.error("Geolocation is not supported by this browser.");
-        setError("Geolocation is not supported");
-      }
-    };
+    const storedLatitude = sessionStorage.getItem("latitude");
+    const storedLongitude = sessionStorage.getItem("longitude");
 
-    fetchUserLocation();
+    if (!storedLatitude || !storedLongitude) {
+      const fetchUserLocation = () => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+              fetchGeocodeData(latitude, longitude);
+            },
+            (error) => {
+              console.error("Error getting location:", error);
+              setError("Failed to retrieve location");
+            },
+          );
+        } else {
+          console.error("Geolocation is not supported by this browser.");
+          setError("Geolocation is not supported");
+        }
+      };
+
+      fetchUserLocation();
+    } else {
+      // Fetch pricing if location is already in sessionStorage
+      fetchGeocodeData(storedLatitude, storedLongitude);
+    }
   }, []);
 
   return (
@@ -320,4 +348,3 @@ export const LocationPriceProvider = ({ children }) => {
     </LocationPriceContext.Provider>
   );
 };
-
