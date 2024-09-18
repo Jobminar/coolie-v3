@@ -1,39 +1,12 @@
-import React, { useContext, useEffect, memo, useState } from "react";
+import React, { useContext, useEffect, memo } from "react";
 import { CartContext } from "../../context/CartContext";
 import CartFooter from "./CartFooter";
 import deleteIcon from "../../assets/images/Delete.png";
 import DurationLogo from "../../assets/images/timer.svg";
-import { useAuth } from "../../context/AuthContext"; // Import useAuth for address check
 import "./CartItems.css";
-import "bootstrap/dist/css/bootstrap.min.css"; // Bootstrap styling
 
 const CartItems = ({ onNext }) => {
-  const { cartItems, removeFromCart, updateQuantity, clearCart } =
-    useContext(CartContext);
-  const { userLocation, userCity } = useAuth(); // Get userLocation and userCity from AuthContext
-  const [addressChanged, setAddressChanged] = useState(false); // State to track if address has changed
-
-  useEffect(() => {
-    // Assuming we store the user's previous address in sessionStorage
-    const previousCity = sessionStorage.getItem("previousCity");
-    const previousLatitude = sessionStorage.getItem("previousLatitude");
-    const previousLongitude = sessionStorage.getItem("previousLongitude");
-
-    // Check if address has changed
-    if (
-      userCity !== previousCity ||
-      userLocation?.latitude !== previousLatitude ||
-      userLocation?.longitude !== previousLongitude
-    ) {
-      setAddressChanged(true); // Set flag if address has changed
-      clearCart(); // Clear the cart when the address changes
-    }
-
-    // Update sessionStorage with the latest address
-    sessionStorage.setItem("previousCity", userCity);
-    sessionStorage.setItem("previousLatitude", userLocation?.latitude || "");
-    sessionStorage.setItem("previousLongitude", userLocation?.longitude || "");
-  }, [userLocation, userCity, clearCart]);
+  const { cartItems, removeFromCart, updateQuantity } = useContext(CartContext);
 
   useEffect(() => {
     // Log cartItems to see updates
@@ -42,31 +15,6 @@ const CartItems = ({ onNext }) => {
 
   return (
     <div className="cart-items">
-      {/* Show warning message when address has changed */}
-      {addressChanged && (
-        <div
-          className="alert alert-warning d-flex align-items-center"
-          role="alert"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            fill="currentColor"
-            className="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"
-            viewBox="0 0 16 16"
-            role="img"
-            aria-label="Warning"
-          >
-            <path d="M8.982 1.566a1.5 1.5 0 0 1 2.36 0l6.857 11.999a1.5 1.5 0 0 1-1.18 2.434H1.88a1.5 1.5 0 0 1-1.18-2.434L7.556 1.566zM8 5.982a.5.5 0 0 0-.5.5v3.016a.5.5 0 0 0 1 0V6.482a.5.5 0 0 0-.5-.5zm0 5.52a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5z" />
-          </svg>
-          <div>
-            <strong>Your address has been changed.</strong> Please explore new
-            services available at your location and add them to your cart again.
-          </div>
-        </div>
-      )}
-
       <div className="cart-items-container">
         {cartItems.map((cart) =>
           Array.isArray(cart.items)
@@ -129,7 +77,6 @@ const CartItems = ({ onNext }) => {
             : null,
         )}
       </div>
-
       <CartFooter onNext={onNext} />
     </div>
   );

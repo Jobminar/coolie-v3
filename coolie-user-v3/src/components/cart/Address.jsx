@@ -20,10 +20,11 @@ import AddressForm from "./AddressForm";
 import LocationModal from "./LocationModal";
 import { CartContext } from "../../context/CartContext";
 import { OrdersContext } from "../../context/OrdersContext";
-const { clearCart } = useContext(CartContext); // Import clearCart function from CartContext
+
 import DeleteIcon from "../../assets/images/Delete.png"; // Import the delete icon
 
 const Address = ({ onNext }) => {
+  const { clearCart } = useContext(CartContext); // Import clearCart function from CartContext
   const { user, updateUserLocation, phone } = useAuth(); // Added updateUserLocation
   const { totalItems, totalPrice } = useContext(CartContext);
   const { updateSelectedAddressId } = useContext(OrdersContext);

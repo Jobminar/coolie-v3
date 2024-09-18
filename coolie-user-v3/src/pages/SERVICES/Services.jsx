@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect, useRef, useMemo } from "react";
 import ReactDOM from "react-dom";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for page reload
+
 import "./Services.css";
 import ScrollableTabs from "./ScrollableTabs";
 import { CategoryContext } from "../../context/CategoryContext";
@@ -26,7 +26,6 @@ const Services = () => {
   const { customPriceData, districtPriceData } = useLocationPrice();
   const { handleCart } = useContext(CartContext);
   const { isAuthenticated } = useAuth();
-  const navigate = useNavigate(); // Initialize the navigate hook for navigation
 
   const [descriptionVisibility, setDescriptionVisibility] = useState({});
   const [isLoginVisible, setLoginVisible] = useState(false);
@@ -119,12 +118,6 @@ const Services = () => {
       setSelectedSubCategoryId(null); // No subcategories available
     }
   }, [filteredSubCategories, setSelectedSubCategoryId]);
-
-  // Quick reload by navigating to the same route
-  const quickReload = () => {
-    console.log("Triggering quick reload using navigate");
-    navigate(0); // Navigate to the same page for a quick reload
-  };
 
   // Toggle description visibility for services
   const toggleDescription = (serviceId) => {
@@ -351,11 +344,6 @@ const Services = () => {
           </div>,
           document.getElementById("modal-root"),
         )}
-
-      {/* Quick Reload Button */}
-      <div className="reset-button-container">
-        <button onClick={quickReload}>Quick Reload</button>
-      </div>
     </div>
   );
 };
