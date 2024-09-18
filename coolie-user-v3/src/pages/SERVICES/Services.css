@@ -193,143 +193,104 @@
 
 .sub-category-service-item {
     width: 90%;
-    min-height: 4rem;
+    min-height: 10rem;
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* border: 1px solid black; */
+    margin-top: 1rem;
+    padding: 0.5rem;
+    display: grid;
+    grid-template-columns: 63% 37%;
+    justify-content: space-evenly;
+}
+.ser-content{
+    /* border: 1px solid black; */
+    padding: 0.3rem;
+}
+.ser-content h2{
+    font-family: Roboto;
+    font-size: 15.54px;
+    font-weight: 700;
+    line-height: 20.01px;
+    text-align: left;
+    margin: 0px;
+
+}
+.ser-price{
+    font-family: Roboto;
+font-size: 15.4px;
+font-weight: 400;
+line-height: 15.67px;
+text-align: left;
+margin: 10px 0px;
+
+}
+.dashed{
+    border: 1px dashed gray;
+    margin: 0px;
+}
+.description{
+    font-family: Roboto;
+font-size: 10px;
+font-weight: 300;
+line-height: 15.81px;
+text-align: left;
+margin: 5px;
+
+}
+.know-more{
+    border: none;
+    background-color: none;
+    color: #D16611;
+}
+.know-more:hover{
+    cursor: pointer;
+}
+.ser-img{
+    /* border: 1px solid black; */
     display: flex;
     flex-direction: column;
-    margin-top: 1rem;
-    padding: 0.1rem;
-    text-align: center;
-    border: 1px solid black;
+    justify-content: center;
+    align-items: center;
 }
-
-.service-icon-container {
-    width: auto;
-    height: 4.76rem;
+.ser-image-con {
     width: 90%;
-}
-
-.service-icon-container img {
-    width: 100%;
-    height: 100%;
+    height: 90%;
+    /* border: 1px solid black; */
+    position: relative;
     border-radius: 10px;
 }
 
-.service-main-head {
-    padding: 0.2rem 0.5rem;
-    display: grid;
-    height: auto;
-    grid-template-columns: 20% 60% 20%;
-    align-items: center;
-    min-height: 6rem;
-}
-
-.service-content {
+.ser-image-con img {
+    border-radius: 10px;
     width: 100%;
-    height: 100%;
-    display: grid;
-    grid-template-rows: 45% 55%;
-    padding: 0px 5px;
+    height: 100%; /* Image takes up 90% of the container */
 }
 
-.service-content h5 {
-    font-family: Roboto;
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 17.58px;
-    text-align: left;
-    margin: 0px 10px;
-    height: 100%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-
-}
-
-.service-levels {
-    display: grid;
-    grid-template-rows: 50% 50%;
-    padding: 0px;
-    margin: 0px 10px;
-    height: 100%;
-}
-
-.service-levels p {
-    margin: 0px;
-    padding: 0px;
-    font-family: Roboto;
-    font-size: 13px;
-    font-weight: 300;
-    line-height: 15.23px;
-    text-align: left;
-}
-
-.dropdown {
-    width: 100%;
-    height: 70%;
-    display: flex;
-    justify-content: flex-end;
-    margin-right: 15px;
-    align-items: center;
-}
-
-.dropdown-con {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    height: 100%;
-    margin-bottom: 12px;
-}
-
-.dropdown-con button {
-    width: 4.5rem;
-    height: 2.1rem;
+.add-button {
     background-color: white;
-    border: 1.48px solid #7c7c7c;
-    border-radius: 6px;
-    font-family: Roboto, sans-serif;
-    font-size: 14px;
-    font-weight: 600;
+    border: 1px solid #D16611;
+    padding: 0.3rem;
+    width: 4rem;
+    font-family: Roboto;
+    font-size: 10.97px;
+    font-weight: 500;
+    line-height: 9.34px;
     text-align: center;
-    color: #000;
-    cursor: pointer;
-    margin-right: 0.5rem;
-}
+    border-radius: 5px;
+  
 
-.dropdown-con button:hover {
-    background-color: #f0f0f0;
-    border-color: #e3e3e3;
-    color: #000000;
-    border: 1px solid #95959592;
+   
 }
-
-.description {
-    font-family: Poppins, sans-serif;
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 18px;
-    text-align: left;
-    padding: 1rem;
-    padding-right: 5rem;
-}
-
-.description button {
-    background: none;
-    border: none;
-    color: #D16611;
-    font-family: Roboto, sans-serif;
-    font-size: 13px;
-    font-weight: 400;
-    padding: 0;
+.add-button:hover{
     cursor: pointer;
 }
 
-.description button:hover {
-    color: #0056b3;
-}
+
+
+
+
 
 .variant {
     display: flex;

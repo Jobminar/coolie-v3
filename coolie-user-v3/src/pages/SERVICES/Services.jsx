@@ -44,29 +44,34 @@ const Services = () => {
   }, [districtPriceData, customPriceData, locationServices]);
 
   // Match services with pricing data based on district or custom pricing
-  useEffect(() => {
-    console.log("Matching services with pricing data");
-    if (locationServices.length > 0 && (districtPriceData || customPriceData)) {
-      const matched = locationServices.filter(
-        (service) =>
-          districtPriceData.some(
-            (price) =>
-              price.servicename === service.name &&
-              price.subcategory === service.subCategoryId?.name,
-          ) ||
-          customPriceData.some(
-            (price) =>
-              price.servicename === service.name &&
-              price.subcategory === service.subCategoryId?.name,
-          ),
-      );
-      console.log("Matched services: ", matched);
-      setMatchedData(matched); // Store matched data in state
-    } else {
-      console.log("No matched services.");
-      setMatchedData([]); // Reset if no matching services
-    }
-  }, [districtPriceData, customPriceData, locationServices]);
+  // useEffect(() => {
+  //   console.log("Matching services with pricing data");
+  //   if (locationServices.length > 0 && (districtPriceData || customPriceData)) {
+  //     const matched = locationServices.filter(
+  //       (service) =>
+  //         districtPriceData.some(
+  //           (price) =>
+  //             price.servicename === service.name &&
+  //             price.subcategory === service.subCategoryId?.name,
+  //         ) ||
+  //         customPriceData.some(
+  //           (price) =>
+  //             price.servicename === service.name &&
+  //             price.subcategory === service.subCategoryId?.name,
+  //         ),
+  //     );
+  //     console.log("Matched services: ", matched);
+  //     setMatchedData(matched); // Store matched data in state
+  //   } else {
+  //     console.log("No matched services.");
+  //     setMatchedData([]); // Reset if no matching services
+  //   }
+  // }, [districtPriceData, customPriceData, locationServices]);
+
+  useEffect(()=>{
+    console.log(locationServices,'location services in service page')
+  },[locationServices])
+
 
   // Handle UI variants and set the default variant when category changes
   useEffect(() => {
@@ -163,17 +168,17 @@ const Services = () => {
   };
 
   // Display matched services or error message inside "services-display" div
-  const displayServices = () => {
-    console.log("Displaying services");
+  const displayServices = (matchedData) => {
+    console.log(matchedData,"Displaying services in service page function");
     if (
       !selectedSubCategoryId ||
       !Array.isArray(matchedData) ||
-      matchedData.length === 0
+      locationServices.length === 0
     ) {
       console.log("No matching services found");
       return (
         <div className="services-display">
-          <h5>No matching services found for the selected subcategory.</h5>
+          <h5>No matching services found for this .</h5>
         </div>
       );
     }
@@ -182,59 +187,35 @@ const Services = () => {
       const isExpanded = descriptionVisibility[service._id];
 
       return (
-        <div key={service._id} className="sub-category-service-item">
-          <div className="service-main-head">
-            <div
-              className={`service-icon-container ${
-                selectedSubCategoryId === service.subCategoryId._id
-                  ? "active"
-                  : ""
-              }`}
-            >
-              <img
-                src={service.image}
-                alt={service.subCategoryId.name}
-                className="tab-image"
-              />
+        <div key={service.service._id} className="sub-category-service-item">
+            <div className="ser-content">
+                <h2>{service.service.name}</h2>
+                <p className="ser-price">Starts at:<span> &#8377; {service.districtPrice.price?.None || "N/A"}</span></p>
+                <div className="dashed"></div>
+                <p className="description">
+                  {service.service.description.slice(0, 100)}...
+                  <div className="know-more" >
+                    Know More
+                  </div>
+                </p>
             </div>
-            <div className="service-content">
-              <h5>{service.name}</h5>
-            </div>
-            <div className="dropdown-con">
-              <div
-                className="dropdown"
-                onClick={() => toggleDescription(service._id)}
-              >
-                <img src={dropdown} alt="dropdown" />
-              </div>
-              <button
+            <div className="ser-img">
+                <div className="ser-image-con">
+                    <img className="image" src={service.service.image}/>
+                </div>
+                <button
+                className="add-button"
                 onClick={() =>
                   handleAddToCart(
-                    service._id,
-                    service.categoryId._id,
-                    service.subCategoryId._id,
+                    service.service._id,
+                    service.service.categoryId._id,
+                    service.service.subCategoryId._id,
                   )
                 }
               >
                 ADD
               </button>
             </div>
-          </div>
-          <div
-            className="description"
-            style={{
-              display: isExpanded ? "block" : "none",
-            }}
-          >
-            {service.description.length > 100
-              ? service.description.slice(0, 30) + "..."
-              : service.description}
-            {service.description.length > 30 && (
-              <button onClick={() => handleKnowMoreClick(service._id)}>
-                Know More
-              </button>
-            )}
-          </div>
         </div>
       );
     });
@@ -318,7 +299,7 @@ const Services = () => {
               <p>No subcategories available for this filter.</p>
             )}
           </div>
-          <div className="services-display">{displayServices()}</div>
+          <div className="services-display">{displayServices(locationServices)}</div>
         </div>
         <div className="cart">
           <CartSummary />
