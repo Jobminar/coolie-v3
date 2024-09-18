@@ -26,7 +26,6 @@ const Services = () => {
   const { customPriceData, districtPriceData } = useLocationPrice();
   const { handleCart } = useContext(CartContext);
   const { isAuthenticated } = useAuth();
-  const navigate = useNavigate(); // Initialize the navigate hook for navigation
 
   const [descriptionVisibility, setDescriptionVisibility] = useState({});
   const [isLoginVisible, setLoginVisible] = useState(false);
