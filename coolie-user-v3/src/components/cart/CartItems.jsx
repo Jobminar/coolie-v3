@@ -1,202 +1,85 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowUpFromBracket,
-  faTimes,
-} from "@fortawesome/free-solid-svg-icons";
-// Assuming you have a CSS file for styling
+import React, { useContext, useEffect, memo } from "react";
+import { CartContext } from "../../context/CartContext";
+import CartFooter from "./CartFooter";
+import deleteIcon from "../../assets/images/Delete.png";
+import DurationLogo from "../../assets/images/timer.svg";
+import "./CartItems.css";
 
-const CategoryForm = ({
-  categoryName,
-  setCategoryName,
-  categoryError,
-  handleCategoryIconChange,
-  categoryIcon,
-  handleAddCategory,
-  setUiVariants,
-  onClose, // Close handler passed as a prop
-}) => {
-  const [serviceTypeSelection, setServiceTypeSelection] = useState("");
-  const [imageError, setImageError] = useState("");
+const CartItems = ({ onNext }) => {
+  const { cartItems, removeFromCart, updateQuantity } = useContext(CartContext);
 
-  const handleServiceTypeChange = (e) => {
-    setServiceTypeSelection(e.target.value);
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageError("");
-      handleCategoryIconChange(e);
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const selectedUiVariants = [];
-
-    switch (serviceTypeSelection) {
-      case "Cleaning":
-        selectedUiVariants.push("Normal", "Deep");
-        break;
-      case "Gender":
-        selectedUiVariants.push("Female", "Male");
-        break;
-      case "Time":
-        selectedUiVariants.push("Hourly", "Daily", "Monthly");
-        break;
-      case "Cloth":
-        selectedUiVariants.push("Men", "Women", "Kids", "Households");
-        break;
-      case "None":
-        selectedUiVariants.push("None");
-        break;
-      default:
-        break;
-    }
-
-    setUiVariants(selectedUiVariants);
-    handleAddCategory(selectedUiVariants);
-  };
+  useEffect(() => {
+    // Log cartItems to see updates
+    console.log("CartItems updated:", cartItems);
+  }, [cartItems]);
 
   return (
-    <form
-      className="servermanager-card servermanager-add-category-form"
-      onSubmit={handleSubmit}
-    >
-      <div className="servermanager-form-group">
-        <div className="servermanager-category-header">
-          <span>Add Category</span>
-          <button
-            type="button"
-            className="servermanager-close-icon"
-            onClick={onClose}
-          >
-            <FontAwesomeIcon icon={faTimes} />
-          </button>
-        </div>
+    <div className="cart-items">
+      <div className="cart-items-container">
+        {cartItems.map((cart) =>
+          Array.isArray(cart.items)
+            ? cart.items.map((item) => {
+                const serviceName =
+                  item.serviceId?.name || "Service Name Unavailable";
+                const serviceVariant = item.serviceId?.serviceVariants?.[0];
+                const serviceTime = serviceVariant?.serviceTime || "N/A";
+                const price = serviceVariant?.price || 0;
+
+                return (
+                  <div key={item._id} className="cart-item">
+                    <div className="item-details">
+                      <h4 id="service-name">{serviceName}</h4>
+                      <span className="duration-items">
+                        <img id="timer" src={DurationLogo} alt="clock" />
+                        <h4>{serviceTime} min</h4>
+                        <h4>{item.quantity} Item</h4>
+                      </span>
+                    </div>
+                    <div className="item-actions">
+                      <div className="item-action-top">
+                        <p className="item-price">₹{price}</p>
+                        <button
+                          className="delete-btn"
+                          onClick={() => removeFromCart(item._id)}
+                        >
+                          <img src={deleteIcon} alt="Delete" />
+                        </button>
+                      </div>
+                      <div className="quantity">
+                        <button
+                          id="quantitybtn"
+                          onClick={() =>
+                            updateQuantity(
+                              item._id,
+                              Math.max(1, item.quantity - 1),
+                            )
+                          }
+                        >
+                          -
+                        </button>
+                        <span id="quantity-text">{item.quantity}</span>
+                        <button
+                          id="quantitybtn"
+                          onClick={() =>
+                            updateQuantity(
+                              item._id,
+                              Math.min(4, item.quantity + 1),
+                            )
+                          }
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            : null,
+        )}
       </div>
-      <div className="servermanagerinput-wrapper">
-        <div className="servermanagerinputcontainer">
-          <label htmlFor="categoryName">Category Name:</label>
-          <input
-            type="text"
-            id="categoryName"
-            className="servermanager-bottom-border-input"
-            value={categoryName}
-            onChange={(e) => setCategoryName(e.target.value)}
-            aria-label="Category Name"
-          />
-          {categoryError && <span className="error">{categoryError}</span>}
-        </div>
-        <div className="servermanageruploadcontainer">
-          <input
-            type="file"
-            id="categoryIcon"
-            onChange={handleFileChange}
-            className="servermanager-file-upload"
-            aria-label="Category Icon"
-          />
-          <label
-            htmlFor="categoryIcon"
-            className="servermanager-upload-icon-label"
-          >
-            Choose Icon
-            <FontAwesomeIcon
-              icon={faArrowUpFromBracket}
-              className="servermanager-upload-icon"
-            />
-          </label>
-          {imageError && <span className="error">{imageError}</span>}
-          {categoryIcon && (
-            <img
-              src={URL.createObjectURL(categoryIcon)}
-              alt="Category Icon Preview"
-              className="servermanager-upload-preview"
-            />
-          )}
-        </div>
-        <div className="servermanagerinputcontainer">
-          <label>Service Types:</label>
-          <div className="radio-group">
-            <label className="servermanager-radio-label">
-              <input
-                type="radio"
-                name="serviceType"
-                value="Cleaning"
-                checked={serviceTypeSelection === "Cleaning"}
-                onChange={handleServiceTypeChange}
-              />
-              Cleaning (Normal/Deep)
-            </label>
-            <label className="servermanager-radio-label">
-              <input
-                type="radio"
-                name="serviceType"
-                value="Gender"
-                checked={serviceTypeSelection === "Gender"}
-                onChange={handleServiceTypeChange}
-              />
-              Gender (Female/Male)
-            </label>
-            <label className="servermanager-radio-label">
-              <input
-                type="radio"
-                name="serviceType"
-                value="Time"
-                checked={serviceTypeSelection === "Time"}
-                onChange={handleServiceTypeChange}
-              />
-              Time (Hourly/Daily/Monthly)
-            </label>
-            <label className="servermanager-radio-label">
-              <input
-                type="radio"
-                name="serviceType"
-                value="Cloth"
-                checked={serviceTypeSelection === "Cloth"}
-                onChange={handleServiceTypeChange}
-              />
-              Cloth (Men/Women/Kids/Households)
-            </label>
-            <label className="servermanager-radio-label">
-              <input
-                type="radio"
-                name="serviceType"
-                value="None"
-                checked={serviceTypeSelection === "None"}
-                onChange={handleServiceTypeChange}
-              />
-              None
-            </label>
-          </div>
-        </div>
-      </div>
-      <div className="servermanager-submit-button-container">
-        {" "}
-        {/* Centering the button */}
-        <button
-          type="submit"
-          className="servermanager-submit-button"
-          aria-label="Add Category"
-        >
-          Add
-        </button>
-      </div>
-    </form>
+      <CartFooter onNext={onNext} />
+    </div>
   );
 };
 
-CategoryForm.propTypes = {
-  categoryName: PropTypes.string.isRequired,
-  setCategoryName: PropTypes.func.isRequired,
-  categoryError: PropTypes.string,
-  handleCategoryIconChange: PropTypes.func.isRequired,
-  categoryIcon: PropTypes.instanceOf(File),
-  handleAddCategory: PropTypes.func.isRequired,
-  setUiVariants: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
-};
-
-export default CategoryForm;
+export default memo(CartItems);
