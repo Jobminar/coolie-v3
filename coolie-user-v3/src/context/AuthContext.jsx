@@ -69,7 +69,15 @@ export const AuthProvider = ({ children }) => {
       });
     }
   }, [userLocation, fetchGeocodeData]);
+  //update the window reload whern user city updates
+  useEffect(() => {
+    if (userCity && sessionStorage.getItem("selectedCity") !== userCity) {
+      sessionStorage.setItem("selectedCity", userCity);
 
+      // Reload the page when userCity changes
+      window.location.reload(); // Trigger a reload when userCity changes
+    }
+  }, [userCity]);
   useEffect(() => {
     if (userCity) {
       // sessionStorage.setItem("selectedCity", userCity);
