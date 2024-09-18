@@ -6,10 +6,10 @@ import { FaRegCheckCircle, FaCrosshairs } from "react-icons/fa";
 import { TailSpin } from "react-loader-spinner";
 
 // Google Maps API key
-const googleApiKey = import.meta.env.VITE_FIREBASE_Google_Api;
+const googleApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 const LocationModal = ({ onLocationSelect, onClose }) => {
-  const { userLocation, userCity } = useAuth();
+  const { userLocation } = useAuth(); // Use userLocation from AuthContext
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const [inputValue, setInputValue] = useState("");
@@ -28,12 +28,10 @@ const LocationModal = ({ onLocationSelect, onClose }) => {
   });
 
   useEffect(() => {
-    console.log("Loading Google Maps script...");
     const script = document.createElement("script");
     script.src = `https://maps.googleapis.com/maps/api/js?key=${googleApiKey}&libraries=places`;
     script.async = true;
     script.onload = () => {
-      console.log("Google Maps script loaded, initializing map...");
       initializeMap();
     };
     script.onerror = () => {
@@ -43,7 +41,6 @@ const LocationModal = ({ onLocationSelect, onClose }) => {
   }, []);
 
   const initializeMap = () => {
-    console.log("Initializing map with location:", tempLocation);
     const initialLocation = {
       lat: tempLocation.latitude || userLocation?.latitude || 0,
       lng: tempLocation.longitude || userLocation?.longitude || 0,
@@ -52,7 +49,7 @@ const LocationModal = ({ onLocationSelect, onClose }) => {
     const map = new window.google.maps.Map(mapContainerRef.current, {
       center: initialLocation,
       zoom: 12,
-      streetViewControl: false, // Disable the Pegman (Street View) control
+      streetViewControl: false, // Disable Street View control
     });
 
     mapInstanceRef.current = map;
@@ -71,7 +68,6 @@ const LocationModal = ({ onLocationSelect, onClose }) => {
 
     fetchAddress(initialLocation.lat, initialLocation.lng).then(
       (fetchedAddress) => {
-        console.log("Initial address fetched:", fetchedAddress);
         setAddress(fetchedAddress);
       },
     );
@@ -82,7 +78,6 @@ const LocationModal = ({ onLocationSelect, onClose }) => {
       const lat = position.lat();
       const lng = position.lng();
       setTempLocation({ latitude: lat, longitude: lng });
-      console.log("Marker dragged to:", lat, lng);
       const fetchedAddress = await fetchAddress(lat, lng);
       setAddress(fetchedAddress);
     });
@@ -93,7 +88,6 @@ const LocationModal = ({ onLocationSelect, onClose }) => {
       const lng = e.latLng.lng();
       newMarker.setPosition(e.latLng);
       setTempLocation({ latitude: lat, longitude: lng });
-      console.log("Map clicked at:", lat, lng);
       const fetchedAddress = await fetchAddress(lat, lng);
       setAddress(fetchedAddress);
     });
@@ -112,7 +106,6 @@ const LocationModal = ({ onLocationSelect, onClose }) => {
       map.setCenter(place.geometry.location);
       setTempLocation({ latitude, longitude });
 
-      console.log("Search result selected:", latitude, longitude);
       fetchAddress(latitude, longitude).then((fetchedAddress) => {
         setAddress(fetchedAddress);
       });
@@ -121,7 +114,7 @@ const LocationModal = ({ onLocationSelect, onClose }) => {
     // Add control to recenter map and marker to current location
     const recenterControlDiv = document.createElement("div");
     recenterControlDiv.classList.add("recenter-control");
-    recenterControlDiv.appendChild(<FaCrosshairs />); // Add icon directly
+    recenterControlDiv.innerHTML = `<div class="recenter-icon"><i class="fa fa-crosshairs"></i></div>`; // Crosshairs icon
 
     // Recenter control functionality
     recenterControlDiv.addEventListener("click", () => {
@@ -131,12 +124,9 @@ const LocationModal = ({ onLocationSelect, onClose }) => {
         newMarker.setPosition({ lat: latitude, lng: longitude });
         setTempLocation({ latitude, longitude });
 
-        console.log("Recentered to current location:", latitude, longitude);
         fetchAddress(latitude, longitude).then((fetchedAddress) => {
           setAddress(fetchedAddress);
         });
-      } else {
-        console.warn("User location is not available.");
       }
     });
 
@@ -147,16 +137,13 @@ const LocationModal = ({ onLocationSelect, onClose }) => {
 
   const fetchAddress = async (latitude, longitude) => {
     try {
-      console.log("Fetching address for coordinates:", latitude, longitude);
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${googleApiKey}`,
       );
       const data = await response.json();
-      console.log("Geocoding API response:", data); // Log the API response for debugging
       if (data.results.length > 0) {
         return data.results[0].formatted_address;
       }
-      console.warn("No address found for coordinates:", latitude, longitude);
       return "Unknown location";
     } catch (error) {
       console.error("Failed to fetch address:", error);
@@ -176,19 +163,14 @@ const LocationModal = ({ onLocationSelect, onClose }) => {
       finalLng = userLocation.longitude;
     }
 
-    console.log("Confirming location with coordinates:", finalLat, finalLng);
     const fetchedAddress = await fetchAddress(finalLat, finalLng);
+    console.log("fetchedAddress in LocationModal", fetchedAddress);
     onLocationSelect({
       address: fetchedAddress,
-      city: userCity,
       latitude: finalLat,
       longitude: finalLng,
     });
     setLoading(false);
-    console.log("Location confirmed:", {
-      latitude: finalLat,
-      longitude: finalLng,
-    });
   };
 
   return (
@@ -220,7 +202,6 @@ const LocationModal = ({ onLocationSelect, onClose }) => {
           onChange={(e) => setInputValue(e.target.value)}
         />
       </div>
-      {/* map container */}
       <div id="map" className="map-container" ref={mapContainerRef}></div>
       <button
         className="gps-button"
@@ -231,7 +212,6 @@ const LocationModal = ({ onLocationSelect, onClose }) => {
             if (marker) marker.setPosition({ lat: latitude, lng: longitude });
             setTempLocation({ latitude, longitude });
             fetchAddress(latitude, longitude).then(setAddress);
-            console.log("Recentered to current location:", latitude, longitude);
           }
         }}
         title="Recenter to current location"

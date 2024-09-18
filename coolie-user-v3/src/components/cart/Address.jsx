@@ -8,7 +8,7 @@ import {
   faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
 import "./Address.css";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext"; // `useAuth` context includes `clearCart`
 import {
   saveAddress,
   getSavedAddresses,
@@ -20,22 +20,23 @@ import AddressForm from "./AddressForm";
 import LocationModal from "./LocationModal";
 import { CartContext } from "../../context/CartContext";
 import { OrdersContext } from "../../context/OrdersContext";
-
+import { confirmAlert } from "react-confirm-alert"; // Import confirm alert
+import "react-confirm-alert/src/react-confirm-alert.css"; // Import alert styles
 import DeleteIcon from "../../assets/images/Delete.png"; // Import the delete icon
 
 const Address = ({ onNext }) => {
-  const { clearCart } = useContext(CartContext); // Import clearCart function from CartContext
-  const { user, updateUserLocation, phone } = useAuth(); // Added updateUserLocation
-  const { totalItems, totalPrice } = useContext(CartContext);
+  const { phone } = useAuth(); // Removed clearCart from here
+  const { totalItems, totalPrice, handleLocationUpdate } =
+    useContext(CartContext); // Added handleLocationUpdate from CartContext
   const { updateSelectedAddressId } = useContext(OrdersContext);
-  const [cookies, setCookie] = useCookies(["location"]);
+  const [cookies] = useCookies(["location"]);
   const initialLocation = cookies.location || {};
 
-  const userId = user?._id || sessionStorage.getItem("userId") || "";
-
+  const userId = sessionStorage.getItem("userId") || ""; // Use sessionStorage for userId
+  console.log("phone number", phone);
   const [addressData, setAddressData] = useState({
     bookingType: "self",
-    name: user?.displayName || "",
+    name: "",
     mobileNumber: phone || sessionStorage.getItem("phone") || "",
     address: "",
     city: initialLocation.city || "Hyderabad",
@@ -51,6 +52,7 @@ const Address = ({ onNext }) => {
   const [showSavedAddresses, setShowSavedAddresses] = useState(true);
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [pendingAddress, setPendingAddress] = useState(null); // For storing selected address
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [filterBookingType, setFilterBookingType] = useState("");
   const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
@@ -61,15 +63,9 @@ const Address = ({ onNext }) => {
       if (userId) {
         try {
           const addresses = await getSavedAddresses(userId);
-          if (Array.isArray(addresses)) {
-            setSavedAddresses(addresses);
-          } else {
-            setSavedAddresses([addresses]);
-          }
-
-          // Automatically select the first address if there is only one
+          setSavedAddresses(addresses || []);
           if (addresses.length === 1) {
-            setSelectedAddress(addresses[0]);
+            setSelectedAddress(addresses[0]); // Automatically select the first address if only one
             updateSelectedAddressId(addresses[0]._id);
           }
         } catch (error) {
@@ -83,9 +79,40 @@ const Address = ({ onNext }) => {
 
   // Handle radio button change for selecting an address
   const handleRadioChange = (address) => {
-    setSelectedAddress(address);
-    setAddressData({ ...address, userId });
-    updateSelectedAddressId(address._id);
+    if (savedAddresses.length > 0) {
+      setPendingAddress(address); // Store the selected address temporarily
+
+      // Trigger the confirmation popup using `react-confirm-alert`
+      confirmAlert({
+        title: "Confirm Address",
+        message: `Do you want to use the selected address for this booking?`,
+        buttons: [
+          {
+            label: "Yes",
+            onClick: () => confirmClearCart(),
+          },
+          {
+            label: "No",
+            onClick: () => setPendingAddress(null), // Clear pending address
+          },
+        ],
+      });
+    }
+  };
+
+  // Confirm clearing the cart and updating the location
+  const confirmClearCart = () => {
+    if (!pendingAddress) return;
+
+    // Update address data and userId
+    setSelectedAddress(pendingAddress);
+    setAddressData({ ...pendingAddress, userId });
+
+    // Update the selected address ID in the orders context
+    updateSelectedAddressId(pendingAddress._id);
+
+    // Update the user's location and trigger cart clearing via CartContext
+    handleLocationUpdate(pendingAddress.latitude, pendingAddress.longitude);
   };
 
   // Handle save address
@@ -138,10 +165,6 @@ const Address = ({ onNext }) => {
       longitude: location.longitude,
       userId: userId,
     }));
-
-    // Update the location in AuthContext
-    updateUserLocation(location.latitude, location.longitude); // Call updateUserLocation
-    clearCart(); // Clear the cart on location change
     setShowLocationModal(false);
     setShowForm(true);
     setShowSavedAddresses(false);
@@ -149,13 +172,27 @@ const Address = ({ onNext }) => {
 
   // Parse address string into components
   const parseAddress = (fullAddress) => {
-    const parts = fullAddress.split(", ");
+    const pincodeRegex = /\b\d{6}\b/; // Regex to match 6-digit pincode
+    const pincodeMatch = fullAddress.match(pincodeRegex); // Find the pincode in the string
+    const pincode = pincodeMatch ? pincodeMatch[0] : "";
+
+    // Remove the pincode from the full address for further processing
+    let addressWithoutPincode = fullAddress.replace(pincode, "").trim();
+
+    // Split the address into parts based on commas
+    const parts = addressWithoutPincode.split(",").map((part) => part.trim());
+
+    const address = parts.slice(0, 2).join(", "); // First two parts for the address
+    const city = parts.length > 2 ? parts[parts.length - 3] : ""; // Third last part is city
+    const landmark = parts.length > 3 ? parts[parts.length - 4] : ""; // Fourth last part is landmark
+    const state = parts.length > 1 ? parts[parts.length - 2] : ""; // Second last part is state
+
     return {
-      address: parts.slice(0, 2).join(", "),
-      pincode: parts[2] || "",
-      city: parts[3] || "",
-      landmark: parts[4] || "",
-      state: parts[5] || "",
+      address,
+      city,
+      pincode,
+      landmark,
+      state,
     };
   };
 
