@@ -1,4 +1,3 @@
-// ToastManager.js
 import React, { useEffect, useState, useRef } from "react";
 import { toast, Toaster } from "react-hot-toast";
 import { ToastContext } from "../context/ToastContext";
@@ -24,9 +23,17 @@ const ToastManager = ({ children }) => {
 
     toast[type](message, {
       id: "global-toast", // Ensure the same toast ID
+      duration: 2000, // Customize the toast duration if needed
       onClose: () => {
         toastActive.current = false; // Mark toast as inactive
-        setToastQueue((queue) => queue.slice(1)); // Remove the current toast and process the next one
+        setToastQueue((queue) => queue.slice(1)); // Remove the current toast from the queue
+
+        // Add delay of 1.5 seconds before showing the next toast
+        setTimeout(() => {
+          if (toastQueue.length > 1) {
+            showNextToast();
+          }
+        }, 3000); // 1.5-second delay
       },
     });
   };

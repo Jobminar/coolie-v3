@@ -224,12 +224,12 @@ export const AuthProvider = ({ children }) => {
         const data = await response.json();
         console.log("the backend data after login", data);
         console.log("line 151 Login successful:", data);
-        const expirationTime = Date.now() + 60 * 60 * 1000;
+        const expirationTime = Date.now() + 12 * 60 * 60 * 1000;
         sessionStorage.setItem("jwtToken", data.token);
         sessionStorage.setItem("userId", data.user._id);
         sessionStorage.setItem("expirationTime", expirationTime);
         // sessionStorage.setItem("phone", data.user.phone);
-        setSessionTimeout(60 * 60 * 1000);
+        setSessionTimeout(12 * 60 * 60 * 1000);
         setUser(data.user);
         setIsAuthenticated(true);
         userIdRef.current = data.user._id; // Store userId in ref

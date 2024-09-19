@@ -73,7 +73,9 @@ const Header = ({ children }) => {
   } = useAuth(); // Use authentication context
 
   const { fetchGeocodeData } = useLocationPrice(); // Use location and price context to get geocode data
-
+  const previousCityRef = useRef(
+    sessionStorage.getItem("selectedCity") || userCity || "",
+  );
   const { totalItems } = useContext(CartContext); // Cart context to get number of items in cart
   const [isLoginVisible, setLoginVisible] = useState(false); // Control login modal visibility
   const [isChatbotVisible, setIsChatbotVisible] = useState(false); // Control chatbot visibility
@@ -89,7 +91,7 @@ const Header = ({ children }) => {
   const [isServiceFocused, setIsServiceFocused] = useState(false); // Focus state for service input
   const [cities, setCities] = useState([]); // City search results
   const [isMenuOpen, setIsMenuOpen] = useState(false); // Toggle mobile menu
-
+  const { clearCart } = useContext(CartContext);
   const timeoutRef = useRef(null); // Ref to control search input debounce
 
   useEffect(() => {
@@ -107,11 +109,7 @@ const Header = ({ children }) => {
   }, [selectedCity]);
 
   // Placeholder texts for typewriter effect in service search
-  const placeholders = [
-    " Room cleaning",
-    " Laundry",
-    " Gardening",
-  ];
+  const placeholders = [" Room cleaning", " Laundry", " Gardening"];
   const placeholder = useTypewriter(placeholders, isTyping); // Use typewriter effect for dynamic placeholder
 
   const handleProfileClick = () => {
@@ -187,13 +185,27 @@ const Header = ({ children }) => {
         {
           label: "Yes",
           onClick: () => {
+            // Store the previous city before updating
+            previousCityRef.current =
+              sessionStorage.getItem("selectedCity") || "";
+
+            // Update the selected city
             selectedCityRef.current = city.name;
             setSelectedCity(city.name);
             setLocationQuery(city.name);
+            sessionStorage.setItem("selectedCity", city.name); // Store selected city in sessionStorage
+
+            // Compare previous city with the new selected city
+            if (previousCityRef.current !== city.name) {
+              console.log(
+                `Previous city: ${previousCityRef.current}, New city: ${city.name}`,
+              );
+              clearCart(); // Call clearCart if cities are different
+            }
+
             setIsDropdownVisible(false);
             updateUserLocation(city.coordinates[1], city.coordinates[0]); // Update location using coordinates
             fetchGeocodeData(city.coordinates[1], city.coordinates[0]); // Fetch geocode data for new location
-            sessionStorage.setItem("selectedCity", city.name);
           },
         },
         {
