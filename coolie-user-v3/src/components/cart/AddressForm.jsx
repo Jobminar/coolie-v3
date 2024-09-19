@@ -16,6 +16,7 @@ const AddressForm = ({
   // Autofill the mobile number if not already provided
   useEffect(() => {
     if (!addressData.mobileNumber && user && user.phone) {
+      console.log("Autofilling mobile number:", user.phone);
       setAddressData((prevState) => ({
         ...prevState,
         mobileNumber: user.phone, // Autofill the mobile number from AuthContext
@@ -25,6 +26,7 @@ const AddressForm = ({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log(`Field changed: ${name}, New Value: ${value}`);
     setAddressData((prevState) => ({
       ...prevState,
       [name]: value,
@@ -37,22 +39,42 @@ const AddressForm = ({
 
   const validateFields = () => {
     let newErrors = {};
-    if (!addressData.name.trim()) newErrors.name = "Name is required";
-    if (!addressData.mobileNumber.trim())
+    console.log("Validating fields...");
+
+    // Ensure values are strings before checking their length
+    if (!String(addressData.name || "").trim())
+      newErrors.name = "Name is required";
+    if (!String(addressData.mobileNumber || "").trim())
       newErrors.mobileNumber = "Mobile number is required";
-    if (!addressData.address.trim()) newErrors.address = "Address is required";
-    if (!addressData.city.trim()) newErrors.city = "City is required";
-    if (!addressData.pincode.trim()) newErrors.pincode = "Pincode is required";
-    if (!addressData.state.trim()) newErrors.state = "State is required";
+    if (!String(addressData.address || "").trim())
+      newErrors.address = "Address is required";
+    if (!String(addressData.city || "").trim())
+      newErrors.city = "City is required";
+    if (!String(addressData.pincode || "").trim())
+      newErrors.pincode = "Pincode is required";
+    if (!String(addressData.state || "").trim())
+      newErrors.state = "State is required";
+
+    if (Object.keys(newErrors).length > 0) {
+      console.log("Validation failed with errors:", newErrors);
+    } else {
+      console.log("Validation successful, no errors found.");
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSave = () => {
+    console.log("Attempting to save address...");
     if (validateFields()) {
+      console.log(
+        "Fields validated successfully. Saving address:",
+        addressData,
+      );
       handleSaveAddress(addressData);
     } else {
+      console.log("Failed to save address. Validation errors exist.");
       toast.error("Please fill in all required fields.");
     }
   };
@@ -97,7 +119,7 @@ const AddressForm = ({
           type="text"
           name="mobileNumber"
           placeholder="Mobile Number"
-          value={addressData.mobileNumber} // Autofilled value
+          value={addressData.mobileNumber || ""} // Autofilled value
           onChange={handleChange}
           title={errors.mobileNumber}
           className={errors.mobileNumber ? "input-error" : ""}
@@ -135,7 +157,7 @@ const AddressForm = ({
           type="text"
           name="landmark"
           placeholder="Landmark"
-          value={addressData.landmark}
+          value={addressData.landmark || ""}
           onChange={handleChange}
         />
       </div>
