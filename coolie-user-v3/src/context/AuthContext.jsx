@@ -13,6 +13,7 @@ import { toast, Toaster } from "react-hot-toast";
 import useUserLocation from "../hooks/useUserLocation";
 import CaptchaComponent from "../components/Security/CaptchaComponent";
 import { useLocationPrice } from "../context/LocationPriceContext";
+import LZString from "lz-string";
 
 const AuthContext = createContext();
 
@@ -33,6 +34,9 @@ export const AuthProvider = ({ children }) => {
     error: locationError,
     setLocation: setUserLocation,
   } = useUserLocation();
+  // useRef for storing phone and otp
+  const phoneRef = useRef(null);
+  const otpRef = useRef(null);
   //fetching user location---------------------------------------------------
   const fetchCityName = async (latitude, longitude) => {
     try {
@@ -148,7 +152,9 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const sendOtp = async (userInfo) => {
+  // Function to store phone in the ref when OTP is sent
+  // Assume this is part of your AuthContext
+  const sendOtp = async ({ phone }) => {
     try {
       const response = await fetch(
         "https://api.coolieno1.in/v1.0/users/userAuth/send-otp",
@@ -157,25 +163,29 @@ export const AuthProvider = ({ children }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(userInfo),
+          body: JSON.stringify({ phone }),
         },
       );
 
+      const data = await response.json();
       if (response.ok) {
-        const data = await response.json();
-        console.log("OTP sent successfully:", data);
-        setUser({ ...userInfo, phone: data.phone });
-        // sessionStorage.setItem("phone", data.phone);
-        toast.success("OTP sent successfully.");
+        console.log("OTP sent successfully:", data.otp);
+
+        // Compress and store the OTP in sessionStorage
+        const compressedOtp = LZString.compress(String(data.otp));
+        sessionStorage.setItem("compressedOtp", compressedOtp);
       } else {
-        const errorData = await response.json();
-        console.error("Failed to send OTP:", errorData);
-        toast.error("Failed to send OTP.");
+        console.error("Error sending OTP:", data.message);
       }
     } catch (error) {
-      console.error("Error during OTP sending:", error);
-      toast.error("Error during OTP sending.");
+      console.error("Error in sendOtp:", error);
     }
+  };
+
+  // Function to store otp in the ref when OTP is verified
+  const verifyOtp = async (otp) => {
+    otpRef.current = otp; // Store OTP in useRef
+    console.log("OTP stored:", otpRef.current);
   };
 
   const login = async ({
@@ -334,6 +344,9 @@ export const AuthProvider = ({ children }) => {
         googleUser,
         logout,
         fetchUserInfo,
+        verifyOtp,
+        phoneRef,
+        otpRef,
       }}
     >
       {children}

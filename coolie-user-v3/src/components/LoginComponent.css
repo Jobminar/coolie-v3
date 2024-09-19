@@ -30,7 +30,7 @@ input:focus {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 20px;
+    margin-bottom: 2px;
     position: relative;
     max-width: 18rem;
 }
@@ -40,10 +40,8 @@ input:focus {
 }
 
 .coolie-logo {
-    width: 6.5rem;
-    position: absolute;
-    top: 16px;
-    right: 10px;
+    width: 12.5rem;
+    margin: 1px;
 }
 
 .login-box h2 {

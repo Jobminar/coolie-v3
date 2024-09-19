@@ -1,36 +1,45 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import LZString from "lz-string"; // Import LZString for decompression
 import "./LoginComponent.css";
-import googleLogo from "../assets/images/google-logo.png";
 import coolieLogo from "../assets/images/brand-logo.svg";
 
 const LoginComponent = ({ onLoginSuccess }) => {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
-  const [googleLoginSuccess, setGoogleLoginSuccess] = useState(false);
-  const { sendOtp, login, loginWithGoogle, googleUser } = useAuth();
   const navigate = useNavigate();
+  const { sendOtp, login } = useAuth(); // Access sendOtp and login from AuthContext
 
+  // Function to handle sending OTP
   const handleSendOtp = async () => {
     await sendOtp({ phone });
     setOtpSent(true);
   };
 
+  // Function to handle login
   const handleLogin = async () => {
     const success = await login({ phone, otp });
     if (success) {
       onLoginSuccess();
+      // Remove the OTP from sessionStorage after successful login
+      sessionStorage.removeItem("compressedOtp");
       navigate("/home");
     }
   };
 
-  const handleGoogleLogin = async () => {
-    await loginWithGoogle();
-    setGoogleLoginSuccess(true);
-  };
+  // Auto-fill OTP if it exists in sessionStorage and log it
+  useEffect(() => {
+    const compressedOtp = sessionStorage.getItem("compressedOtp");
+    if (compressedOtp) {
+      const decompressedOtp = LZString.decompress(compressedOtp); // Decompress the stored OTP
+      setOtp(decompressedOtp); // Auto-fill OTP field
+      console.log("Auto-filled OTP:", decompressedOtp); // Log the OTP
+    }
+  }, [otpSent]); // Only auto-fill OTP when it's been sent
 
+  // Add glow effect to the button if the phone number is 10 digits
   useEffect(() => {
     const button = document.querySelector(".send-otp-button");
     if (phone.length === 10) {
@@ -42,16 +51,10 @@ const LoginComponent = ({ onLoginSuccess }) => {
 
   return (
     <div className="login-box">
+      <img src={coolieLogo} alt="Coolie Logo" className="coolie-logo" />
       <div className="login-box-header">
         <h4>Login</h4>
-        <img src={coolieLogo} alt="Coolie Logo" className="coolie-logo" />
       </div>
-      {googleLoginSuccess && (
-        <p>
-          Subscription with Google successful, now verify your mobile number to
-          continue
-        </p>
-      )}
       <div className="input-group">
         <input
           type="text"
@@ -85,16 +88,6 @@ const LoginComponent = ({ onLoginSuccess }) => {
           </button>
         </>
       )}
-
-      {/* 
-      <p>
-        Don't have an account? <a href="/signup">signup</a>
-      </p>
-      <div className="oval-shaped-div">
-        <button className="google-login-button" onClick={handleGoogleLogin}>
-          <img src={googleLogo} alt="Google" className="google-logo" />
-        </button>
-      </div> */}
     </div>
   );
 };

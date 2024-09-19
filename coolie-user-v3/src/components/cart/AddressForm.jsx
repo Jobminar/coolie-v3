@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
+import { useAuth } from "../../context/AuthContext"; // Import the useAuth hook
 
 const AddressForm = ({
   addressData,
@@ -10,6 +11,17 @@ const AddressForm = ({
   onCancel,
 }) => {
   const [errors, setErrors] = useState({});
+  const { user } = useAuth(); // Access the user context
+
+  // Autofill the mobile number if not already provided
+  useEffect(() => {
+    if (!addressData.mobileNumber && user && user.phone) {
+      setAddressData((prevState) => ({
+        ...prevState,
+        mobileNumber: user.phone, // Autofill the mobile number from AuthContext
+      }));
+    }
+  }, [user, addressData.mobileNumber, setAddressData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -85,7 +97,7 @@ const AddressForm = ({
           type="text"
           name="mobileNumber"
           placeholder="Mobile Number"
-          value={addressData.mobileNumber}
+          value={addressData.mobileNumber} // Autofilled value
           onChange={handleChange}
           title={errors.mobileNumber}
           className={errors.mobileNumber ? "input-error" : ""}
