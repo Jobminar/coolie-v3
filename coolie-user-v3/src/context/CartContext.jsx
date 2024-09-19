@@ -196,12 +196,13 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
   };
   //Delete all cart items when location changes
   const clearCart = async () => {
+    console.log("Cart cleared");
     const userId = sessionStorage.getItem("userId");
     if (!userId) return;
 
     try {
       const response = await fetch(
-        `https://api.example.com/cart/clear/${userId}`,
+        `https://api.coolieno1.in/v1.0/users/cart/${userId}`,
         { method: "DELETE" },
       );
       if (response.ok) {
@@ -216,12 +217,15 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
     }
   };
 
-  const handleLocationUpdate = async (latitude, longitude) => {
+  const handleLocationUpdate = async (latitude, longitude, pincode) => {
+    console.log(
+      `Latitude: ${latitude}, Longitude: ${longitude}, Pincode: ${pincode}`,
+    );
+    clearCart();
     // Call updateUserLocation from AuthContext
     await updateUserLocation(latitude, longitude);
 
     // Clear the cart when location is updated
-    clearCart();
   };
   return (
     <CartContext.Provider

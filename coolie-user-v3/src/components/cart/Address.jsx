@@ -8,7 +8,7 @@ import {
   faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
 import "./Address.css";
-import { useAuth } from "../../context/AuthContext"; // `useAuth` context includes `clearCart`
+import { useAuth } from "../../context/AuthContext";
 import {
   saveAddress,
   getSavedAddresses,
@@ -21,19 +21,19 @@ import LocationModal from "./LocationModal";
 import { CartContext } from "../../context/CartContext";
 import { OrdersContext } from "../../context/OrdersContext";
 import { confirmAlert } from "react-confirm-alert"; // Import confirm alert
-import "react-confirm-alert/src/react-confirm-alert.css"; // Import alert styles
+import "react-confirm-alert/src/react-confirm-alert.css";
 import DeleteIcon from "../../assets/images/Delete.png"; // Import the delete icon
 
 const Address = ({ onNext }) => {
-  const { phone } = useAuth(); // Removed clearCart from here
+  const { phone } = useAuth();
   const { totalItems, totalPrice, handleLocationUpdate } =
-    useContext(CartContext); // Added handleLocationUpdate from CartContext
+    useContext(CartContext);
   const { updateSelectedAddressId } = useContext(OrdersContext);
   const [cookies] = useCookies(["location"]);
   const initialLocation = cookies.location || {};
 
-  const userId = sessionStorage.getItem("userId") || ""; // Use sessionStorage for userId
-  console.log("phone number", phone);
+  const userId = sessionStorage.getItem("userId") || "";
+
   const [addressData, setAddressData] = useState({
     bookingType: "self",
     name: "",
@@ -52,7 +52,7 @@ const Address = ({ onNext }) => {
   const [showSavedAddresses, setShowSavedAddresses] = useState(true);
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
-  const [pendingAddress, setPendingAddress] = useState(null); // For storing selected address
+  const [pendingAddress, setPendingAddress] = useState(null);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [filterBookingType, setFilterBookingType] = useState("");
   const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
@@ -64,10 +64,6 @@ const Address = ({ onNext }) => {
         try {
           const addresses = await getSavedAddresses(userId);
           setSavedAddresses(addresses || []);
-          if (addresses.length === 1) {
-            setSelectedAddress(addresses[0]); // Automatically select the first address if only one
-            updateSelectedAddressId(addresses[0]._id);
-          }
         } catch (error) {
           console.error("Error fetching saved addresses:", error);
           toast.error("Error fetching saved addresses.");
@@ -75,44 +71,18 @@ const Address = ({ onNext }) => {
       }
     };
     fetchSavedAddresses();
-  }, [userId, updateSelectedAddressId]);
+  }, [userId]);
+
+  // Handle checkbox change when there's only one address
+  const handleCheckboxChange = (address) => {
+    setPendingAddress(address); // Store the selected address temporarily
+    setSelectedAddress(address); // Explicitly set the address
+  };
 
   // Handle radio button change for selecting an address
   const handleRadioChange = (address) => {
-    if (savedAddresses.length > 0) {
-      setPendingAddress(address); // Store the selected address temporarily
-
-      // Trigger the confirmation popup using `react-confirm-alert`
-      confirmAlert({
-        title: "Confirm Address",
-        message: `Do you want to use the selected address for this booking?`,
-        buttons: [
-          {
-            label: "Yes",
-            onClick: () => confirmClearCart(),
-          },
-          {
-            label: "No",
-            onClick: () => setPendingAddress(null), // Clear pending address
-          },
-        ],
-      });
-    }
-  };
-
-  // Confirm clearing the cart and updating the location
-  const confirmClearCart = () => {
-    if (!pendingAddress) return;
-
-    // Update address data and userId
-    setSelectedAddress(pendingAddress);
-    setAddressData({ ...pendingAddress, userId });
-
-    // Update the selected address ID in the orders context
-    updateSelectedAddressId(pendingAddress._id);
-
-    // Update the user's location and trigger cart clearing via CartContext
-    handleLocationUpdate(pendingAddress.latitude, pendingAddress.longitude);
+    setPendingAddress(address); // Store the selected address temporarily
+    setSelectedAddress(address); // Explicitly set the address
   };
 
   // Handle save address
@@ -143,10 +113,40 @@ const Address = ({ onNext }) => {
   // Handle form submission
   const handleSubmit = () => {
     if (!selectedAddress) {
-      alert("Please select an address before proceeding.");
+      toast.error("Please select an address before proceeding.");
       return;
     }
-    onNext("schedule");
+
+    confirmAlert({
+      title: "Confirm Address",
+      message: "Do you want to proceed with this address?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => {
+            // Update the user's location with selected address latitude, longitude, and pincode
+            handleLocationUpdate(
+              selectedAddress.latitude,
+              selectedAddress.longitude,
+              selectedAddress.pincode,
+            );
+
+            // Update the selected address ID in the OrdersContext
+            updateSelectedAddressId(selectedAddress._id);
+
+            toast.success(
+              "Location, address, and pincode confirmed successfully.",
+            );
+
+            // Proceed to the next step
+            onNext("schedule");
+          },
+        },
+        {
+          label: "No",
+        },
+      ],
+    });
   };
 
   // Handle location selection from LocationModal
@@ -268,13 +268,22 @@ const Address = ({ onNext }) => {
           {filteredAddresses.length > 0 ? (
             filteredAddresses.map((address, index) => (
               <div key={index} className="saved-address">
-                <input
-                  type="radio"
-                  name="selectedAddress"
-                  checked={selectedAddress?._id === address._id}
-                  onChange={() => handleRadioChange(address)}
-                  className="address-radio"
-                />
+                {filteredAddresses.length === 1 ? (
+                  <input
+                    type="checkbox"
+                    checked={selectedAddress?._id === address._id}
+                    onChange={() => handleCheckboxChange(address)}
+                    className="address-checkbox"
+                  />
+                ) : (
+                  <input
+                    type="radio"
+                    name="selectedAddress"
+                    checked={selectedAddress?._id === address._id}
+                    onChange={() => handleRadioChange(address)}
+                    className="address-radio"
+                  />
+                )}
                 <div
                   className="delete-address-icon"
                   onClick={() => handleDeleteAddress(address._id)}
