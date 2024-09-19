@@ -38,10 +38,10 @@ const Services = () => {
   const initialCategoryRef = useRef(null);
 
   // Force a component re-render when district or custom price data changes
-  useEffect(() => {
-    console.log("Price data or services changed. Forcing re-render.");
-    setForceRender((prev) => prev + 1);
-  }, [districtPriceData, customPriceData, locationServices]);
+  // useEffect(() => {
+  //   console.log("Price data or services changed. Forcing re-render.");
+  //   setForceRender((prev) => prev + 1);
+  // }, [districtPriceData, customPriceData, locationServices]);
 
   // Match services with pricing data based on district or custom pricing
   // useEffect(() => {

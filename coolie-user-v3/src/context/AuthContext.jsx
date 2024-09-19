@@ -13,6 +13,7 @@ import { toast, Toaster } from "react-hot-toast";
 import useUserLocation from "../hooks/useUserLocation";
 import CaptchaComponent from "../components/Security/CaptchaComponent";
 import { useLocationPrice } from "../context/LocationPriceContext";
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -86,8 +87,8 @@ export const AuthProvider = ({ children }) => {
   //----------updating user lat long to location pricing
   const updateUserLocation = async (latitude, longitude) => {
     userLocationRef.current = { latitude, longitude };
-    // sessionStorage.setItem("latitude", latitude);
-    // sessionStorage.setItem("longitude", longitude);
+    sessionStorage.setItem("latitude", latitude);
+    sessionStorage.setItem("longitude", longitude);
 
     const city = await fetchCityName(latitude, longitude);
     setUserCity(city);

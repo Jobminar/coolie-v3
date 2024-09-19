@@ -46,6 +46,28 @@ export const LocationPriceProvider = ({ children }) => {
     return null;
   };
 
+  // Function to compress and store pincode in localStorage
+  const storePincode = (pincode) => {
+    const compressedPincode = LZString.compress(pincode);
+    localStorage.setItem("userPincode", compressedPincode);
+  };
+
+  // Function to retrieve pincode from localStorage
+  const getStoredPincode = () => {
+    const compressedPincode = localStorage.getItem("userPincode");
+    if (compressedPincode) {
+      return LZString.decompress(compressedPincode);
+    }
+    return null;
+  };
+
+  // Automatically store pincode in localStorage when geocode data is fetched
+  useEffect(() => {
+    if (locationRef.current.postalCode) {
+      storePincode(locationRef.current.postalCode);
+    }
+  }, [locationRef.current.postalCode]);
+
   // Function to clear stored data when new geocode is fetched
   const clearStoredData = () => {
     sessionStorage.removeItem("customPriceData");
@@ -55,6 +77,7 @@ export const LocationPriceProvider = ({ children }) => {
   };
 
   // Function to fetch geocode data based on latitude and longitude
+
   const fetchGeocodeData = async (lat, lng) => {
     // Clear old data before starting a new fetch
     clearStoredData();
@@ -110,6 +133,15 @@ export const LocationPriceProvider = ({ children }) => {
       };
 
       console.log("Updated location data:", locationRef.current);
+
+      // Store the pincode in localStorage after fetching geocode data
+      if (locationRef.current.postalCode) {
+        storePincode(locationRef.current.postalCode); // Store pincode in localStorage
+        console.log(`Stored pincode: ${locationRef.current.postalCode}`);
+        toast.success(`Pincode updated to: ${locationRef.current.postalCode}`);
+      } else {
+        toast.error("Failed to retrieve postal code from the geocode data.");
+      }
 
       // Persist latitude and longitude in session storage
       sessionStorage.setItem("latitude", lat);
@@ -339,6 +371,7 @@ export const LocationPriceProvider = ({ children }) => {
         location: locationRef.current,
         customPriceData: customPriceDataRef.current,
         districtPriceData: districtPriceDataRef.current,
+        getStoredPincode,
         loading,
         error,
         fetchGeocodeData,
