@@ -13,6 +13,7 @@ import { toast, Toaster } from "react-hot-toast";
 import useUserLocation from "../hooks/useUserLocation";
 import CaptchaComponent from "../components/Security/CaptchaComponent";
 import { useLocationPrice } from "../context/LocationPriceContext";
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {

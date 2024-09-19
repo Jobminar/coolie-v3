@@ -20,22 +20,23 @@ import AddressForm from "./AddressForm";
 import LocationModal from "./LocationModal";
 import { CartContext } from "../../context/CartContext";
 import { OrdersContext } from "../../context/OrdersContext";
-
+import { confirmAlert } from "react-confirm-alert"; // Import confirm alert
+import "react-confirm-alert/src/react-confirm-alert.css";
 import DeleteIcon from "../../assets/images/Delete.png"; // Import the delete icon
 
 const Address = ({ onNext }) => {
-  const { clearCart } = useContext(CartContext); // Import clearCart function from CartContext
-  const { user, updateUserLocation, phone } = useAuth(); // Added updateUserLocation
-  const { totalItems, totalPrice } = useContext(CartContext);
+  const { phone } = useAuth();
+  const { totalItems, totalPrice, handleLocationUpdate } =
+    useContext(CartContext);
   const { updateSelectedAddressId } = useContext(OrdersContext);
-  const [cookies, setCookie] = useCookies(["location"]);
+  const [cookies] = useCookies(["location"]);
   const initialLocation = cookies.location || {};
 
-  const userId = user?._id || sessionStorage.getItem("userId") || "";
+  const userId = sessionStorage.getItem("userId") || "";
 
   const [addressData, setAddressData] = useState({
     bookingType: "self",
-    name: user?.displayName || "",
+    name: "",
     mobileNumber: phone || sessionStorage.getItem("phone") || "",
     address: "",
     city: initialLocation.city || "Hyderabad",
@@ -51,6 +52,7 @@ const Address = ({ onNext }) => {
   const [showSavedAddresses, setShowSavedAddresses] = useState(true);
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [pendingAddress, setPendingAddress] = useState(null);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [filterBookingType, setFilterBookingType] = useState("");
   const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
@@ -61,17 +63,7 @@ const Address = ({ onNext }) => {
       if (userId) {
         try {
           const addresses = await getSavedAddresses(userId);
-          if (Array.isArray(addresses)) {
-            setSavedAddresses(addresses);
-          } else {
-            setSavedAddresses([addresses]);
-          }
-
-          // Automatically select the first address if there is only one
-          if (addresses.length === 1) {
-            setSelectedAddress(addresses[0]);
-            updateSelectedAddressId(addresses[0]._id);
-          }
+          setSavedAddresses(addresses || []);
         } catch (error) {
           console.error("Error fetching saved addresses:", error);
           toast.error("Error fetching saved addresses.");
@@ -79,13 +71,18 @@ const Address = ({ onNext }) => {
       }
     };
     fetchSavedAddresses();
-  }, [userId, updateSelectedAddressId]);
+  }, [userId]);
+
+  // Handle checkbox change when there's only one address
+  const handleCheckboxChange = (address) => {
+    setPendingAddress(address); // Store the selected address temporarily
+    setSelectedAddress(address); // Explicitly set the address
+  };
 
   // Handle radio button change for selecting an address
   const handleRadioChange = (address) => {
-    setSelectedAddress(address);
-    setAddressData({ ...address, userId });
-    updateSelectedAddressId(address._id);
+    setPendingAddress(address); // Store the selected address temporarily
+    setSelectedAddress(address); // Explicitly set the address
   };
 
   // Handle save address
@@ -116,10 +113,40 @@ const Address = ({ onNext }) => {
   // Handle form submission
   const handleSubmit = () => {
     if (!selectedAddress) {
-      alert("Please select an address before proceeding.");
+      toast.error("Please select an address before proceeding.");
       return;
     }
-    onNext("schedule");
+
+    confirmAlert({
+      title: "Confirm Address",
+      message: "Do you want to proceed with this address?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => {
+            // Update the user's location with selected address latitude, longitude, and pincode
+            handleLocationUpdate(
+              selectedAddress.latitude,
+              selectedAddress.longitude,
+              selectedAddress.pincode,
+            );
+
+            // Update the selected address ID in the OrdersContext
+            updateSelectedAddressId(selectedAddress._id);
+
+            toast.success(
+              "Location, address, and pincode confirmed successfully.",
+            );
+
+            // Proceed to the next step
+            onNext("schedule");
+          },
+        },
+        {
+          label: "No",
+        },
+      ],
+    });
   };
 
   // Handle location selection from LocationModal
@@ -138,10 +165,6 @@ const Address = ({ onNext }) => {
       longitude: location.longitude,
       userId: userId,
     }));
-
-    // Update the location in AuthContext
-    updateUserLocation(location.latitude, location.longitude); // Call updateUserLocation
-    clearCart(); // Clear the cart on location change
     setShowLocationModal(false);
     setShowForm(true);
     setShowSavedAddresses(false);
@@ -149,13 +172,27 @@ const Address = ({ onNext }) => {
 
   // Parse address string into components
   const parseAddress = (fullAddress) => {
-    const parts = fullAddress.split(", ");
+    const pincodeRegex = /\b\d{6}\b/; // Regex to match 6-digit pincode
+    const pincodeMatch = fullAddress.match(pincodeRegex); // Find the pincode in the string
+    const pincode = pincodeMatch ? pincodeMatch[0] : "";
+
+    // Remove the pincode from the full address for further processing
+    let addressWithoutPincode = fullAddress.replace(pincode, "").trim();
+
+    // Split the address into parts based on commas
+    const parts = addressWithoutPincode.split(",").map((part) => part.trim());
+
+    const address = parts.slice(0, 2).join(", "); // First two parts for the address
+    const city = parts.length > 2 ? parts[parts.length - 3] : ""; // Third last part is city
+    const landmark = parts.length > 3 ? parts[parts.length - 4] : ""; // Fourth last part is landmark
+    const state = parts.length > 1 ? parts[parts.length - 2] : ""; // Second last part is state
+
     return {
-      address: parts.slice(0, 2).join(", "),
-      pincode: parts[2] || "",
-      city: parts[3] || "",
-      landmark: parts[4] || "",
-      state: parts[5] || "",
+      address,
+      city,
+      pincode,
+      landmark,
+      state,
     };
   };
 
@@ -231,13 +268,22 @@ const Address = ({ onNext }) => {
           {filteredAddresses.length > 0 ? (
             filteredAddresses.map((address, index) => (
               <div key={index} className="saved-address">
-                <input
-                  type="radio"
-                  name="selectedAddress"
-                  checked={selectedAddress?._id === address._id}
-                  onChange={() => handleRadioChange(address)}
-                  className="address-radio"
-                />
+                {filteredAddresses.length === 1 ? (
+                  <input
+                    type="checkbox"
+                    checked={selectedAddress?._id === address._id}
+                    onChange={() => handleCheckboxChange(address)}
+                    className="address-checkbox"
+                  />
+                ) : (
+                  <input
+                    type="radio"
+                    name="selectedAddress"
+                    checked={selectedAddress?._id === address._id}
+                    onChange={() => handleRadioChange(address)}
+                    className="address-radio"
+                  />
+                )}
                 <div
                   className="delete-address-icon"
                   onClick={() => handleDeleteAddress(address._id)}

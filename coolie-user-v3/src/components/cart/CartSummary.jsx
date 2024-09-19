@@ -21,7 +21,7 @@ import { OrdersProvider } from "../../context/OrdersContext";
 import LoginComponent from "../LoginComponent";
 
 const CartSummary = ({ fullWidth }) => {
-  const { cartItems, totalItems, clearCart } = useContext(CartContext);
+  const { cartItems, totalItems } = useContext(CartContext);
   const { isAuthenticated, user } = useContext(AuthContext);
 
   // State management
