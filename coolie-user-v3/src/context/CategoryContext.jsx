@@ -157,9 +157,9 @@ export const CategoryProvider = ({ children }) => {
   }, [servicesData, districtPriceData, selectedSubCategoryId]);
 
   
-  useEffect(()=>{
-      console.log(locationServices,'locationservice')
-  },[locationServices])
+  // useEffect(()=>{
+  //     console.log(locationServices,'locationservice')
+  // },[locationServices])
   
   
 

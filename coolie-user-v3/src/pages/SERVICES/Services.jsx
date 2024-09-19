@@ -185,31 +185,42 @@ const Services = () => {
 
     return matchedData.map((service) => {
       const isExpanded = descriptionVisibility[service._id];
-
+      const variantname = service.service?.variantName; // Ensure variantname is defined
+      console.log(variantName,'varient name')
       return (
         <div key={service.service._id} className="sub-category-service-item">
-            <div className="ser-content">
-                <h2>{service.service.name}</h2>
-                <p className="ser-price">Starts at:<span> &#8377; {service.districtPrice.price?.None || "N/A"}</span></p>
+          <div className="ser-content">
+            <h2>{service.service.name}</h2>
+            <p className="ser-price">
+              Starts at:
+              <span>
+                &#8377; {service.districtPrice?.price?.[variantname] || "N/A"}
+                </span></p>
                 <div className="dashed"></div>
                 <p className="description">
                   {service.service.description.slice(0, 150)}...
-                  <div className="know-more" >
-                    Know More
-                  </div>
                 </p>
             </div>
             <div className="ser-img">
                 <div className="ser-image-con">
                     <img className="image" src={service.service.image}/>
                 </div>
-                <button
+                
+            </div>
+            <div className="know-more" >
+                    Know More
+            </div>
+            <div className="button-add">
+            <button
                 className="add-button"
                 onClick={() =>
                   handleAddToCart(
                     service.service._id,
                     service.service.categoryId._id,
                     service.service.subCategoryId._id,
+
+
+
                   )
                 }
               >

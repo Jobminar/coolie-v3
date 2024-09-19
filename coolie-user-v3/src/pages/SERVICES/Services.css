@@ -203,6 +203,7 @@
     display: grid;
     grid-template-columns: 63% 37%;
     justify-content: space-evenly;
+    align-items: center;
 }
 .ser-content{
     /* border: 1px solid black; */
@@ -243,6 +244,10 @@ margin: 5px;
     border: none;
     background-color: none;
     color: #D16611;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    padding-left: 5px;
 }
 .know-more:hover{
     cursor: pointer;
@@ -267,6 +272,11 @@ margin: 5px;
     width: 100%;
     height: 100%; /* Image takes up 90% of the container */
 }
+.button-add{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 .add-button {
     background-color: white;
@@ -278,10 +288,7 @@ margin: 5px;
     font-weight: 500;
     line-height: 9.34px;
     text-align: center;
-    border-radius: 5px;
-  
-
-   
+    border-radius: 5px;   
 }
 .add-button:hover{
     cursor: pointer;

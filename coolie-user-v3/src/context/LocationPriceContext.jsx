@@ -90,14 +90,14 @@ export const LocationPriceProvider = ({ children }) => {
       const response = await axios.get(
         `${apiUrl}?latlng=${lat},${lng}&key=${apiKey}`,
       );
-      console.log("Geocode data fetched:", response.data);
+      // console.log("Geocode data fetched:", response.data);
 
       if (!response.data.results || response.data.results.length === 0) {
         throw new Error("No results found for the given coordinates.");
       }
 
       const addressComponents = response.data.results[0].address_components;
-
+// console.log('')
       let extractedAdminLevel3 = "";
       let extractedAdminLevel2 = "";
       let extractedAdminLevel1 = "";
@@ -132,7 +132,7 @@ export const LocationPriceProvider = ({ children }) => {
         postalCode: extractedPostalCode || "Not found",
       };
 
-      console.log("Updated location data:", locationRef.current);
+      // console.log("Updated location data:", locationRef.current);
 
       // Store the pincode in localStorage after fetching geocode data
       if (locationRef.current.postalCode) {
@@ -144,8 +144,9 @@ export const LocationPriceProvider = ({ children }) => {
       }
 
       // Persist latitude and longitude in session storage
-      sessionStorage.setItem("latitude", lat);
-      sessionStorage.setItem("longitude", lng);
+
+      // sessionStorage.setItem("latitude", lat);
+      // sessionStorage.setItem("longitude", lng);
 
       // Now fetch new pricing data after clearing the old one
       await fetchPriceData(
@@ -185,19 +186,19 @@ export const LocationPriceProvider = ({ children }) => {
       if (storedCustomPricing) {
         customPriceDataRef.current = storedCustomPricing;
         customPriceFetched = true;
-        console.log(
-          "Loaded custom pricing from session storage:",
-          storedCustomPricing,
-        );
+        // console.log(
+        //   "Loaded custom pricing from session storage:",
+        //   storedCustomPricing,
+        // );
       }
 
       if (storedDistrictPricing) {
         districtPriceDataRef.current = storedDistrictPricing;
         districtPriceFetched = true;
-        console.log(
-          "Loaded district pricing from session storage:",
-          storedDistrictPricing,
-        );
+        // console.log(
+        //   "Loaded district pricing from session storage:",
+        //   storedDistrictPricing,
+        // );
       }
 
       // If no custom pricing is stored, fetch it
@@ -209,7 +210,7 @@ export const LocationPriceProvider = ({ children }) => {
           if (priceResponse.data && priceResponse.data.length > 0) {
             customPriceDataRef.current = priceResponse.data;
             customPriceFetched = true;
-            console.log("Custom price data found:", customPriceDataRef.current);
+            // console.log("Custom price data found:", customPriceDataRef.current);
             compressAndStore("customPriceData", priceResponse.data);
           }
         } catch (err) {
@@ -259,7 +260,7 @@ export const LocationPriceProvider = ({ children }) => {
           districtPriceDataRef.current = priceResponse.data;
           districtPriceFetched = true;
           compressAndStore("districtPriceData", priceResponse.data);
-          console.log("District pricing found for Admin Level 3.");
+          // console.log("District pricing found for Admin Level 3.");
         }
       } catch (err) {
         handlePricingError(err, adminLevel3, "district");
@@ -276,7 +277,7 @@ export const LocationPriceProvider = ({ children }) => {
           districtPriceDataRef.current = priceResponse.data;
           districtPriceFetched = true;
           compressAndStore("districtPriceData", priceResponse.data);
-          console.log("District pricing found for Admin Level 2.");
+          // console.log("District pricing found for Admin Level 2.");
         }
       } catch (err) {
         handlePricingError(err, adminLevel2, "district");
@@ -293,7 +294,7 @@ export const LocationPriceProvider = ({ children }) => {
           districtPriceDataRef.current = priceResponse.data;
           districtPriceFetched = true;
           compressAndStore("districtPriceData", priceResponse.data);
-          console.log("District pricing found for Admin Level 1.");
+          // console.log("District pricing found for Admin Level 1.");
         }
       } catch (err) {
         handlePricingError(err, adminLevel1, "district");
@@ -310,7 +311,7 @@ export const LocationPriceProvider = ({ children }) => {
           districtPriceDataRef.current = priceResponse.data;
           districtPriceFetched = true;
           compressAndStore("districtPriceData", priceResponse.data);
-          console.log("District pricing found for locality.");
+          // console.log("District pricing found for locality.");
         }
       } catch (err) {
         handlePricingError(err, locality, "locality");

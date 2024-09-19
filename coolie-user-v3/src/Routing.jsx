@@ -1,10 +1,5 @@
-import React from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate,
-} from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import { CategoryProvider } from "./context/CategoryContext";
 import { CartProvider } from "./context/CartContext";
 import Home from "./pages/Home/home";
@@ -28,8 +23,24 @@ import OrderTracking from "./pages/OrderTracking/OrderTracking.jsx";
 import CartPage from "./pages/CartPage.jsx";
 import { LocationPriceProvider } from "./context/LocationPriceContext.jsx";
 import ToastManager from "./components/ToastManager.jsx";
+import Loading from "./components/Loading/loading.jsx"; // Import the Loading component
 
 const Routing = () => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate a delay (e.g., fetching initial data)
+    const timer = setTimeout(() => {
+      setLoading(false); // Stop loading after 2 seconds (can adjust)
+    }, 3000);
+
+    return () => clearTimeout(timer); // Cleanup timer when component unmounts
+  }, []);
+
+  if (loading) {
+    return <Loading />; // Show loading animation while loading is true
+  }
+
   return (
     <ToastManager>
       <LocationPriceProvider>
@@ -38,18 +49,13 @@ const Routing = () => {
             <CategoryProvider>
               <MessagingProvider>
                 <OrdersProvider>
-                  {" "}
-                  {/* Wrap your application with MessagingProvider */}
                   <Router>
                     <Header />
                     <Routes>
                       <Route path="/" element={<Home />} />
                       <Route path="/home" element={<Home />} />
                       <Route path="/services" element={<Services />} />
-                      <Route
-                        path="/ordertracking"
-                        element={<OrderTracking />}
-                      />
+                      <Route path="/ordertracking" element={<OrderTracking />} />
 
                       <Route element={<ProtectedRoute />}>
                         <Route path="/aboutus" element={<Aboutus />} />

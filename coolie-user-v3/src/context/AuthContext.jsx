@@ -85,7 +85,7 @@ export const AuthProvider = ({ children }) => {
   }, [userCity]);
   useEffect(() => {
     if (userCity) {
-      // sessionStorage.setItem("selectedCity", userCity);
+      sessionStorage.setItem("selectedCity", userCity);
     }
   }, [userCity]);
   //----------updating user lat long to location pricing
@@ -96,7 +96,7 @@ export const AuthProvider = ({ children }) => {
 
     const city = await fetchCityName(latitude, longitude);
     setUserCity(city);
-    console.log(city, "cityname");
+    // console.log(city, "cityname");
     if (latitude && longitude) {
       fetchGeocodeData(latitude, longitude); // Call fetchGeocodeData with the coordinates
     }
