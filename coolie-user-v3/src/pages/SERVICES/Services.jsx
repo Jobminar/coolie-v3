@@ -193,7 +193,7 @@ const Services = () => {
                 <p className="ser-price">Starts at:<span> &#8377; {service.districtPrice.price?.None || "N/A"}</span></p>
                 <div className="dashed"></div>
                 <p className="description">
-                  {service.service.description.slice(0, 100)}...
+                  {service.service.description.slice(0, 150)}...
                   <div className="know-more" >
                     Know More
                   </div>
