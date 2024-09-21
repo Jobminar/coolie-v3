@@ -1,31 +1,36 @@
 .women-saloon-main-con {
-    /* border: 1px solid black; */
     min-height: 12rem;
     margin-bottom: 3rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start; /* Align items to the start */
+    column-gap: 2rem;
     align-items: center;
     row-gap: 1rem; 
-    
+    overflow-x: auto; /* Enable horizontal scrolling */
+    overflow-y: hidden; /* Hide vertical overflow */
+    scrollbar-width: none; /* For Firefox */
+    scroll-snap-type: x mandatory; /* Enable scroll snapping */
+    -ms-overflow-style: none; /* Hide scrollbar for Internet Explorer and Edge */
+    padding: 1rem 0; /* Optional: Add padding for better spacing */
 }
 
-
-.women-spa-main-con{
-    /* border: 1px solid black; */
-    min-height: 10rem;
-      margin-bottom: 3rem;
-    display: flex;
-    justify-content: left;
-    align-items: center;
-    column-gap: 2.5rem;
+.women-saloon-main-con::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
 }
-.w-s-sub-con{
-    /* border: 1px solid black; */
+
+.w-s-sub-con {
     position: relative;
     border: none;
-    width: 12rem;
+    width: 12rem; /* Fixed width for items */
     height: 13rem;
+    flex-shrink: 0; /* Prevent items from shrinking */
 }
+
+.w-s-sub-con img {
+    width: 100%;
+    height: 100%;
+}
+
 .w-s-sub-con img{
     width: 100%;
     height: 100%;
@@ -55,7 +60,9 @@ margin: 10px;
     letter-spacing: 0.03em;
     text-align: left;
 
+
 }
+
 @media (min-width: 820px) and (max-width: 1020px) {
     .women-saloon-main-con {
         /* border: 1px solid black; */

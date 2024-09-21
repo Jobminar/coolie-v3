@@ -1,5 +1,5 @@
 import React from 'react'
-import logo from '../../assets/images/how-it-works-2.png'
+import logo from '../../assets/images/flash.png'
 import './loading.css'
 
 const loading = () => {

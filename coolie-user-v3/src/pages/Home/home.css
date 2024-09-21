@@ -4,12 +4,10 @@
     width: 90%;
     margin: auto;
 }
-/* @media (min-width: 1600px)  and (max-width:2200px){
-    .home-main{
-        
-        min-height: 100rem;
+@media (min-width: 1500px) and (max-width: 2000px) {
+    .home-main {
+        /* border: 1px solid black; */
         width: 1500px;
-        margin: auto;
+        margin: 0 auto; /* This centers the element horizontally */
     }
-    
-} */
+}

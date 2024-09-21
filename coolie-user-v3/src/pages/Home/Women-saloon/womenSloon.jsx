@@ -31,6 +31,18 @@ const WomenSloon = () => {
                     <p>Hair care</p>
                     <img src={saloon5} alt='saloon1'/>
                 </div>
+                <div className='w-s-sub-con'>
+                    <p>Manicure</p>
+                    <img src={saloon3} alt='saloon1'/>
+                </div>
+                <div className='w-s-sub-con'>
+                    <p>Facial & Cleanup</p>
+                    <img src={saloon4} alt='saloon1'/>
+                </div>
+                <div className='w-s-sub-con'>
+                    <p>Hair care</p>
+                    <img src={saloon5} alt='saloon1'/>
+                </div>
             </div>
     </>
     

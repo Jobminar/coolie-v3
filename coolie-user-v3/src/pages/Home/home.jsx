@@ -15,7 +15,7 @@ const Home = () => {
   return (
     <div className="home-main">
       <Maincategory />
-      <Mostbookedservices />
+      {/* <Mostbookedservices /> */}
       <WomenSloon/>
       <SpaWomen/>
       <Howitworks />

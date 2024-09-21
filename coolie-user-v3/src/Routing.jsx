@@ -24,6 +24,8 @@ import CartPage from "./pages/CartPage.jsx";
 import { LocationPriceProvider } from "./context/LocationPriceContext.jsx";
 import ToastManager from "./components/ToastManager.jsx";
 import Loading from "./components/Loading/loading.jsx"; // Import the Loading component
+import RegisterAsProfessional from "./components/Header/RegisterAsProfessional.jsx";
+import Packages from "./pages/USER-PROFILE/PACKAGES/Packages.jsx";
 
 const Routing = () => {
   const [loading, setLoading] = useState(true);
@@ -56,6 +58,7 @@ const Routing = () => {
                       <Route path="/home" element={<Home />} />
                       <Route path="/services" element={<Services />} />
                       <Route path="/ordertracking" element={<OrderTracking />} />
+                      <Route path="/registerap" element={<RegisterAsProfessional/>}/>
 
                       <Route element={<ProtectedRoute />}>
                         <Route path="/aboutus" element={<Aboutus />} />
@@ -68,6 +71,8 @@ const Routing = () => {
                         <Route path="/coupons" element={<Coupons />} />
                         <Route path="/rewards" element={<Rewards />} />
                         <Route path="/cart" element={<CartPage />} />
+                        <Route path="/packages" element={<Packages/>}/>
+                       
                       </Route>
                       <Route path="*" element={<Navigate to="/" />} />
                     </Routes>

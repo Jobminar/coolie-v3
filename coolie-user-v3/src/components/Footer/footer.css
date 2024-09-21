@@ -368,3 +368,11 @@ li {
     
 
 }
+
+@media (min-width: 1500px) and (max-width: 2000px) {
+    .main-footer {
+        /* border: 1px solid black; */
+        width: 1500px;
+        margin: 0 auto; /* This centers the element horizontally */
+    }
+}
