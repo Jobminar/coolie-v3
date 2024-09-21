@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 
 import "./Services.css";
 import ScrollableTabs from "./ScrollableTabs";
+import offerbadge from '../../assets/images/offer.svg'
+import membershipbadge from '../../assets/images/premium.svg'
 import { CategoryContext } from "../../context/CategoryContext";
 import dropdown from "../../assets/images/service-dropdown.svg";
 import CartSummary from "../../components/cart/CartSummary";
@@ -38,6 +40,7 @@ const Services = () => {
   const [variantNameinres, setVariantNameinres] = useState("");
   const [actualPrice, setActualPrice] = useState("N/A");
   const [offerPrice, setOfferPrice] = useState("N/A");
+  const [membershipPrice,setMembershipPrice]=useState('')
   
 
   const initialCategoryRef = useRef(null);
@@ -53,22 +56,28 @@ useEffect(() => {
     const variant = service.service.subCategoryId?.variantName || "None";
     const price = service.customPrice?.price?.[variant] || null;
     const offer = service.customPrice?.offerPrice?.[variant] || null;
+    const membershipprice = price ? price * 0.9 : null; 
 
     // Update state only if valid values are found
     setVariantNameinres(variant);
     setActualPrice(price !== undefined ? price : "N/A"); // Set to "N/A" if no valid price
-    setOfferPrice(offer !== undefined ? offer : null); // Set to null if no valid offer price
+    setOfferPrice(offer !== undefined ? offer : null); 
+    setMembershipPrice(membershipprice)
   }
  else if (locationServices.length > 0) {
     const service = locationServices[0]; // Assuming you want the first service
     const variant = service.service.subCategoryId?.variantName || "None";
     const price = service.districtPrice?.price?.[variant] || null;
     const offer = service.districtPrice?.offerPrice?.[variant] || null;
+    const membershipprice = price ? price * 0.9 : null; 
+    
+
 
     // Update state only if valid values are found
     setVariantNameinres(variant);
     setActualPrice(price !== undefined ? price : "N/A"); // Set to "N/A" if no valid price
     setOfferPrice(offer !== undefined ? offer : null); // Set to null if no valid offer price
+    setMembershipPrice(membershipprice)
   }
   else{
     console.log('no price data foound')
@@ -240,9 +249,14 @@ useEffect(()=>{
             </p>
             {offerPrice && (
               <p className="offer-price">
+                <img src={offerbadge} alt="offerbadge"/>
                 {offerPrice}
               </p>
             )}
+             <p className="membership-price">
+             <img src={membershipbadge} alt="offerbadge"/>
+             {membershipPrice}
+             </p>
           </div>
 
 
