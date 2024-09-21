@@ -209,6 +209,7 @@ export const LocationPriceProvider = ({ children }) => {
           );
           if (priceResponse.data && priceResponse.data.length > 0) {
             customPriceDataRef.current = priceResponse.data;
+            console.log(customPriceDataRef.current,'custom price data in context')
             customPriceFetched = true;
             // console.log("Custom price data found:", customPriceDataRef.current);
             compressAndStore("customPriceData", priceResponse.data);
@@ -365,6 +366,7 @@ export const LocationPriceProvider = ({ children }) => {
       fetchGeocodeData(storedLatitude, storedLongitude);
     }
   }, []);
+
 
   return (
     <LocationPriceContext.Provider

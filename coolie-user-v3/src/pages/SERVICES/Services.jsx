@@ -17,13 +17,14 @@ const Services = () => {
     categoryData = [],
     selectedCategoryId,
     locationSubCat = [], // List of subcategories
-    locationServices = [], // List of services
+    locationServices = [],
+    locationCustom = [],
     selectedSubCategoryId,
     setSelectedSubCategoryId,
     error,
   } = useContext(CategoryContext);
 
-  const { customPriceData, districtPriceData } = useLocationPrice();
+  const { customPriceData } = useLocationPrice();
   const { handleCart } = useContext(CartContext);
   const { isAuthenticated } = useAuth();
 
@@ -34,8 +35,52 @@ const Services = () => {
   const [selectedServiceId, setSelectedServiceId] = useState(null);
   const [matchedData, setMatchedData] = useState([]);
   const [forceRender, setForceRender] = useState(0); // State to trigger re-mount
+  const [variantNameinres, setVariantNameinres] = useState("");
+  const [actualPrice, setActualPrice] = useState("N/A");
+  const [offerPrice, setOfferPrice] = useState("N/A");
+  
 
   const initialCategoryRef = useRef(null);
+
+
+
+
+// pricing functionality
+  
+useEffect(() => {
+  if(locationCustom.length>0){
+    const service = locationCustom[0]; // Assuming you want the first service
+    const variant = service.service.subCategoryId?.variantName || "None";
+    const price = service.customPrice?.price?.[variant] || null;
+    const offer = service.customPrice?.offerPrice?.[variant] || null;
+
+    // Update state only if valid values are found
+    setVariantNameinres(variant);
+    setActualPrice(price !== undefined ? price : "N/A"); // Set to "N/A" if no valid price
+    setOfferPrice(offer !== undefined ? offer : null); // Set to null if no valid offer price
+  }
+ else if (locationServices.length > 0) {
+    const service = locationServices[0]; // Assuming you want the first service
+    const variant = service.service.subCategoryId?.variantName || "None";
+    const price = service.districtPrice?.price?.[variant] || null;
+    const offer = service.districtPrice?.offerPrice?.[variant] || null;
+
+    // Update state only if valid values are found
+    setVariantNameinres(variant);
+    setActualPrice(price !== undefined ? price : "N/A"); // Set to "N/A" if no valid price
+    setOfferPrice(offer !== undefined ? offer : null); // Set to null if no valid offer price
+  }
+  else{
+    console.log('no price data foound')
+  }
+}, [locationServices,locationCustom]);
+
+// custom price functionality
+
+useEffect(()=>{
+  console.log(locationCustom,'locationCustom in service page')
+ },[locationCustom])
+  
 
   // Force a component re-render when district or custom price data changes
   // useEffect(() => {
@@ -68,9 +113,8 @@ const Services = () => {
   //   }
   // }, [districtPriceData, customPriceData, locationServices]);
 
-  useEffect(()=>{
-    console.log(locationServices,'location services in service page')
-  },[locationServices])
+
+  
 
 
   // Handle UI variants and set the default variant when category changes
@@ -185,17 +229,24 @@ const Services = () => {
 
     return matchedData.map((service) => {
       const isExpanded = descriptionVisibility[service._id];
-      const variantname = service.service?.variantName; // Ensure variantname is defined
-      console.log(variantName,'varient name')
+    
       return (
         <div key={service.service._id} className="sub-category-service-item">
           <div className="ser-content">
             <h2>{service.service.name}</h2>
-            <p className="ser-price">
-              Starts at:
-              <span>
-                &#8377; {service.districtPrice?.price?.[variantname] || "N/A"}
-                </span></p>
+            <div className="price-section">
+            <p className={`ser-price ${offerPrice ? "strikethrough" : ""}`}>
+              &#8377; {actualPrice}
+            </p>
+            {offerPrice && (
+              <p className="offer-price">
+                {offerPrice}
+              </p>
+            )}
+          </div>
+
+
+
                 <div className="dashed"></div>
                 <p className="description">
                   {service.service.description.slice(0, 150)}...

@@ -10,7 +10,7 @@ const SpaWomen = () => {
   return (
        <>
             <h2 className='w-s-headding'>Spa for Women</h2>
-            <div className='women-spa-main-con'>
+            <div className='women-saloon-main-con'>
                 <div className='w-s-sub-con'>
                     <p>Head massage</p>
                     <img src={saloon1} alt='saloon1'/>

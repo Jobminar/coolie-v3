@@ -14,8 +14,15 @@ export const CategoryProvider = ({ children }) => {
   const [locationCat, setLocationCat] = useState([]);
   const [locationSubCat, setLocationSubCat] = useState([]);
   const [locationServices, setLocationServices] = useState([]);
+  const [locationCustom , setLocationCustom] = useState([])
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false); // Loading state for better UX
+
+
+// useEffect(()=>{
+//    console.log(locationCustom,'locationCustom in context')
+//   },[locationCustom])
+
 
   // Fetch categories when the component mounts
   useEffect(() => {
@@ -92,6 +99,7 @@ export const CategoryProvider = ({ children }) => {
     }
   }, [selectedCategoryId, selectedSubCategoryId]);
 
+
   // Match categories with pricing data
   useEffect(() => {
     if (categoryData.length && (districtPriceData || customPriceData)) {
@@ -157,10 +165,39 @@ export const CategoryProvider = ({ children }) => {
   }, [servicesData, districtPriceData, selectedSubCategoryId]);
 
   
-  // useEffect(()=>{
-  //     console.log(locationServices,'locationservice')
-  // },[locationServices])
+//  match services with custom price data 
+useEffect(() => {
+  console.log(typeof(servicesData), customPriceData, 'service and customPrice in mat');
   
+  if (Array.isArray(servicesData) && Array.isArray(customPriceData)) {
+    // Map over serviceData and find matching customPriceData
+    const matched = servicesData.reduce((acc, service) => {
+      const matchingCustomPrice = customPriceData.find(
+        (record) =>
+          record.servicename === service?.name // Match servicename with service.name
+      );
+
+      if (matchingCustomPrice) {
+        acc.push({
+          service,            // Include matched service data
+          customPrice: matchingCustomPrice  // Include corresponding customPriceData
+        });
+      }
+      return acc;
+    }, []);
+    
+    setLocationCustom(matched); // Store the combined matched data
+  } else {
+    // Log an error or handle the case where data is not in the expected format
+    console.error('Expected serviceData and customPriceData to be arrays, but received:', {
+      servicesData,
+      customPriceData
+    });
+  }
+}, [servicesData, customPriceData, selectedSubCategoryId]);
+
+
+
   
 
   return (
@@ -176,6 +213,7 @@ export const CategoryProvider = ({ children }) => {
         setSelectedSubCategoryId,
         servicesData,
         locationServices,
+        locationCustom,
         error,
         loading, // Pass loading state to handle loading indicators
       }}

@@ -227,6 +227,12 @@ text-align: left;
 margin: 10px 0px;
 
 }
+.strikethrough {
+    text-decoration: line-through;
+    color: red; /* Optional: change color for better visibility */
+  }
+
+  
 .dashed{
     border: 1px dashed gray;
     margin: 0px;
@@ -293,8 +299,21 @@ margin: 5px;
 .add-button:hover{
     cursor: pointer;
 }
-
-
+.price-section{
+    display: flex;
+    justify-content:left;
+    column-gap: 1rem;
+    align-items: center;
+    /* border: 1px solid black; */
+}
+.price-section p{
+    font-family: Roboto;
+    font-size: 19.97px;
+    font-weight: 500;
+    line-height: 9.34px;
+    text-align: center;
+    border-radius: 5px;   
+}
 
 
 
@@ -388,6 +407,7 @@ margin: 5px;
     font-size: 1.5rem;
     cursor: pointer;
 }
+
 
 
 /* Responsive styles */

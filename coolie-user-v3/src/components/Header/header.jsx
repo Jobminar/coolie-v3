@@ -268,7 +268,7 @@ const Header = ({ children }) => {
             }
           },
         },
-        { label: "No", onClick: () => {} },
+        { label: "No", onClick: () => { } },
       ],
       closeOnClickOutside: false,
     });
@@ -295,10 +295,11 @@ const Header = ({ children }) => {
             <img src={playstore} alt="play-store-icon" />
             <p>Download Mobile App</p>
           </div>
-          <div className="r-a-p-main">
+          <div className="r-a-p-main" onClick={() => {navigate('/registerap') }}>
             <img className="r-a-p-image" src={registerasaprofessional} />
             <p className="r-a-p">REGISTER AS A PROFESSIONAL</p>
           </div>
+
           <div className="f-h-last-icons">
             <img src={help} alt="help-icon" onClick={toggleChatbot} />
             <img src={translate} alt="translate-icon" />
@@ -328,6 +329,9 @@ const Header = ({ children }) => {
                   </div>
                   <div className="profile-list" onClick={handleMyBookingsClick}>
                     My Bookings
+                  </div>
+                  <div className="profile-list" onClick={navigate('/packages')}>
+                    My Packages
                   </div>
                   <div className="profile-list" onClick={handleLogoutClick}>
                     <FontAwesomeIcon
@@ -443,12 +447,21 @@ const Header = ({ children }) => {
             </a>
             <a
               onClick={() => {
-                handleMyAddressesClick();
+                navigate('/packages')
                 setIsMenuOpen(false);
                 setProfileMenuVisible(false);
               }}
             >
               My addresses
+            </a>
+            <a
+              onClick={() => {
+                handleMyAddressesClick();
+                setIsMenuOpen(false);
+                setProfileMenuVisible(false);
+              }}
+            >
+              My packages
             </a>
             <a
               onClick={() => {
