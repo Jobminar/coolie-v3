@@ -22,6 +22,7 @@
     grid-template-columns: 45% 45%;
     justify-content: center;
     align-items: center;
+    margin: 2rem;
 
 }
 .s-m-sub-con{
@@ -54,6 +55,29 @@
     font-weight: 300;
     line-height: 24px;
     text-align: left;
+
+}
+.f-a-q-main-con{
+    /* border: 1px solid black; */
+    margin: 4rem;
+}
+.faq-sub-headding{
+    font-family: Poppins;
+font-size: 32px;
+font-weight: 500;
+line-height: 48px;
+letter-spacing: 0.05em;
+text-align: center;
+margin: 10px;
+}
+.faq-content{
+    font-family: Poppins;
+font-size: 20px;
+font-weight: 300;
+line-height: 30px;
+letter-spacing: 0.05em;
+text-align: center;
+margin: 10px;
 
 }
 .faq-sub-con{
@@ -97,9 +121,14 @@
     width: 2rem;
     height: 2rem;
 }
-.package-main-con{
-    /* border: 1px solid black; */
+.s-m-p-sub-con{
+    border: 1px solid black;
     padding: 1rem;
+    border-radius: 10px;
+}
+.package-main-con{
+    padding: 1rem;
+    border-radius: 10px;
 
 }
 .package-name{
@@ -110,13 +139,13 @@
     text-align: left;
 }
 .add-p-button{
-    width: 6rem;
-    height: 3rem;
+    width: 5rem;
+    height: 2.5rem;
     border: none;
     background-color: rgba(232, 132, 28, 1);
     border-radius: 10px;
     font-family: Poppins;
-    font-size: 31.38px;
+    font-size: 25.38px;
     font-weight: 500;
     line-height: 32.07px;
     text-align: center;
@@ -127,5 +156,15 @@
     display: flex;
     justify-content: space-evenly;
     align-items: center;
+   
+
+}
+.faq-headding{
+    font-family: Poppins;
+    font-size: 32px;
+    font-weight: 300;
+    line-height: 48px;
+    text-align: center;
+    margin: 10px;
 
 }

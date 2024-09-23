@@ -62,19 +62,15 @@ const Packages = () => {
             <p className='enjoy'>Enjoy 10% discount on all bookings in any category</p>
           </div>
 
-          <div className='s-m-sub-con'>
+          <div className='s-m-p-sub-con'>
           {
             Array.isArray(packages) && packages.length > 0 ? (
               packages.map((item, index) => (
                   <div className='package-main-con' key={index}>
-                     <div className='package-sub-con'>
-                      <p className='package-name'>{item.packageName}</p>
-                      <button className='add-p-button'>ADD</button>
-                      </div>
                       <div className='package-sub-con'> 
                          <p>validity :{item.validity}</p>
                          <p>Price : {item.priceRs}</p>
-                         <p>Discount : {item.discount}</p>
+                         <button className='add-p-button'>ADD</button>
                      </div>
                   </div>
               ))
@@ -86,6 +82,9 @@ const Packages = () => {
         </div>
 
         <div className='f-a-q-main-con'>
+          <h2 className='faq-headding'>FAQ'S</h2>
+          <p className='faq-sub-headding'>Frequently Asked Questions</p>
+          <p className='faq-content'>Have questions? we are here to help you</p>
           {
             Array.isArray(faq) && faq.length > 0 ? (
               faq.map((item, index) => (
