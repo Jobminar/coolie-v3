@@ -36,6 +36,8 @@ export const AuthProvider = ({ children }) => {
   } = useUserLocation();
   // useRef for storing phone and otp
   const phoneRef = useRef(null);
+  const compressedPhoneRef = LZString.compress(phoneRef);
+  sessionStorage.setItem("compressedPhone", compressedPhoneRef);
   const otpRef = useRef(null);
   //fetching user location---------------------------------------------------
   const fetchCityName = async (latitude, longitude) => {
@@ -222,30 +224,27 @@ export const AuthProvider = ({ children }) => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("the backend data after login", data);
-        console.log("line 151 Login successful:", data);
+        console.log("Login successful:", data);
+
+        // Compress and store the phone number
+        const compressedPhone = LZString.compress(data.user.phone);
+        sessionStorage.setItem("compressedPhone", compressedPhone); // Store compressed phone in sessionStorage
+
         const expirationTime = Date.now() + 12 * 60 * 60 * 1000;
         sessionStorage.setItem("jwtToken", data.token);
         sessionStorage.setItem("userId", data.user._id);
         sessionStorage.setItem("expirationTime", expirationTime);
-        // sessionStorage.setItem("phone", data.user.phone);
+
         setSessionTimeout(12 * 60 * 60 * 1000);
         setUser(data.user);
         setIsAuthenticated(true);
-        userIdRef.current = data.user._id; // Store userId in ref
+        userIdRef.current = data.user._id;
         toast.success("Login successful.");
-
-        console.log("User location:", userLocation);
 
         return true;
       } else {
         const errorData = await response.json();
-        console.error(
-          "Login failed",
-          response.status,
-          response.statusText,
-          errorData,
-        );
+        console.error("Login failed", response.status, errorData);
         toast.error("Login failed.");
       }
     } catch (error) {

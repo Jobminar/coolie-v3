@@ -3,8 +3,8 @@ import ReactDOM from "react-dom";
 
 import "./Services.css";
 import ScrollableTabs from "./ScrollableTabs";
-import offerbadge from '../../assets/images/offer.svg'
-import membershipbadge from '../../assets/images/premium.svg'
+import offerbadge from "../../assets/images/offer.svg";
+import membershipbadge from "../../assets/images/premium.svg";
 import { CategoryContext } from "../../context/CategoryContext";
 import dropdown from "../../assets/images/service-dropdown.svg";
 import CartSummary from "../../components/cart/CartSummary";
@@ -40,56 +40,47 @@ const Services = () => {
   const [variantNameinres, setVariantNameinres] = useState("");
   const [actualPrice, setActualPrice] = useState("N/A");
   const [offerPrice, setOfferPrice] = useState("N/A");
-  const [membershipPrice,setMembershipPrice]=useState('')
-  
+  const [membershipPrice, setMembershipPrice] = useState("");
 
   const initialCategoryRef = useRef(null);
 
+  // pricing functionality
 
+  useEffect(() => {
+    if (locationCustom.length > 0) {
+      const service = locationCustom[0]; // Assuming you want the first service
+      const variant = service.service.subCategoryId?.variantName || "None";
+      const price = service.customPrice?.price?.[variant] || null;
+      const offer = service.customPrice?.offerPrice?.[variant] || null;
+      const membershipprice = price ? price * 0.9 : null;
 
+      // Update state only if valid values are found
+      setVariantNameinres(variant);
+      setActualPrice(price !== undefined ? price : "N/A"); // Set to "N/A" if no valid price
+      setOfferPrice(offer !== undefined ? offer : null);
+      setMembershipPrice(membershipprice);
+    } else if (locationServices.length > 0) {
+      const service = locationServices[0]; // Assuming you want the first service
+      const variant = service.service.subCategoryId?.variantName || "None";
+      const price = service.districtPrice?.price?.[variant] || null;
+      const offer = service.districtPrice?.offerPrice?.[variant] || null;
+      const membershipprice = price ? price * 0.9 : null;
 
-// pricing functionality
-  
-useEffect(() => {
-  if(locationCustom.length>0){
-    const service = locationCustom[0]; // Assuming you want the first service
-    const variant = service.service.subCategoryId?.variantName || "None";
-    const price = service.customPrice?.price?.[variant] || null;
-    const offer = service.customPrice?.offerPrice?.[variant] || null;
-    const membershipprice = price ? price * 0.9 : null; 
+      // Update state only if valid values are found
+      setVariantNameinres(variant);
+      setActualPrice(price !== undefined ? price : "N/A"); // Set to "N/A" if no valid price
+      setOfferPrice(offer !== undefined ? offer : null); // Set to null if no valid offer price
+      setMembershipPrice(membershipprice);
+    } else {
+      console.log("no price data foound");
+    }
+  }, [locationServices, locationCustom]);
 
-    // Update state only if valid values are found
-    setVariantNameinres(variant);
-    setActualPrice(price !== undefined ? price : "N/A"); // Set to "N/A" if no valid price
-    setOfferPrice(offer !== undefined ? offer : null); 
-    setMembershipPrice(membershipprice)
-  }
- else if (locationServices.length > 0) {
-    const service = locationServices[0]; // Assuming you want the first service
-    const variant = service.service.subCategoryId?.variantName || "None";
-    const price = service.districtPrice?.price?.[variant] || null;
-    const offer = service.districtPrice?.offerPrice?.[variant] || null;
-    const membershipprice = price ? price * 0.9 : null; 
-    
+  // custom price functionality
 
-
-    // Update state only if valid values are found
-    setVariantNameinres(variant);
-    setActualPrice(price !== undefined ? price : "N/A"); // Set to "N/A" if no valid price
-    setOfferPrice(offer !== undefined ? offer : null); // Set to null if no valid offer price
-    setMembershipPrice(membershipprice)
-  }
-  else{
-    console.log('no price data foound')
-  }
-}, [locationServices,locationCustom]);
-
-// custom price functionality
-
-useEffect(()=>{
-  console.log(locationCustom,'locationCustom in service page')
- },[locationCustom])
-  
+  useEffect(() => {
+    console.log(locationCustom, "locationCustom in service page");
+  }, [locationCustom]);
 
   // Force a component re-render when district or custom price data changes
   // useEffect(() => {
@@ -121,10 +112,6 @@ useEffect(()=>{
   //     setMatchedData([]); // Reset if no matching services
   //   }
   // }, [districtPriceData, customPriceData, locationServices]);
-
-
-  
-
 
   // Handle UI variants and set the default variant when category changes
   useEffect(() => {
@@ -222,7 +209,7 @@ useEffect(()=>{
 
   // Display matched services or error message inside "services-display" div
   const displayServices = (matchedData) => {
-    console.log(matchedData,"Displaying services in service page function");
+    console.log(matchedData, "Displaying services in service page function");
     if (
       !selectedSubCategoryId ||
       !Array.isArray(matchedData) ||
@@ -238,60 +225,52 @@ useEffect(()=>{
 
     return matchedData.map((service) => {
       const isExpanded = descriptionVisibility[service._id];
-    
+
       return (
         <div key={service.service._id} className="sub-category-service-item">
           <div className="ser-content">
             <h2>{service.service.name}</h2>
             <div className="price-section">
-            <p className={`ser-price ${offerPrice ? "strikethrough" : ""}`}>
-              &#8377; {actualPrice}
-            </p>
-            {offerPrice && (
-              <p className="offer-price">
-                <img src={offerbadge} alt="offerbadge"/>
-                {offerPrice}
+              <p className={`ser-price ${offerPrice ? "strikethrough" : ""}`}>
+                &#8377; {actualPrice}
               </p>
-            )}
-             <p className="membership-price">
-             <img src={membershipbadge} alt="offerbadge"/>
-             {membershipPrice}
-             </p>
-          </div>
-
-
-
-                <div className="dashed"></div>
-                <p className="description">
-                  {service.service.description.slice(0, 150)}...
+              {offerPrice && (
+                <p className="offer-price">
+                  <img src={offerbadge} alt="offerbadge" />
+                  {offerPrice}
                 </p>
+              )}
+              <p className="membership-price">
+                <img src={membershipbadge} alt="offerbadge" />
+                {membershipPrice}
+              </p>
             </div>
-            <div className="ser-img">
-                <div className="ser-image-con">
-                    <img className="image" src={service.service.image}/>
-                </div>
-                
+
+            <div className="dashed"></div>
+            <p className="description">
+              {service.service.description.slice(0, 150)}...
+            </p>
+          </div>
+          <div className="ser-img">
+            <div className="ser-image-con">
+              <img className="image" src={service.service.image} />
             </div>
-            <div className="know-more" >
-                    Know More
-            </div>
-            <div className="button-add">
+          </div>
+          <div className="know-more">Know More</div>
+          <div className="button-add">
             <button
-                className="add-button"
-                onClick={() =>
-                  handleAddToCart(
-                    service.service._id,
-                    service.service.categoryId._id,
-                    service.service.subCategoryId._id,
-
-
-
-                  )
-                }
-              >
-                ADD
-              </button>
-            </div>
+              className="add-button"
+              onClick={() =>
+                handleAddToCart(
+                  service.service._id,
+                  service.service.categoryId._id,
+                  service.service.subCategoryId._id,
+                )
+              }
+            >
+              ADD
+            </button>
+          </div>
         </div>
       );
     });
@@ -375,7 +354,9 @@ useEffect(()=>{
               <p>No subcategories available for this filter.</p>
             )}
           </div>
-          <div className="services-display">{displayServices(locationServices)}</div>
+          <div className="services-display">
+            {displayServices(locationServices)}
+          </div>
         </div>
         <div className="cart">
           <CartSummary />
