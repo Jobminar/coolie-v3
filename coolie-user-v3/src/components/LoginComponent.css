@@ -30,9 +30,10 @@ input:focus {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 2px;
+    margin-bottom: -12px;
     position: relative;
     max-width: 18rem;
+    padding: 0
 }
 
 .login-box-header h4 {
