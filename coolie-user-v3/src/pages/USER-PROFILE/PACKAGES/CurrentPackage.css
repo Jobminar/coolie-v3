@@ -1,63 +1,67 @@
-/* Container for the current package section */
 .current-package-container {
+    width: 100%;
     display: flex;
     justify-content: center;
-    align-items: center;
-    margin: 20px 0;
+    margin-top: 20px;
 }
 
-/* Card styling */
 .package-card {
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    max-width: 300px;
-    width: 100%;
-    text-align: center;
-    border: 1px solid #ffbd68;
-    /* Orange border */
+    max-width: 400px;
+    text-align: left;
+    transition: transform 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Title */
-.package-card h3 {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #333;
+.package-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.15);
 }
 
-/* Package details styling */
-.package-card p {
-    font-size: 14px;
-    color: #666;
-    margin: 5px 0;
-}
-
-/* Key information styling (labels) */
-.package-card p strong {
-    color: #333;
+.package-title {
+    font-size: 1.5em;
     font-weight: 600;
-}
-
-/* No package available message */
-.no-package {
-    background-color: #f8f8f8;
-    border-radius: 10px;
-    padding: 20px;
-    max-width: 300px;
+    color: #333;
+    border-bottom: 2px solid #f4b400;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
     text-align: center;
-    border: 1px solid #e0e0e0;
 }
 
-/* No package heading */
+.package-content p {
+    margin: 10px 0;
+    font-size: 1rem;
+    color: #555;
+}
+
+.package-content p strong {
+    color: #333;
+}
+
+.package-status {
+    font-weight: bold;
+    color: #ff4b5c;
+    font-size: 1.1rem;
+}
+
+.no-package {
+    background-color: #f4f4f4;
+    border-radius: 15px;
+    padding: 20px;
+    max-width: 400px;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 .no-package h3 {
-    color: #ff6f00;
-    margin-bottom: 10px;
+    font-size: 1.4em;
+    color: #333;
 }
 
-/* No package text */
 .no-package p {
-    font-size: 14px;
+    font-size: 1rem;
     color: #777;
 }
