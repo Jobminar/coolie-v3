@@ -171,6 +171,11 @@ const Header = ({ children }) => {
     setProfileMenuVisible(false); // Close profile menu
   };
 
+  const handleMyPackagesClick = () => {
+    navigate("/packages"); // Navigate to bookings page
+    setProfileMenuVisible(false);
+  };
+
   const handleLogoutClick = () => {
     logout(); // Logout
     setProfileMenuVisible(false); // Close profile menu
@@ -280,7 +285,7 @@ const Header = ({ children }) => {
             }
           },
         },
-        { label: "No", onClick: () => { } },
+        { label: "No", onClick: () => {} },
       ],
       closeOnClickOutside: false,
     });
@@ -307,7 +312,12 @@ const Header = ({ children }) => {
             <img src={playstore} alt="play-store-icon" />
             <p>Download Mobile App</p>
           </div>
-          <div className="r-a-p-main" onClick={() => {navigate('/registerap') }}>
+          <div
+            className="r-a-p-main"
+            onClick={() => {
+              navigate("/registerap");
+            }}
+          >
             <img className="r-a-p-image" src={registerasaprofessional} />
             <p className="r-a-p">REGISTER AS A PROFESSIONAL</p>
           </div>
@@ -342,7 +352,7 @@ const Header = ({ children }) => {
                   <div className="profile-list" onClick={handleMyBookingsClick}>
                     My Bookings
                   </div>
-                  <div className="profile-list" onClick={navigate('/packages')}>
+                  <div className="profile-list" onClick={handleMyPackagesClick}>
                     My Packages
                   </div>
                   <div className="profile-list" onClick={handleLogoutClick}>
@@ -459,7 +469,7 @@ const Header = ({ children }) => {
             </a>
             <a
               onClick={() => {
-                navigate('/packages')
+                navigate("/packages");
                 setIsMenuOpen(false);
                 setProfileMenuVisible(false);
               }}

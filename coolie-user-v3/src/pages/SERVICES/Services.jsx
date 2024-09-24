@@ -256,7 +256,13 @@ const Services = () => {
               <img className="image" src={service.service.image} />
             </div>
           </div>
-          <div className="know-more">Know More</div>
+          <div
+            className="know-more"
+            onClick={() => handleKnowMoreClick(service.service._id)} // Use an arrow function to pass the correct function
+          >
+            Know More
+          </div>
+
           <div className="button-add">
             <button
               className="add-button"
