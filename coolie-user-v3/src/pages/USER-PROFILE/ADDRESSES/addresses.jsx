@@ -24,7 +24,7 @@ const Addresses = () => {
       const fetchAddresses = async (uid) => {
         try {
           const response = await fetch(
-            `{Azure_Base_url}$/v1.0/users/user-address/${uid}`,
+            `https://api-tasktigers.azurewebsites.net/v1.0/users/user-address/${uid}`,
           );
           if (response.ok) {
             const data = await response.json();

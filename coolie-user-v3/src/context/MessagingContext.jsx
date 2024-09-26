@@ -102,13 +102,16 @@ export const MessagingProvider = ({ children }) => {
   const sendTokenToServer = async (token, userId) => {
     console.log("Sending FCM token to server:", token, "for user:", userId);
     try {
-      const response = await fetch("{Azure_Base_url}$/v1.0/users/user-token", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "https://api-tasktigers.azurewebsites.net/v1.0/users/user-token",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token, userId }),
         },
-        body: JSON.stringify({ token, userId }),
-      });
+      );
       if (!response.ok) {
         throw new Error("Failed to store FCM token");
       }

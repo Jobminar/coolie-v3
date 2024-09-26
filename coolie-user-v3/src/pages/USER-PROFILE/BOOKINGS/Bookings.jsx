@@ -19,7 +19,7 @@ const Bookings = () => {
     const fetchUsername = async () => {
       try {
         const response = await fetch(
-          `{Azure_Base_url}$/v1.0/users/userAuth/${userId}`,
+          `https://api-tasktigers.azurewebsites.net/v1.0/users/userAuth/${userId}`,
         );
         const data = await response.json();
         setUsername(data.name);
@@ -32,7 +32,7 @@ const Bookings = () => {
     const fetchOrders = async () => {
       try {
         const response = await fetch(
-          `{Azure_Base_url}$/v1.0/users/order/${userId}`,
+          `https://api-tasktigers.azurewebsites.net/v1.0/users/order/${userId}`,
         );
         const data = await response.json();
         setOrders(data);

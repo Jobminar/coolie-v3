@@ -15,7 +15,7 @@ const CurrentPackage = ({ userId }) => {
 
       try {
         const response = await fetch(
-          `{Azure_Base_url}$/v1.0/users/user-packages/${userId}`,
+          `https://api-tasktigers.azurewebsites.net/v1.0/users/user-packages/${userId}`,
         );
         const data = await response.json();
 

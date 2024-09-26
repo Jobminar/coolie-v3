@@ -129,7 +129,7 @@ export const OrdersProvider = ({ children }) => {
       setLoading(true);
 
       const response = await fetch(
-        "{Azure_Base_url}$/v1.0/users/order/create-order",
+        "https://api-tasktigers.azurewebsites.net/v1.0/users/order/create-order",
         {
           method: "POST",
           headers: {
@@ -154,9 +154,12 @@ export const OrdersProvider = ({ children }) => {
         setOrderCreated(true);
 
         // Clear the cart after successful order creation
-        await fetch(`{Azure_Base_url}$/v1.0/users/cart/${userId}`, {
-          method: "DELETE",
-        });
+        await fetch(
+          `https://api-tasktigers.azurewebsites.net/v1.0/users/cart/${userId}`,
+          {
+            method: "DELETE",
+          },
+        );
 
         console.log("Cart cleared successfully");
 

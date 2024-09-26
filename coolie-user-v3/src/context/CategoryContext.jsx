@@ -27,7 +27,9 @@ export const CategoryProvider = ({ children }) => {
     const fetchCategories = async () => {
       setLoading(true);
       try {
-        const response = await fetch("{Azure_Base_url}$/v1.0/core/categories");
+        const response = await fetch(
+          "https://api-tasktigers.azurewebsites.net/v1.0/core/categories",
+        );
         const result = await response.json();
         if (Array.isArray(result) && result.length > 0) {
           setCategoryData(result);
@@ -52,7 +54,7 @@ export const CategoryProvider = ({ children }) => {
         setLoading(true);
         try {
           const response = await fetch(
-            `{Azure_Base_url}$/v1.0/core/sub-categories/category/${selectedCategoryId}`,
+            `https://api-tasktigers.azurewebsites.net/v1.0/core/sub-categories/category/${selectedCategoryId}`,
           );
           const result = await response.json();
           if (Array.isArray(result)) {
@@ -79,7 +81,7 @@ export const CategoryProvider = ({ children }) => {
         setLoading(true);
         try {
           const response = await fetch(
-            `{Azure_Base_url}$/v1.0/core/services/filter/${selectedCategoryId}/${selectedSubCategoryId}`,
+            `https://api-tasktigers.azurewebsites.net/v1.0/core/services/filter/${selectedCategoryId}/${selectedSubCategoryId}`,
           );
           const data = await response.json();
           setServicesData(data);

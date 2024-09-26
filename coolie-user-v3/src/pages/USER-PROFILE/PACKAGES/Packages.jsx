@@ -25,7 +25,7 @@ const Packages = () => {
     const fetchFaqs = async () => {
       try {
         const response = await fetch(
-          "{Azure_Base_url}$/v1.0/users/faq-package",
+          "https://api-tasktigers.azurewebsites.net/v1.0/users/faq-package",
         );
         const data = await response.json();
         setFaqs(data);
@@ -42,7 +42,7 @@ const Packages = () => {
     const fetchPackages = async () => {
       try {
         const response = await fetch(
-          "{Azure_Base_url}$/v1.0/admin/admin-user-package",
+          "https://api-tasktigers.azurewebsites.net/v1.0/admin/admin-user-package",
         );
         const data = await response.json();
         setPackages(data);
@@ -149,7 +149,7 @@ const Packages = () => {
 
     try {
       const response = await fetch(
-        "{Azure_Base_url}$/v1.0/users/user-packages",
+        "https://api-tasktigers.azurewebsites.net/v1.0/users/user-packages",
         {
           method: "POST",
           headers: {

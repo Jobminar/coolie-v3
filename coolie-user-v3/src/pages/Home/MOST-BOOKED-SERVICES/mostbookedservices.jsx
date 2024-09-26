@@ -14,7 +14,7 @@ const CarouselComponent = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "{Azure_Base_url}$/v1.0/admin/most-booked",
+          "https://api-tasktigers.azurewebsites.net/v1.0/admin/most-booked",
         );
         const data = await response.json();
         setItems(data);

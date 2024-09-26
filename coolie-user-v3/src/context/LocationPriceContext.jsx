@@ -205,7 +205,7 @@ export const LocationPriceProvider = ({ children }) => {
       if (!customPriceFetched && postalCode) {
         try {
           const priceResponse = await axios.get(
-            `{Azure_Base_url}$/v1.0/core/locations/custom/${postalCode}`,
+            `https://api-tasktigers.azurewebsites.net/v1.0/core/locations/custom/${postalCode}`,
           );
           if (priceResponse.data && priceResponse.data.length > 0) {
             customPriceDataRef.current = priceResponse.data;
@@ -258,7 +258,7 @@ export const LocationPriceProvider = ({ children }) => {
     if (adminLevel3 && !districtPriceFetched) {
       try {
         const priceResponse = await axios.get(
-          `{Azure_Base_url}$/v1.0/core/locations/district/${adminLevel3}`,
+          `https://api-tasktigers.azurewebsites.net/v1.0/core/locations/district/${adminLevel3}`,
         );
         if (priceResponse.data && priceResponse.data.length > 0) {
           districtPriceDataRef.current = priceResponse.data;
@@ -275,7 +275,7 @@ export const LocationPriceProvider = ({ children }) => {
     if (adminLevel2 && !districtPriceFetched) {
       try {
         const priceResponse = await axios.get(
-          `{Azure_Base_url}$/v1.0/core/locations/district/${adminLevel2}`,
+          `https://api-tasktigers.azurewebsites.net/v1.0/core/locations/district/${adminLevel2}`,
         );
         if (priceResponse.data && priceResponse.data.length > 0) {
           districtPriceDataRef.current = priceResponse.data;
@@ -292,7 +292,7 @@ export const LocationPriceProvider = ({ children }) => {
     if (adminLevel1 && !districtPriceFetched) {
       try {
         const priceResponse = await axios.get(
-          `{Azure_Base_url}$/v1.0/core/locations/district/${adminLevel1}`,
+          `https://api-tasktigers.azurewebsites.net/v1.0/core/locations/district/${adminLevel1}`,
         );
         if (priceResponse.data && priceResponse.data.length > 0) {
           districtPriceDataRef.current = priceResponse.data;
@@ -309,7 +309,7 @@ export const LocationPriceProvider = ({ children }) => {
     if (locality && !districtPriceFetched) {
       try {
         const priceResponse = await axios.get(
-          `{Azure_Base_url}$/v1.0/core/locations/district/${locality}`,
+          `https://api-tasktigers.azurewebsites.net/v1.0/core/locations/district/${locality}`,
         );
         if (priceResponse.data && priceResponse.data.length > 0) {
           districtPriceDataRef.current = priceResponse.data;

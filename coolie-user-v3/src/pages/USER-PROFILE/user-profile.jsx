@@ -30,7 +30,7 @@ const Userprofile = () => {
     const fetchUserData = async () => {
       try {
         const response = await fetch(
-          `{Azure_Base_url}$/v1.0/users/userAuth/${userId}`,
+          `https://api-tasktigers.azurewebsites.net/v1.0/users/userAuth/${userId}`,
         );
         if (response.ok) {
           const data = await response.json();
@@ -85,7 +85,7 @@ const Userprofile = () => {
 
     try {
       const response = await fetch(
-        `{Azure_Base_url}$/v1.0/users/userAuth/${userId}`,
+        `https://api-tasktigers.azurewebsites.net/v1.0/users/userAuth/${userId}`,
         {
           method: "PUT",
           body: formDataToSend,

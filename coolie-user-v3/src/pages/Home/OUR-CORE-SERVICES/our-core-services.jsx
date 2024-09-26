@@ -15,7 +15,7 @@ const OurCoreServices = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "{Azure_Base_url}$/v1.0/admin/our-core-services",
+          "https://api-tasktigers.azurewebsites.net/v1.0/admin/our-core-services",
         );
         const data = await response.json();
         setCoreServices(data);

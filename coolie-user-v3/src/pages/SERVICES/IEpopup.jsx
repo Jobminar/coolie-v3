@@ -31,7 +31,7 @@ const IEpopup = ({ isOpen, onClose, serviceId }) => {
         setLoading(true);
         try {
           const response = await axios.get(
-            "{Azure_Base_url}$/v1.0/core/inclusion-exclusion",
+            "https://api-tasktigers.azurewebsites.net/v1.0/core/inclusion-exclusion",
           );
 
           const filteredDetails = response.data.filter(

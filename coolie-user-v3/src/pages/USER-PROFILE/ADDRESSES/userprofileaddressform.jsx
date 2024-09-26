@@ -65,7 +65,7 @@ const Userprofileaddressform = ({ userId }) => {
   const handleSave = async () => {
     // if (validateFields()) {
     //   try {
-    //     const response = await fetch(`{Azure_Base_url}$/v1.0/users/user-address/${userId}`, {
+    //     const response = await fetch(`https://api-tasktigers.azurewebsites.net/v1.0/users/user-address/${userId}`, {
     //       method: "POST",
     //       headers: {
     //         "Content-Type": "application/json",

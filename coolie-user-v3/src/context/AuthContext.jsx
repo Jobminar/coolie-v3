@@ -107,7 +107,7 @@ export const AuthProvider = ({ children }) => {
   const fetchUserInfo = async (userId) => {
     try {
       const response = await fetch(
-        `{Azure_Base_url}$/v1.0/users/userAuth/${userId}`,
+        `https://api-tasktigers.azurewebsites.net/v1.0/users/userAuth/${userId}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -159,7 +159,7 @@ export const AuthProvider = ({ children }) => {
   const sendOtp = async ({ phone }) => {
     try {
       const response = await fetch(
-        "{Azure_Base_url}$/v1.0/users/userAuth/send-otp",
+        "https://api-tasktigers.azurewebsites.net/v1.0/users/userAuth/send-otp",
         {
           method: "POST",
           headers: {
@@ -212,7 +212,7 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const response = await fetch(
-        "{Azure_Base_url}$/v1.0/users/userAuth/login",
+        "https://api-tasktigers.azurewebsites.net/v1.0/users/userAuth/login",
         {
           method: "POST",
           headers: {
