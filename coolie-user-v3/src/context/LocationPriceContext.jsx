@@ -97,7 +97,7 @@ export const LocationPriceProvider = ({ children }) => {
       }
 
       const addressComponents = response.data.results[0].address_components;
-// console.log('')
+      // console.log('')
       let extractedAdminLevel3 = "";
       let extractedAdminLevel2 = "";
       let extractedAdminLevel1 = "";
@@ -205,11 +205,14 @@ export const LocationPriceProvider = ({ children }) => {
       if (!customPriceFetched && postalCode) {
         try {
           const priceResponse = await axios.get(
-            `https://api.coolieno1.in/v1.0/core/locations/custom/${postalCode}`,
+            `{Azure_Base_url}$/v1.0/core/locations/custom/${postalCode}`,
           );
           if (priceResponse.data && priceResponse.data.length > 0) {
             customPriceDataRef.current = priceResponse.data;
-            console.log(customPriceDataRef.current,'custom price data in context')
+            console.log(
+              customPriceDataRef.current,
+              "custom price data in context",
+            );
             customPriceFetched = true;
             // console.log("Custom price data found:", customPriceDataRef.current);
             compressAndStore("customPriceData", priceResponse.data);
@@ -255,7 +258,7 @@ export const LocationPriceProvider = ({ children }) => {
     if (adminLevel3 && !districtPriceFetched) {
       try {
         const priceResponse = await axios.get(
-          `https://api.coolieno1.in/v1.0/core/locations/district/${adminLevel3}`,
+          `{Azure_Base_url}$/v1.0/core/locations/district/${adminLevel3}`,
         );
         if (priceResponse.data && priceResponse.data.length > 0) {
           districtPriceDataRef.current = priceResponse.data;
@@ -272,7 +275,7 @@ export const LocationPriceProvider = ({ children }) => {
     if (adminLevel2 && !districtPriceFetched) {
       try {
         const priceResponse = await axios.get(
-          `https://api.coolieno1.in/v1.0/core/locations/district/${adminLevel2}`,
+          `{Azure_Base_url}$/v1.0/core/locations/district/${adminLevel2}`,
         );
         if (priceResponse.data && priceResponse.data.length > 0) {
           districtPriceDataRef.current = priceResponse.data;
@@ -289,7 +292,7 @@ export const LocationPriceProvider = ({ children }) => {
     if (adminLevel1 && !districtPriceFetched) {
       try {
         const priceResponse = await axios.get(
-          `https://api.coolieno1.in/v1.0/core/locations/district/${adminLevel1}`,
+          `{Azure_Base_url}$/v1.0/core/locations/district/${adminLevel1}`,
         );
         if (priceResponse.data && priceResponse.data.length > 0) {
           districtPriceDataRef.current = priceResponse.data;
@@ -306,7 +309,7 @@ export const LocationPriceProvider = ({ children }) => {
     if (locality && !districtPriceFetched) {
       try {
         const priceResponse = await axios.get(
-          `https://api.coolieno1.in/v1.0/core/locations/district/${locality}`,
+          `{Azure_Base_url}$/v1.0/core/locations/district/${locality}`,
         );
         if (priceResponse.data && priceResponse.data.length > 0) {
           districtPriceDataRef.current = priceResponse.data;
@@ -366,7 +369,6 @@ export const LocationPriceProvider = ({ children }) => {
       fetchGeocodeData(storedLatitude, storedLongitude);
     }
   }, []);
-
 
   return (
     <LocationPriceContext.Provider

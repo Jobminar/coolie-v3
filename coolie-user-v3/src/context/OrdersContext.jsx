@@ -129,7 +129,7 @@ export const OrdersProvider = ({ children }) => {
       setLoading(true);
 
       const response = await fetch(
-        "https://api.coolieno1.in/v1.0/users/order/create-order",
+        "{Azure_Base_url}$/v1.0/users/order/create-order",
         {
           method: "POST",
           headers: {
@@ -154,7 +154,7 @@ export const OrdersProvider = ({ children }) => {
         setOrderCreated(true);
 
         // Clear the cart after successful order creation
-        await fetch(`https://api.coolieno1.in/v1.0/users/cart/${userId}`, {
+        await fetch(`{Azure_Base_url}$/v1.0/users/cart/${userId}`, {
           method: "DELETE",
         });
 

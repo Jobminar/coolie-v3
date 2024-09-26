@@ -31,7 +31,7 @@ const IEpopup = ({ isOpen, onClose, serviceId }) => {
         setLoading(true);
         try {
           const response = await axios.get(
-            "https://api.coolieno1.in/v1.0/core/inclusion-exclusion",
+            "{Azure_Base_url}$/v1.0/core/inclusion-exclusion",
           );
 
           const filteredDetails = response.data.filter(

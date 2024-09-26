@@ -15,7 +15,7 @@ const OurCoreServices = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://api.coolieno1.in/v1.0/admin/our-core-services",
+          "{Azure_Base_url}$/v1.0/admin/our-core-services",
         );
         const data = await response.json();
         setCoreServices(data);

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import '../Appliance-Services/applianceRepair.css'
+import "../Appliance-Services/applianceRepair.css";
 
 const CarouselComponent = () => {
   const [items, setItems] = useState([]);
@@ -14,7 +14,7 @@ const CarouselComponent = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://api.coolieno1.in/v1.0/admin/most-booked"
+          "{Azure_Base_url}$/v1.0/admin/most-booked",
         );
         const data = await response.json();
         setItems(data);
@@ -29,11 +29,11 @@ const CarouselComponent = () => {
   }, []);
 
   useEffect(() => {
-    const nextButton = document.querySelector('.slick-next');
+    const nextButton = document.querySelector(".slick-next");
     if (currentIndex >= items.length - 4) {
-      nextButton.style.display = 'none';
+      nextButton.style.display = "none";
     } else {
-      nextButton.style.display = 'block';
+      nextButton.style.display = "block";
     }
   }, [currentIndex, items.length]);
 
@@ -53,12 +53,9 @@ const CarouselComponent = () => {
         style={{
           ...style,
           right: "-1.5rem",
-          
         }}
         onClick={onClick}
-      >
-       
-      </div>
+      ></div>
     );
   };
 
@@ -73,9 +70,7 @@ const CarouselComponent = () => {
           zIndex: 2,
         }}
         onClick={onClick}
-      >
-      
-      </div>
+      ></div>
     );
   };
 
@@ -147,22 +142,22 @@ const CarouselComponent = () => {
   return (
     <div className="appliance-repair-main-con">
       <h2>Most booked services</h2>
-      
+
       <Slider {...settings} className="appliance-repair-slider">
-        
         {items.map((item, index) => (
           <div key={index} className="appliance-repair-item">
             <div className="appliance-repair-image">
-            <img src={item.image} alt={item.name} className="carousel-image" />
-            </div>      
+              <img
+                src={item.image}
+                alt={item.name}
+                className="carousel-image"
+              />
+            </div>
             <div className="appliance-repair-name">{item.name}</div>
             <p className="appliance-repair-price">Rs: {item.price}</p>
           </div>
         ))}
-       
-        
       </Slider>
-      
     </div>
   );
 };

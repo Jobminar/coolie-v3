@@ -30,7 +30,7 @@ const Userprofile = () => {
     const fetchUserData = async () => {
       try {
         const response = await fetch(
-          `https://api.coolieno1.in/v1.0/users/userAuth/${userId}`
+          `{Azure_Base_url}$/v1.0/users/userAuth/${userId}`,
         );
         if (response.ok) {
           const data = await response.json();
@@ -85,11 +85,11 @@ const Userprofile = () => {
 
     try {
       const response = await fetch(
-        `https://api.coolieno1.in/v1.0/users/userAuth/${userId}`,
+        `{Azure_Base_url}$/v1.0/users/userAuth/${userId}`,
         {
           method: "PUT",
           body: formDataToSend,
-        }
+        },
       );
 
       if (response.ok) {
@@ -99,7 +99,7 @@ const Userprofile = () => {
           ...updatedData,
         }));
         setIsEditing(false); // Exit edit mode after successful update
-        toast.success('Profile updated successfully');
+        toast.success("Profile updated successfully");
         console.log("Profile updated successfully");
       } else {
         toast.error("Error updating profile");
@@ -118,8 +118,11 @@ const Userprofile = () => {
 
   return (
     <>
-      <Toaster /> {/* Add the Toaster component to display toast notifications */}
-      <center><h2 className="profile-head">User Profile</h2></center>
+      <Toaster />{" "}
+      {/* Add the Toaster component to display toast notifications */}
+      <center>
+        <h2 className="profile-head">User Profile</h2>
+      </center>
       <form onSubmit={handleSubmit} className="user-profile-form">
         <div className="profile-image">
           <label htmlFor="file-upload" className="custom-file-upload">
@@ -218,8 +221,14 @@ const Userprofile = () => {
             </div>
           </div>
 
-          <button type="submit" disabled={!isEditing}>Save Profile</button>
-          <button type="button" onClick={toggleEditMode} className="editprofile">
+          <button type="submit" disabled={!isEditing}>
+            Save Profile
+          </button>
+          <button
+            type="button"
+            onClick={toggleEditMode}
+            className="editprofile"
+          >
             {isEditing ? "Cancel edit" : "Edit profile"}
           </button>
         </div>

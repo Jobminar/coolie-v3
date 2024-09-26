@@ -3,17 +3,14 @@ import { toast } from "react-toastify";
 export const saveAddress = async (addressData) => {
   try {
     console.log("Sending address data to API:", addressData);
-    const response = await fetch(
-      "https://api.coolieno1.in/v1.0/users/user-address",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionStorage.getItem("jwtToken")}`,
-        },
-        body: JSON.stringify(addressData),
+    const response = await fetch("{Azure_Base_url}$/v1.0/users/user-address", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("jwtToken")}`,
       },
-    );
+      body: JSON.stringify(addressData),
+    });
 
     console.log("API Response:", response);
 
@@ -53,7 +50,7 @@ export const getSavedAddresses = async (userId) => {
   try {
     console.log("Fetching saved addresses for user ID:", userId);
     const response = await fetch(
-      `https://api.coolieno1.in/v1.0/users/user-address/${userId}`,
+      `{Azure_Base_url}$/v1.0/users/user-address/${userId}`,
       {
         method: "GET",
         headers: {
@@ -85,7 +82,7 @@ export const deleteAddress = async (addressId) => {
   try {
     console.log("Deleting address with ID:", addressId);
     const response = await fetch(
-      `https://api.coolieno1.in/v1.0/users/user-address/${addressId}`,
+      `{Azure_Base_url}$/v1.0/users/user-address/${addressId}`,
       {
         method: "DELETE",
         headers: {

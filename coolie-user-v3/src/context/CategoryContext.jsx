@@ -14,24 +14,20 @@ export const CategoryProvider = ({ children }) => {
   const [locationCat, setLocationCat] = useState([]);
   const [locationSubCat, setLocationSubCat] = useState([]);
   const [locationServices, setLocationServices] = useState([]);
-  const [locationCustom , setLocationCustom] = useState([])
+  const [locationCustom, setLocationCustom] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false); // Loading state for better UX
 
-
-// useEffect(()=>{
-//    console.log(locationCustom,'locationCustom in context')
-//   },[locationCustom])
-
+  // useEffect(()=>{
+  //    console.log(locationCustom,'locationCustom in context')
+  //   },[locationCustom])
 
   // Fetch categories when the component mounts
   useEffect(() => {
     const fetchCategories = async () => {
       setLoading(true);
       try {
-        const response = await fetch(
-          "https://api.coolieno1.in/v1.0/core/categories",
-        );
+        const response = await fetch("{Azure_Base_url}$/v1.0/core/categories");
         const result = await response.json();
         if (Array.isArray(result) && result.length > 0) {
           setCategoryData(result);
@@ -56,7 +52,7 @@ export const CategoryProvider = ({ children }) => {
         setLoading(true);
         try {
           const response = await fetch(
-            `https://api.coolieno1.in/v1.0/core/sub-categories/category/${selectedCategoryId}`,
+            `{Azure_Base_url}$/v1.0/core/sub-categories/category/${selectedCategoryId}`,
           );
           const result = await response.json();
           if (Array.isArray(result)) {
@@ -83,7 +79,7 @@ export const CategoryProvider = ({ children }) => {
         setLoading(true);
         try {
           const response = await fetch(
-            `https://api.coolieno1.in/v1.0/core/services/filter/${selectedCategoryId}/${selectedSubCategoryId}`,
+            `{Azure_Base_url}$/v1.0/core/services/filter/${selectedCategoryId}/${selectedSubCategoryId}`,
           );
           const data = await response.json();
           setServicesData(data);
@@ -98,7 +94,6 @@ export const CategoryProvider = ({ children }) => {
       fetchServices();
     }
   }, [selectedCategoryId, selectedSubCategoryId]);
-
 
   // Match categories with pricing data
   useEffect(() => {
@@ -133,23 +128,26 @@ export const CategoryProvider = ({ children }) => {
     }
   }, [subCategoryData, districtPriceData, customPriceData]);
 
-
   // Match services with pricing data
   useEffect(() => {
-    console.log(typeof(servicesData), districtPriceData, 'services and district in mat');
+    console.log(
+      typeof servicesData,
+      districtPriceData,
+      "services and district in mat",
+    );
     if (Array.isArray(servicesData) && Array.isArray(districtPriceData)) {
       // Map over servicesData and find matching districtPriceData
       const matched = servicesData.reduce((acc, service) => {
         const matchingDistrict = districtPriceData.find(
           (record) =>
             record.servicename === service?.name &&
-            record.subcategory === service?.subCategoryId?.name
+            record.subcategory === service?.subCategoryId?.name,
         );
-  
+
         if (matchingDistrict) {
           acc.push({
-            service,            // Include matched service data
-            districtPrice: matchingDistrict  // Include corresponding districtPriceData
+            service, // Include matched service data
+            districtPrice: matchingDistrict, // Include corresponding districtPriceData
           });
         }
         return acc;
@@ -157,48 +155,52 @@ export const CategoryProvider = ({ children }) => {
       setLocationServices(matched); // Store the combined matched data
     } else {
       // Log an error or handle the case where data is not in the expected format
-      console.error('Expected servicesData and districtPriceData to be arrays, but received:', {
-        servicesData,
-        districtPriceData
-      });
+      console.error(
+        "Expected servicesData and districtPriceData to be arrays, but received:",
+        {
+          servicesData,
+          districtPriceData,
+        },
+      );
     }
   }, [servicesData, districtPriceData, selectedSubCategoryId]);
 
-  
-//  match services with custom price data 
-useEffect(() => {
-  console.log(typeof(servicesData), customPriceData, 'service and customPrice in mat');
-  
-  if (Array.isArray(servicesData) && Array.isArray(customPriceData)) {
-    // Map over serviceData and find matching customPriceData
-    const matched = servicesData.reduce((acc, service) => {
-      const matchingCustomPrice = customPriceData.find(
-        (record) =>
-          record.servicename === service?.name // Match servicename with service.name
+  //  match services with custom price data
+  useEffect(() => {
+    console.log(
+      typeof servicesData,
+      customPriceData,
+      "service and customPrice in mat",
+    );
+
+    if (Array.isArray(servicesData) && Array.isArray(customPriceData)) {
+      // Map over serviceData and find matching customPriceData
+      const matched = servicesData.reduce((acc, service) => {
+        const matchingCustomPrice = customPriceData.find(
+          (record) => record.servicename === service?.name, // Match servicename with service.name
+        );
+
+        if (matchingCustomPrice) {
+          acc.push({
+            service, // Include matched service data
+            customPrice: matchingCustomPrice, // Include corresponding customPriceData
+          });
+        }
+        return acc;
+      }, []);
+
+      setLocationCustom(matched); // Store the combined matched data
+    } else {
+      // Log an error or handle the case where data is not in the expected format
+      console.error(
+        "Expected serviceData and customPriceData to be arrays, but received:",
+        {
+          servicesData,
+          customPriceData,
+        },
       );
-
-      if (matchingCustomPrice) {
-        acc.push({
-          service,            // Include matched service data
-          customPrice: matchingCustomPrice  // Include corresponding customPriceData
-        });
-      }
-      return acc;
-    }, []);
-    
-    setLocationCustom(matched); // Store the combined matched data
-  } else {
-    // Log an error or handle the case where data is not in the expected format
-    console.error('Expected serviceData and customPriceData to be arrays, but received:', {
-      servicesData,
-      customPriceData
-    });
-  }
-}, [servicesData, customPriceData, selectedSubCategoryId]);
-
-
-
-  
+    }
+  }, [servicesData, customPriceData, selectedSubCategoryId]);
 
   return (
     <CategoryContext.Provider

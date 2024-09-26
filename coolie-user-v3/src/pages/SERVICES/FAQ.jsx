@@ -12,9 +12,7 @@ const FAQ = ({ serviceId }) => {
     const fetchFAQs = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(
-          "https://api.coolieno1.in/v1.0/users/faq",
-        );
+        const response = await axios.get("{Azure_Base_url}$/v1.0/users/faq");
         const filteredFaqs = response.data.filter(
           (faq) => faq.serviceId?._id === serviceId,
         );

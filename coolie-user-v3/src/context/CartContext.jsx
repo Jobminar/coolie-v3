@@ -73,7 +73,7 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
 
     try {
       const response = await fetch(
-        `https://api.coolieno1.in/v1.0/users/cart/${userId}`,
+        `{Azure_Base_url}$/v1.0/users/cart/${userId}`,
       );
 
       if (!response.ok) {
@@ -125,7 +125,7 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
 
     try {
       const response = await fetch(
-        "https://api.coolieno1.in/v1.0/users/cart/create-cart",
+        "{Azure_Base_url}$/v1.0/users/cart/create-cart",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -189,12 +189,9 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
     const userId = user?._id || sessionStorage.getItem("userId");
     console.log("Removing item with ID from cart:", itemIdToRemove);
 
-    fetch(
-      `https://api.coolieno1.in/v1.0/users/cart/${userId}/${itemIdToRemove}`,
-      {
-        method: "DELETE",
-      },
-    )
+    fetch(`{Azure_Base_url}$/v1.0/users/cart/${userId}/${itemIdToRemove}`, {
+      method: "DELETE",
+    })
       .then((response) => {
         if (response.ok) {
           console.log("Item removed successfully.");
@@ -248,7 +245,7 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
     try {
       console.log(`Attempting to clear cart for userId: ${userId}`);
       const response = await fetch(
-        `https://api.coolieno1.in/v1.0/users/cart/${userId}`,
+        `{Azure_Base_url}$/v1.0/users/cart/${userId}`,
         { method: "DELETE" },
       );
 
@@ -337,7 +334,7 @@ export const CartProvider = ({ children, cartId, showLogin }) => {
 
       // Make API request to /create-order
       const response = await fetch(
-        "https://api.coolieno1.in/v1.0/orders/create-order", // Replace with your actual API endpoint
+        "{Azure_Base_url}$/v1.0/orders/create-order", // Replace with your actual API endpoint
         {
           method: "POST",
           headers: {

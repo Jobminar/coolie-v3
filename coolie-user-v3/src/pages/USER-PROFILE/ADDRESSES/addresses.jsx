@@ -24,7 +24,7 @@ const Addresses = () => {
       const fetchAddresses = async (uid) => {
         try {
           const response = await fetch(
-            `https://api.coolieno1.in/v1.0/users/user-address/${uid}`,
+            `{Azure_Base_url}$/v1.0/users/user-address/${uid}`,
           );
           if (response.ok) {
             const data = await response.json();

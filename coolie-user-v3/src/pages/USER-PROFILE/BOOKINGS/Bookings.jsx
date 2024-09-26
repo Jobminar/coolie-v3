@@ -8,7 +8,6 @@ import BookingDetails from "./BookingDetails"; // Import the new component
 const Bookings = () => {
   const { userId: authUserId } = useAuth();
   const userId = authUserId || sessionStorage.getItem("userId");
-  
 
   const [orders, setOrders] = useState([]);
   const [username, setUsername] = useState("");
@@ -16,11 +15,11 @@ const Bookings = () => {
 
   // fetching user details
   useEffect(() => {
-    console.log(userId,'userid in bookings')
+    console.log(userId, "userid in bookings");
     const fetchUsername = async () => {
       try {
         const response = await fetch(
-          `https://api.coolieno1.in/v1.0/users/userAuth/${userId}`,
+          `{Azure_Base_url}$/v1.0/users/userAuth/${userId}`,
         );
         const data = await response.json();
         setUsername(data.name);
@@ -33,11 +32,11 @@ const Bookings = () => {
     const fetchOrders = async () => {
       try {
         const response = await fetch(
-          `https://api.coolieno1.in/v1.0/users/order/${userId}`,
+          `{Azure_Base_url}$/v1.0/users/order/${userId}`,
         );
         const data = await response.json();
         setOrders(data);
-        console.log(data,'orders in booking page')
+        console.log(data, "orders in booking page");
       } catch (error) {
         console.error("Error fetching orders:", error);
       }

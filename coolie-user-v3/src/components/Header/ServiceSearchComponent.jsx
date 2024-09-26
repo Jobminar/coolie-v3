@@ -15,7 +15,7 @@ const ServiceSearchComponent = ({ searchQuery, onSelect }) => {
     const fetchServices = async () => {
       try {
         const response = await axios.get(
-          "https://api.coolieno1.in/v1.0/core/services/",
+          "{Azure_Base_url}$/v1.0/core/services/",
         );
         setServices(response.data);
       } catch (error) {
